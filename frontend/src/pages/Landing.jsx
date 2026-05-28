@@ -230,7 +230,7 @@ export default function Landing() {
           <div>
             <span className="font-bold text-lg">Privora</span>
             <p className="text-[10px] tracking-[0.1em] text-slate-500 uppercase mt-1">
-              © 2024 Privora Cybersecurity Inc. All rights reserved.
+              © 2026 Privora Cybersecurity Inc. All rights reserved.
             </p>
           </div>
           <div className="flex items-center gap-6">
