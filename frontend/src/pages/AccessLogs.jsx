@@ -123,8 +123,11 @@ export default function AccessLogs() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-8">
         <div>
-          <p className="text-[10px] tracking-[0.2em] uppercase font-bold mb-2" style={{ color: 'var(--text-muted)' }}>
-            📋 Audit Trail System
+          <p className="text-[10px] tracking-[0.2em] uppercase font-bold mb-2 flex items-center gap-1.5" style={{ color: 'var(--text-muted)' }}>
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            Audit Trail System
           </p>
           <h1 className="text-2xl font-bold mb-1" style={{ color: 'var(--text-primary)' }}>Access Logs</h1>
           <p className="text-sm max-w-lg" style={{ color: 'var(--text-secondary)' }}>
@@ -413,7 +416,9 @@ export default function AccessLogs() {
           style={{ background: 'var(--bg-card)', borderColor: 'var(--border-primary)', boxShadow: 'var(--shadow-card)' }}
         >
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-emerald-400">💚</span>
+            <svg className="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
             <span className="text-[10px] tracking-[0.2em] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>
               Health Index
             </span>
@@ -430,7 +435,9 @@ export default function AccessLogs() {
           style={{ background: 'var(--bg-card)', borderColor: 'var(--border-primary)', boxShadow: 'var(--shadow-card)' }}
         >
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-red-400">🔴</span>
+            <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
             <span className="text-[10px] tracking-[0.2em] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>
               Failed Attempts
             </span>
@@ -445,7 +452,9 @@ export default function AccessLogs() {
           style={{ background: 'var(--bg-card)', borderColor: 'var(--border-primary)', boxShadow: 'var(--shadow-card)' }}
         >
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-accent-light">✨</span>
+            <svg className="w-4 h-4 text-accent-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
             <span className="text-[10px] tracking-[0.2em] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>
               Active Sessions
             </span>

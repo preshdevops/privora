@@ -60,11 +60,31 @@ export default function Dashboard() {
 
   const eventIcon = (event) => {
     const e = (event || '').toLowerCase();
-    if (e.includes('rotation') || e.includes('key')) return '🔑';
-    if (e.includes('login') || e.includes('auth')) return '🔓';
-    if (e.includes('failed') || e.includes('block')) return '⚠️';
-    if (e.includes('sync')) return '🔄';
-    return '📋';
+    if (e.includes('rotation') || e.includes('key')) return (
+      <svg className="w-4 h-4 text-accent-blue inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 7a2 2 0 012 2m-2-2a2 2 0 00-2 2m2-2a2.5 2.5 0 01.5.5m-5 5.5l-3 3v3h3v-3l3-3M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    );
+    if (e.includes('login') || e.includes('auth')) return (
+      <svg className="w-4 h-4 text-accent-blue inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3" />
+      </svg>
+    );
+    if (e.includes('failed') || e.includes('block')) return (
+      <svg className="w-4 h-4 text-red-400 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
+    );
+    if (e.includes('sync')) return (
+      <svg className="w-4 h-4 text-accent-blue inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+      </svg>
+    );
+    return (
+      <svg className="w-4 h-4 text-accent-blue inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+      </svg>
+    );
   };
 
   const formatTime = (dt) => {

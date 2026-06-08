@@ -87,37 +87,62 @@ export default function Settings() {
       key: 'tracking_protection',
       label: 'Tracking Protection',
       desc: 'Block third-party trackers and analytics scripts from monitoring your activity.',
-      icon: '🛡️',
+      icon: (
+        <svg className="w-5 h-5 text-accent-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+      ),
     },
     {
       key: 'data_sharing',
       label: 'Data Sharing',
       desc: 'Allow anonymized data sharing for service improvement and threat intelligence.',
-      icon: '📤',
+      icon: (
+        <svg className="w-5 h-5 text-accent-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.684 10.742l4.633-2.316m0 0a3 3 0 105.366-2.684 3 3 0 00-5.366 2.684zm0 9.496l-4.633-2.317m0 0a3 3 0 105.366 2.684 3 3 0 00-5.366-2.684z" />
+        </svg>
+      ),
     },
     {
       key: 'ad_blocking',
       label: 'Ad & Script Blocking',
       desc: 'Prevent invasive advertisements and potentially malicious scripts from loading.',
-      icon: '🚫',
+      icon: (
+        <svg className="w-5 h-5 text-accent-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+        </svg>
+      ),
     },
     {
       key: 'cookie_control',
       label: 'Cookie Control',
       desc: 'Automatically reject non-essential cookies and clear tracking cookies on session end.',
-      icon: '🍪',
+      icon: (
+        <svg className="w-5 h-5 text-accent-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+        </svg>
+      ),
     },
     {
       key: 'location_masking',
       label: 'Location Masking',
       desc: 'Mask your real IP and geolocation from third-party services.',
-      icon: '📍',
+      icon: (
+        <svg className="w-5 h-5 text-accent-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+      ),
     },
     {
       key: 'fingerprint_defense',
       label: 'Fingerprint Defense',
       desc: 'Prevent browser fingerprinting techniques used to identify your device.',
-      icon: '🔏',
+      icon: (
+        <svg className="w-5 h-5 text-accent-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" />
+        </svg>
+      ),
     },
   ];
 
@@ -139,8 +164,12 @@ export default function Settings() {
     <div className="animate-fade-in-up max-w-5xl">
       {/* Header */}
       <div className="mb-8">
-        <p className="text-[10px] tracking-[0.2em] uppercase font-bold mb-2" style={{ color: 'var(--text-muted)' }}>
-          ⚙️ Configuration
+        <p className="text-[10px] tracking-[0.2em] uppercase font-bold mb-2 flex items-center gap-1.5" style={{ color: 'var(--text-muted)' }}>
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          Configuration
         </p>
         <h1 className="text-2xl font-bold mb-1" style={{ color: 'var(--text-primary)' }}>Settings</h1>
         <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
@@ -334,7 +363,17 @@ export default function Settings() {
             <h2 className="text-base font-bold mb-4" style={{ color: 'var(--text-primary)' }}>Appearance</h2>
             <div className="flex items-center justify-between py-3">
               <div className="flex items-center gap-3">
-                <span className="text-lg">{theme === 'dark' ? '🌙' : '☀️'}</span>
+                <span className="text-lg flex items-center justify-center">
+                  {theme === 'dark' ? (
+                    <svg className="w-5 h-5 text-amber-300" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                    </svg>
+                  ) : (
+                    <svg className="w-5 h-5 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464-5.536a1 1 0 011.414 0L16.364 5.88a1 1 0 11-1.414 1.414l-1.414-1.414a1 1 0 010-1.414zm-9.9 0a1 1 0 010 1.414L3.88 7.294a1 1 0 11-1.414-1.414l1.414-1.414a1 1 0 011.414 0zm12.728 9.9a1 1 0 011.414 0l1.414 1.414a1 1 0 11-1.414 1.414l-1.414-1.414a1 1 0 010-1.414zm-9.9 0a1 1 0 010 1.414l-1.414 1.414a1 1 0 11-1.414-1.414l1.414-1.414a1 1 0 011.414 0zM17 10a1 1 0 100-2h-1a1 1 0 100 2h1zm-14 0a1 1 0 100-2H2a1 1 0 100 2h1z" clipRule="evenodd" />
+                    </svg>
+                  )}
+                </span>
                 <div>
                   <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
                     {theme === 'dark' ? 'Dark Mode' : 'Light Mode'}

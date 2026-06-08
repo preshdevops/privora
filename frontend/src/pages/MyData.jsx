@@ -131,12 +131,36 @@ export default function MyData() {
 
   const fileIcon = (name) => {
     const ext = (name || '').split('.').pop()?.toLowerCase();
-    if (ext === 'pdf') return '📄';
-    if (['zip', 'rar', '7z', 'tar', 'gz'].includes(ext)) return '📦';
-    if (['sql', 'db', 'sqlite'].includes(ext)) return '🗃️';
-    if (['json', 'xml', 'csv'].includes(ext)) return '📊';
-    if (['jpg', 'jpeg', 'png', 'gif', 'svg'].includes(ext)) return '🖼️';
-    return '📁';
+    if (ext === 'pdf') return (
+      <svg className="w-6 h-6 text-accent-blue inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+      </svg>
+    );
+    if (['zip', 'rar', '7z', 'tar', 'gz'].includes(ext)) return (
+      <svg className="w-6 h-6 text-accent-blue inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+      </svg>
+    );
+    if (['sql', 'db', 'sqlite'].includes(ext)) return (
+      <svg className="w-6 h-6 text-accent-blue inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+      </svg>
+    );
+    if (['json', 'xml', 'csv'].includes(ext)) return (
+      <svg className="w-6 h-6 text-accent-blue inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+    );
+    if (['jpg', 'jpeg', 'png', 'gif', 'svg'].includes(ext)) return (
+      <svg className="w-6 h-6 text-accent-blue inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      </svg>
+    );
+    return (
+      <svg className="w-6 h-6 text-accent-blue inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+      </svg>
+    );
   };
 
   const Skeleton = ({ className }) => <div className={`skeleton ${className}`} />;
@@ -154,7 +178,17 @@ export default function MyData() {
               color: toast.type === 'error' ? 'var(--badge-danger-text)' : 'var(--badge-success-text)',
             }}
           >
-            <span>{toast.type === 'error' ? '✕' : '✓'}</span>
+            <span className="flex items-center">
+              {toast.type === 'error' ? (
+                <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                </svg>
+              )}
+            </span>
             {toast.message}
           </div>
         </div>
@@ -163,8 +197,11 @@ export default function MyData() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-8">
         <div>
-          <p className="text-[10px] tracking-[0.2em] uppercase font-bold mb-2" style={{ color: 'var(--text-muted)' }}>
-            🔒 Encryption Vault
+          <p className="text-[10px] tracking-[0.2em] uppercase font-bold mb-2 flex items-center gap-1.5" style={{ color: 'var(--text-muted)' }}>
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            Encryption Vault
           </p>
           <h1 className="text-2xl font-bold mb-1" style={{ color: 'var(--text-primary)' }}>My Encrypted Data</h1>
           <p className="text-sm text-slate-400" style={{ color: 'var(--text-secondary)' }}>
@@ -331,7 +368,9 @@ export default function MyData() {
 
             <div className="flex items-center justify-between p-4 rounded-xl mb-5" style={{ background: 'var(--bg-input)', border: '1px solid var(--border-secondary)' }}>
               <div className="flex items-center gap-3">
-                <span className="text-emerald-400">✅</span>
+                <svg className="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                </svg>
                 <div>
                   <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>Auto-Rotate Encryption</p>
                   <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Update keys every 30 days automatically</p>
