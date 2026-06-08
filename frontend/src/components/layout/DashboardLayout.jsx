@@ -49,6 +49,7 @@ export default function DashboardLayout({ children }) {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [loggingOut, setLoggingOut] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   const handleLogout = async () => {
     if (loggingOut) return;
@@ -64,13 +65,23 @@ export default function DashboardLayout({ children }) {
 
   return (
     <div className="min-h-screen flex" style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
+      {/* ─── Sidebar Overlay (Mobile/Tablet Only) ─── */}
+      {mobileSidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden animate-fade-in"
+          onClick={() => setMobileSidebarOpen(false)}
+        />
+      )}
+
       {/* ─── Sidebar ─── */}
       <aside
-        className="w-[220px] shrink-0 flex flex-col fixed top-0 left-0 h-screen z-30 border-r"
+        className={`w-[220px] shrink-0 flex flex-col fixed top-0 left-0 h-screen z-50 border-r transition-transform duration-300 lg:translate-x-0 ${
+          mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
         style={{ background: 'var(--bg-sidebar)', borderColor: 'var(--border-primary)' }}
       >
         {/* Logo */}
-        <div className="px-5 pt-6 pb-4">
+        <div className="px-5 pt-6 pb-4 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-lg bg-accent-blue flex items-center justify-center">
               <svg className="w-[18px] h-[18px] text-white" fill="currentColor" viewBox="0 0 24 24">
@@ -88,6 +99,17 @@ export default function DashboardLayout({ children }) {
               </p>
             </div>
           </div>
+          
+          {/* Close button for mobile */}
+          <button
+            onClick={() => setMobileSidebarOpen(false)}
+            className="p-1 lg:hidden text-slate-400 hover:text-white"
+            title="Close navigation"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
 
         {/* Navigation */}
@@ -96,6 +118,7 @@ export default function DashboardLayout({ children }) {
             <NavLink
               key={item.to}
               to={item.to}
+              onClick={() => setMobileSidebarOpen(false)}
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all duration-200 group relative ${
                   isActive
@@ -182,34 +205,60 @@ export default function DashboardLayout({ children }) {
       </aside>
 
       {/* ─── Main Content Area ─── */}
-      <div className="flex-1 ml-[220px] flex flex-col min-h-screen">
+      <div className="flex-1 lg:ml-[220px] flex flex-col min-h-screen min-w-0">
         {/* Top Bar */}
         <header
-          className="sticky top-0 z-20 border-b backdrop-blur-xl px-8 py-3 flex items-center justify-between"
+          className="sticky top-0 z-20 border-b backdrop-blur-xl px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between"
           style={{
             background: theme === 'dark' ? 'rgba(10, 14, 26, 0.8)' : 'rgba(255, 255, 255, 0.85)',
             borderColor: 'var(--border-primary)',
           }}
         >
-          {/* Search */}
-          <div
-            className="flex items-center gap-3 rounded-lg px-4 py-2.5 w-[360px]"
-            style={{ background: 'var(--bg-input)', border: '1px solid var(--border-secondary)' }}
-          >
-            <svg className="w-4 h-4" style={{ color: 'var(--text-muted)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <input
-              type="text"
-              placeholder="Search system logs or files..."
-              className="flex-1 bg-transparent text-sm outline-none"
-              style={{ color: 'var(--text-primary)' }}
-              id="global-search"
-            />
+          {/* Left section of topbar: hamburger and logo on mobile/tablet */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setMobileSidebarOpen(true)}
+              className="p-2 -ml-2 text-slate-400 hover:text-white lg:hidden cursor-pointer rounded-lg hover:bg-slate-500/10 transition-colors"
+              id="hamburger-menu-btn"
+              title="Open Navigation Menu"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+
+            {/* Mobile/Tablet Logo representation */}
+            <div className="flex items-center gap-2 lg:hidden">
+              <div className="w-8 h-8 rounded-lg bg-accent-blue flex items-center justify-center">
+                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v4.7c0 4.67-3.13 9.04-7 10.2-3.87-1.16-7-5.53-7-10.2V6.3l7-3.12z" />
+                </svg>
+              </div>
+              <span className="font-bold text-sm tracking-tight hidden sm:inline" style={{ color: 'var(--text-primary)' }}>
+                Privora
+              </span>
+            </div>
+
+            {/* Search (Desktop only: hidden lg:flex) */}
+            <div
+              className="hidden lg:flex items-center gap-3 rounded-xl px-4 py-2.5 w-[360px] transition-all duration-300 border focus-within:border-accent-blue focus-within:ring-2 focus-within:ring-accent-blue/20"
+              style={{ background: 'var(--bg-input)', borderColor: 'var(--border-secondary)' }}
+            >
+              <svg className="w-4 h-4" style={{ color: 'var(--text-muted)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input
+                type="text"
+                placeholder="Search system logs or files..."
+                className="flex-1 bg-transparent text-sm outline-none"
+                style={{ color: 'var(--text-primary)' }}
+                id="global-search"
+              />
+            </div>
           </div>
 
-          {/* Right */}
-          <div className="flex items-center gap-5">
+          {/* Right section of topbar */}
+          <div className="flex items-center gap-3 sm:gap-5">
             {/* Theme Toggle */}
             <div
               className="w-9 h-9 rounded-lg flex items-center justify-center cursor-pointer transition-colors"
@@ -231,8 +280,8 @@ export default function DashboardLayout({ children }) {
               )}
             </div>
 
-            {/* Notification Bell */}
-            <div className="relative cursor-pointer" id="notification-bell">
+            {/* Notification Bell (Hidden on very narrow mobile screens) */}
+            <div className="relative cursor-pointer hidden sm:block" id="notification-bell">
               <svg className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
               </svg>
@@ -240,8 +289,8 @@ export default function DashboardLayout({ children }) {
             </div>
 
             {/* User Info */}
-            <div className="flex items-center gap-3 pl-4 border-l" style={{ borderColor: 'var(--border-secondary)' }}>
-              <div className="text-right">
+            <div className="flex items-center gap-3 pl-2 sm:pl-4 border-l" style={{ borderColor: 'var(--border-secondary)' }}>
+              <div className="text-right hidden sm:block">
                 <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
                   {user?.full_name || user?.email?.split('@')[0] || 'User'}
                 </p>
@@ -249,7 +298,7 @@ export default function DashboardLayout({ children }) {
                   Security Lead
                 </p>
               </div>
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-accent-blue to-accent-light flex items-center justify-center text-white text-sm font-bold">
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-accent-blue to-accent-light flex items-center justify-center text-white text-sm font-bold shadow-md">
                 {(user?.full_name?.[0] || user?.email?.[0] || 'U').toUpperCase()}
               </div>
             </div>
@@ -257,25 +306,25 @@ export default function DashboardLayout({ children }) {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 px-8 py-6">
+        <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6">
           {children}
         </main>
 
         {/* Footer */}
         <footer
-          className="border-t px-8 py-5"
+          className="border-t px-4 sm:px-6 lg:px-8 py-5 mt-auto"
           style={{ borderColor: 'var(--border-primary)' }}
         >
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               <span className="font-bold text-sm tracking-wider uppercase" style={{ color: 'var(--text-primary)' }}>
                 Privora
               </span>
-              <span className="text-[10px] tracking-[0.1em] uppercase" style={{ color: 'var(--text-muted)' }}>
+              <span className="text-[10px] tracking-[0.1em] uppercase text-center sm:text-left" style={{ color: 'var(--text-muted)' }}>
                 © 2026 Privora Cybersecurity. All Rights Reserved.
               </span>
             </div>
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4 sm:gap-6 flex-wrap justify-center">
               {['Privacy Policy', 'Terms of Service', 'Compliance', 'Contact'].map((link) => (
                 <span
                   key={link}

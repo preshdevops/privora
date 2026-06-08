@@ -24,7 +24,7 @@ export default function Landing() {
             <span onClick={() => scrollTo('features')} className="text-sm text-accent-light cursor-pointer hover:text-white transition-colors font-medium border-b-2 border-accent-blue pb-0.5">Features</span>
             <span onClick={() => scrollTo('how-it-works')} className="text-sm text-slate-400 cursor-pointer hover:text-white transition-colors">How It Works</span>
             <span onClick={() => scrollTo('features')} className="text-sm text-slate-400 cursor-pointer hover:text-white transition-colors">Security</span>
-            <span className="text-sm text-slate-400 cursor-pointer hover:text-white transition-colors">Pricing</span>
+            <span className="text-sm text-slate-400 cursor-pointer hover:text-white transition-colors">About</span>
           </div>
 
           <div className="flex items-center gap-4">

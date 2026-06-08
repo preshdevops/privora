@@ -150,10 +150,10 @@ export default function Settings() {
 
       <div className="grid grid-cols-12 gap-6">
         {/* Left Column — Privacy Controls */}
-        <div className="col-span-8 space-y-6">
+        <div className="col-span-12 lg:col-span-8 space-y-6">
           {/* Privacy Controls Section */}
           <div
-            className="rounded-2xl border p-6"
+            className="rounded-2xl border p-5 sm:p-6"
             style={{ background: 'var(--bg-card)', borderColor: 'var(--border-primary)' }}
           >
             <div className="flex items-center justify-between mb-6">
@@ -182,15 +182,15 @@ export default function Settings() {
                 {privacyToggles.map((toggle) => (
                   <div
                     key={toggle.key}
-                    className="flex items-center justify-between py-3.5 px-4 rounded-xl transition-colors"
+                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-3.5 px-4 rounded-xl transition-colors"
                     onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-hover)'; }}
                     onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
                   >
-                    <div className="flex items-center gap-3">
-                      <span className="text-lg">{toggle.icon}</span>
-                      <div>
-                        <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{toggle.label}</p>
-                        <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{toggle.desc}</p>
+                    <div className="flex items-start gap-3 min-w-0">
+                      <span className="text-lg shrink-0 mt-0.5">{toggle.icon}</span>
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold truncate" style={{ color: 'var(--text-primary)' }}>{toggle.label}</p>
+                        <p className="text-xs mt-0.5 text-slate-400 break-words" style={{ color: 'var(--text-muted)' }}>{toggle.desc}</p>
                       </div>
                     </div>
                     <Toggle
@@ -206,7 +206,7 @@ export default function Settings() {
 
           {/* Account Settings Section */}
           <div
-            className="rounded-2xl border p-6"
+            className="rounded-2xl border p-5 sm:p-6"
             style={{ background: 'var(--bg-card)', borderColor: 'var(--border-primary)' }}
           >
             <h2 className="text-base font-bold mb-1" style={{ color: 'var(--text-primary)' }}>Account Settings</h2>
@@ -216,7 +216,7 @@ export default function Settings() {
 
             <div className="space-y-5">
               {/* Session Timeout */}
-              <div className="grid grid-cols-2 items-center gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 items-start sm:items-center gap-4">
                 <div>
                   <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>Session Timeout</p>
                   <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>Auto-logout after inactivity period.</p>
@@ -224,8 +224,8 @@ export default function Settings() {
                 <select
                   value={sessionTimeout}
                   onChange={(e) => setSessionTimeout(e.target.value)}
-                  className="px-4 py-2.5 rounded-lg text-sm appearance-none cursor-pointer"
-                  style={{ background: 'var(--bg-input)', border: '1px solid var(--border-secondary)', color: 'var(--text-primary)' }}
+                  className="w-full px-4 py-2.5 rounded-lg text-sm appearance-none cursor-pointer border focus:border-accent-blue focus:ring-1 focus:ring-accent-blue/20"
+                  style={{ background: 'var(--bg-input)', borderColor: 'var(--border-secondary)', color: 'var(--text-primary)' }}
                   id="session-timeout-select"
                 >
                   <option value="15">15 minutes</option>
@@ -237,7 +237,7 @@ export default function Settings() {
               </div>
 
               {/* Data Retention */}
-              <div className="grid grid-cols-2 items-center gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 items-start sm:items-center gap-4">
                 <div>
                   <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>Data Retention</p>
                   <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>How long to keep audit logs and activity data.</p>
@@ -245,8 +245,8 @@ export default function Settings() {
                 <select
                   value={dataRetention}
                   onChange={(e) => setDataRetention(e.target.value)}
-                  className="px-4 py-2.5 rounded-lg text-sm appearance-none cursor-pointer"
-                  style={{ background: 'var(--bg-input)', border: '1px solid var(--border-secondary)', color: 'var(--text-primary)' }}
+                  className="w-full px-4 py-2.5 rounded-lg text-sm appearance-none cursor-pointer border focus:border-accent-blue focus:ring-1 focus:ring-accent-blue/20"
+                  style={{ background: 'var(--bg-input)', borderColor: 'var(--border-secondary)', color: 'var(--text-primary)' }}
                   id="data-retention-select"
                 >
                   <option value="30">30 days</option>
@@ -258,15 +258,15 @@ export default function Settings() {
               </div>
 
               {/* Save */}
-              <div className="flex items-center justify-between pt-3 border-t" style={{ borderColor: 'var(--border-primary)' }}>
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t" style={{ borderColor: 'var(--border-primary)' }}>
                 {saveMessage && (
-                  <span className={`text-xs font-medium ${saveMessage.includes('success') ? 'text-emerald-400' : 'text-red-400'}`}>
+                  <span className={`text-xs font-medium text-center sm:text-left ${saveMessage.includes('success') ? 'text-emerald-400' : 'text-red-400'}`}>
                     {saveMessage}
                   </span>
                 )}
-                <div className="ml-auto">
+                <div className="w-full sm:w-auto sm:ml-auto">
                   <div
-                    className={`px-6 py-2.5 rounded-xl text-sm font-semibold cursor-pointer transition-all duration-200 ${
+                    className={`w-full sm:w-auto px-6 py-2.5 rounded-xl text-sm font-semibold text-center cursor-pointer transition-all duration-200 ${
                       saving
                         ? 'bg-accent-blue/50 cursor-not-allowed text-white/60'
                         : 'bg-accent-blue text-white hover:bg-accent-glow hover:shadow-lg hover:shadow-accent-blue/25 active:scale-[0.97]'
@@ -277,7 +277,7 @@ export default function Settings() {
                     id="save-settings-btn"
                   >
                     {saving ? (
-                      <span className="flex items-center gap-2">
+                      <span className="flex items-center justify-center gap-2">
                         <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                         Saving...
                       </span>
@@ -292,10 +292,10 @@ export default function Settings() {
         </div>
 
         {/* Right Column — Score + Appearance */}
-        <div className="col-span-4 space-y-6">
+        <div className="col-span-12 lg:col-span-4 space-y-6">
           {/* Protection Score */}
           <div
-            className="rounded-2xl border p-6 text-center"
+            className="rounded-2xl border p-5 sm:p-6 text-center"
             style={{ background: 'var(--bg-card)', borderColor: 'var(--border-primary)' }}
           >
             <p className="text-[10px] tracking-[0.2em] uppercase font-bold mb-5" style={{ color: 'var(--text-muted)' }}>
@@ -328,7 +328,7 @@ export default function Settings() {
 
           {/* Appearance */}
           <div
-            className="rounded-2xl border p-6"
+            className="rounded-2xl border p-5 sm:p-6"
             style={{ background: 'var(--bg-card)', borderColor: 'var(--border-primary)' }}
           >
             <h2 className="text-base font-bold mb-4" style={{ color: 'var(--text-primary)' }}>Appearance</h2>
@@ -350,31 +350,31 @@ export default function Settings() {
 
           {/* Account Info */}
           <div
-            className="rounded-2xl border p-6"
+            className="rounded-2xl border p-5 sm:p-6"
             style={{ background: 'var(--bg-card)', borderColor: 'var(--border-primary)' }}
           >
             <h2 className="text-base font-bold mb-4" style={{ color: 'var(--text-primary)' }}>Account</h2>
             <div className="space-y-3">
               <div>
                 <p className="text-[10px] tracking-[0.15em] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Name</p>
-                <p className="text-sm mt-0.5" style={{ color: 'var(--text-primary)' }}>
+                <p className="text-sm mt-0.5 font-semibold" style={{ color: 'var(--text-primary)' }}>
                   {user?.full_name || user?.email?.split('@')[0] || '--'}
                 </p>
               </div>
               <div>
                 <p className="text-[10px] tracking-[0.15em] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Email</p>
-                <p className="text-sm mt-0.5" style={{ color: 'var(--text-primary)' }}>{user?.email || '--'}</p>
+                <p className="text-sm mt-0.5 font-semibold truncate" style={{ color: 'var(--text-primary)' }}>{user?.email || '--'}</p>
               </div>
               <div>
                 <p className="text-[10px] tracking-[0.15em] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Role</p>
-                <p className="text-sm mt-0.5" style={{ color: 'var(--text-primary)' }}>{user?.role || 'Security Lead'}</p>
+                <p className="text-sm mt-0.5 font-semibold" style={{ color: 'var(--text-primary)' }}>{user?.role || 'Security Lead'}</p>
               </div>
             </div>
           </div>
 
           {/* Danger Zone */}
           <div
-            className="rounded-2xl border p-6"
+            className="rounded-2xl border p-5 sm:p-6"
             style={{ background: 'var(--bg-card)', borderColor: 'var(--badge-danger-bg)' }}
           >
             <h2 className="text-base font-bold mb-1 text-red-400">Danger Zone</h2>

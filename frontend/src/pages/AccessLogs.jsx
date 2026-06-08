@@ -121,7 +121,7 @@ export default function AccessLogs() {
   return (
     <div className="animate-fade-in-up">
       {/* Header */}
-      <div className="flex items-start justify-between mb-8">
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-8">
         <div>
           <p className="text-[10px] tracking-[0.2em] uppercase font-bold mb-2" style={{ color: 'var(--text-muted)' }}>
             📋 Audit Trail System
@@ -131,9 +131,9 @@ export default function AccessLogs() {
             Monitor real-time authentication events, system handshakes, and potential security anomalies across your global infrastructure.
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 w-full sm:w-auto justify-start sm:justify-end">
           <div
-            className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium cursor-pointer transition-all border"
+            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium cursor-pointer transition-all border flex-1 sm:flex-initial"
             style={{
               background: 'var(--bg-card)',
               borderColor: 'var(--border-secondary)',
@@ -149,7 +149,7 @@ export default function AccessLogs() {
             Export CSV
           </div>
           <div
-            className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white bg-accent-blue cursor-pointer hover:bg-accent-glow transition-all duration-200 border border-accent-blue"
+            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-accent-blue cursor-pointer hover:bg-accent-glow transition-all duration-200 border border-accent-blue flex-1 sm:flex-initial"
             role="button"
             tabIndex={0}
             id="live-feed-btn"
@@ -167,15 +167,15 @@ export default function AccessLogs() {
         className="rounded-2xl border p-5 mb-6"
         style={{ background: 'var(--bg-card)', borderColor: 'var(--border-primary)' }}
       >
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Search */}
           <div>
             <label className="block text-[10px] tracking-[0.15em] uppercase font-bold mb-1.5" style={{ color: 'var(--text-muted)' }}>
               Search Logs
             </label>
             <div
-              className="flex items-center gap-2 rounded-lg px-3 py-2.5"
-              style={{ background: 'var(--bg-input)', border: '1px solid var(--border-secondary)' }}
+              className="flex items-center gap-2 rounded-xl px-3 py-2.5 border transition-all duration-300 focus-within:border-accent-blue focus-within:ring-2 focus-within:ring-accent-blue/20"
+              style={{ background: 'var(--bg-input)', borderColor: 'var(--border-secondary)' }}
             >
               <svg className="w-4 h-4 shrink-0" style={{ color: 'var(--text-muted)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -200,8 +200,8 @@ export default function AccessLogs() {
             <select
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-lg text-sm appearance-none cursor-pointer"
-              style={{ background: 'var(--bg-input)', border: '1px solid var(--border-secondary)', color: 'var(--text-primary)' }}
+              className="w-full px-3 py-2.5 rounded-xl text-sm appearance-none cursor-pointer border transition-all duration-300 focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/20"
+              style={{ background: 'var(--bg-input)', borderColor: 'var(--border-secondary)', color: 'var(--text-primary)' }}
               id="date-range-select"
             >
               <option>Last 24 Hours</option>
@@ -219,8 +219,8 @@ export default function AccessLogs() {
             <select
               value={eventType}
               onChange={(e) => setEventType(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-lg text-sm appearance-none cursor-pointer"
-              style={{ background: 'var(--bg-input)', border: '1px solid var(--border-secondary)', color: 'var(--text-primary)' }}
+              className="w-full px-3 py-2.5 rounded-xl text-sm appearance-none cursor-pointer border transition-all duration-300 focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/20"
+              style={{ background: 'var(--bg-input)', borderColor: 'var(--border-secondary)', color: 'var(--text-primary)' }}
               id="event-type-select"
             >
               <option>All Events</option>
@@ -239,8 +239,8 @@ export default function AccessLogs() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-lg text-sm appearance-none cursor-pointer"
-              style={{ background: 'var(--bg-input)', border: '1px solid var(--border-secondary)', color: 'var(--text-primary)' }}
+              className="w-full px-3 py-2.5 rounded-xl text-sm appearance-none cursor-pointer border transition-all duration-300 focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/20"
+              style={{ background: 'var(--bg-input)', borderColor: 'var(--border-secondary)', color: 'var(--text-primary)' }}
               id="status-filter-select"
             >
               <option>Any Status</option>
@@ -252,119 +252,121 @@ export default function AccessLogs() {
         </div>
       </div>
 
-      {/* Logs Table */}
+      {/* Logs Table (Horizontally Scrollable Wrapper on Mobile) */}
       <div
-        className="rounded-2xl border overflow-hidden mb-6"
+        className="rounded-2xl border overflow-x-auto mb-6 w-full"
         style={{ background: 'var(--bg-card)', borderColor: 'var(--border-primary)' }}
       >
-        {/* Table Header */}
-        <div
-          className="grid grid-cols-12 px-5 py-3 text-[10px] tracking-[0.15em] uppercase font-bold border-b"
-          style={{ color: 'var(--text-muted)', borderColor: 'var(--border-primary)' }}
-        >
-          <span className="col-span-2">Timestamp</span>
-          <span className="col-span-3">Action / Event</span>
-          <span className="col-span-2">IP Address</span>
-          <span className="col-span-2">Location</span>
-          <span className="col-span-2">Status</span>
-          <span className="col-span-1">Details</span>
-        </div>
-
-        {/* Table Body */}
-        {loading ? (
-          [1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="px-5 py-4 border-b" style={{ borderColor: 'var(--border-primary)' }}>
-              <Skeleton className="h-5 w-full" />
-            </div>
-          ))
-        ) : filteredLogs.length === 0 ? (
-          <div className="px-5 py-16 text-center">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center" style={{ background: 'var(--bg-hover)' }}>
-              <svg className="w-8 h-8" style={{ color: 'var(--text-muted)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-              </svg>
-            </div>
-            <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>No logs found</p>
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Try adjusting your filters or check back later.</p>
+        <div className="min-w-[850px]">
+          {/* Table Header */}
+          <div
+            className="grid grid-cols-12 px-5 py-3 text-[10px] tracking-[0.15em] uppercase font-bold border-b"
+            style={{ color: 'var(--text-muted)', borderColor: 'var(--border-primary)' }}
+          >
+            <span className="col-span-2">Timestamp</span>
+            <span className="col-span-3">Action / Event</span>
+            <span className="col-span-2">IP Address</span>
+            <span className="col-span-2">Location</span>
+            <span className="col-span-2">Status</span>
+            <span className="col-span-1 text-right">Details</span>
           </div>
-        ) : (
-          filteredLogs.map((log, idx) => {
-            const badge = statusBadge(log.status);
-            const ts = formatTimestamp(log.timestamp || log.created_at);
-            return (
-              <div
-                key={log.id || idx}
-                className="grid grid-cols-12 items-center px-5 py-3.5 border-b transition-colors"
-                style={{ borderColor: 'var(--border-primary)' }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-hover)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
-              >
-                {/* Timestamp */}
-                <div className="col-span-2">
-                  <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{ts.date}</p>
-                  <p className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}>{ts.time}</p>
-                  <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{ts.tz}</p>
-                </div>
 
-                {/* Action */}
-                <div className="col-span-3 flex items-center gap-2">
-                  <span className="text-sm">{actionIcon(log.action || log.event)}</span>
-                  <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
-                    {log.action || log.event || '--'}
-                  </span>
-                </div>
+          {/* Table Body */}
+          {loading ? (
+            [1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="px-5 py-4 border-b" style={{ borderColor: 'var(--border-primary)' }}>
+                <Skeleton className="h-5 w-full" />
+              </div>
+            ))
+          ) : filteredLogs.length === 0 ? (
+            <div className="px-5 py-16 text-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center" style={{ background: 'var(--bg-hover)' }}>
+                <svg className="w-8 h-8" style={{ color: 'var(--text-muted)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              </div>
+              <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>No logs found</p>
+              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Try adjusting your filters or check back later.</p>
+            </div>
+          ) : (
+            filteredLogs.map((log, idx) => {
+              const badge = statusBadge(log.status);
+              const ts = formatTimestamp(log.timestamp || log.created_at);
+              return (
+                <div
+                  key={log.id || idx}
+                  className="grid grid-cols-12 items-center px-5 py-3.5 border-b transition-colors"
+                  style={{ borderColor: 'var(--border-primary)' }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-hover)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+                >
+                  {/* Timestamp */}
+                  <div className="col-span-2">
+                    <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{ts.date}</p>
+                    <p className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}>{ts.time}</p>
+                    <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{ts.tz}</p>
+                  </div>
 
-                {/* IP Address */}
-                <div className="col-span-2">
-                  <span className="text-sm font-mono" style={{ color: 'var(--text-secondary)' }}>
-                    {log.ip_address || 'Internal System'}
-                  </span>
-                </div>
+                  {/* Action */}
+                  <div className="col-span-3 flex items-center gap-2">
+                    <span className="text-sm">{actionIcon(log.action || log.event)}</span>
+                    <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+                      {log.action || log.event || '--'}
+                    </span>
+                  </div>
 
-                {/* Location */}
-                <div className="col-span-2">
-                  <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                    {log.location || '--'}
-                  </span>
-                </div>
+                  {/* IP Address */}
+                  <div className="col-span-2">
+                    <span className="text-sm font-mono" style={{ color: 'var(--text-secondary)' }}>
+                      {log.ip_address || 'Internal System'}
+                    </span>
+                  </div>
 
-                {/* Status */}
-                <div className="col-span-2">
-                  <span
-                    className="text-[10px] tracking-wider uppercase font-bold px-3 py-1 rounded-full"
-                    style={{ background: badge.bg, color: badge.color }}
-                  >
-                    {badge.label}
-                  </span>
-                </div>
+                  {/* Location */}
+                  <div className="col-span-2">
+                    <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                      {log.location || '--'}
+                    </span>
+                  </div>
 
-                {/* Details */}
-                <div className="col-span-1 flex justify-end">
-                  <div
-                    className="w-7 h-7 rounded flex items-center justify-center cursor-pointer transition-colors"
-                    style={{ color: 'var(--text-muted)' }}
-                    onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--text-secondary)'; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-muted)'; }}
-                    role="button"
-                    tabIndex={0}
-                  >
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                      <circle cx="12" cy="6" r="1.5" />
-                      <circle cx="12" cy="12" r="1.5" />
-                      <circle cx="12" cy="18" r="1.5" />
-                    </svg>
+                  {/* Status */}
+                  <div className="col-span-2">
+                    <span
+                      className="text-[10px] tracking-wider uppercase font-bold px-3 py-1 rounded-full text-center inline-block"
+                      style={{ background: badge.bg, color: badge.color }}
+                    >
+                      {badge.label}
+                    </span>
+                  </div>
+
+                  {/* Details */}
+                  <div className="col-span-1 flex justify-end">
+                    <div
+                      className="w-7 h-7 rounded flex items-center justify-center cursor-pointer transition-colors"
+                      style={{ color: 'var(--text-muted)' }}
+                      onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--text-secondary)'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-muted)'; }}
+                      role="button"
+                      tabIndex={0}
+                    >
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <circle cx="12" cy="6" r="1.5" />
+                        <circle cx="12" cy="12" r="1.5" />
+                        <circle cx="12" cy="18" r="1.5" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })
-        )}
+              );
+            })
+          )}
+        </div>
       </div>
 
-      {/* Pagination */}
+      {/* Pagination (Responsive Layout) */}
       {!loading && totalCount > 0 && (
-        <div className="flex items-center justify-between mb-8">
-          <span className="text-sm" style={{ color: 'var(--text-muted)' }}>
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
+          <span className="text-sm text-center sm:text-left" style={{ color: 'var(--text-muted)' }}>
             Showing {showStart}-{showEnd} of {totalCount.toLocaleString()} events
           </span>
           <div className="flex items-center gap-2">
@@ -403,8 +405,8 @@ export default function AccessLogs() {
         </div>
       )}
 
-      {/* Bottom Stats Cards */}
-      <div className="grid grid-cols-3 gap-5">
+      {/* Bottom Stats Cards (Fully Responsive cols) */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {/* Health Index */}
         <div
           className="p-5 rounded-2xl border"

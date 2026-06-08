@@ -5,58 +5,59 @@ export default function MyData() {
   const [assets, setAssets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [password, setPassword] = useState('');
-  const [assetType, setAssetType] = useState('System Backup');
-  const [sensitivity, setSensitivity] = useState('Tier 3 - Critical');
-  const [autoRotate, setAutoRotate] = useState(true);
   const [dragActive, setDragActive] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [assetType, setAssetType] = useState('System Backup');
+  const [sensitivity, setSensitivity] = useState('Tier 1 - Low');
+  const [autoRotate, setAutoRotate] = useState(true);
+  const [password, setPassword] = useState('');
+  const [uploading, setUploading] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
-  const [toast, setToast] = useState(null);
   const [downloadModal, setDownloadModal] = useState(null);
   const [downloadPassword, setDownloadPassword] = useState('');
   const [downloading, setDownloading] = useState(false);
+  const [toast, setToast] = useState(null);
+
   const fileInputRef = useRef(null);
 
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
-    setTimeout(() => setToast(null), 4000);
+    setTimeout(() => setToast(null), 3000);
   };
 
   const fetchAssets = async () => {
     setLoading(true);
     try {
       const res = await axiosInstance.get('/api/encryption/assets/');
-      const data = res.data;
-      setAssets(Array.isArray(data) ? data : data.results || []);
+      setAssets(Array.isArray(res.data) ? res.data : res.data.results || []);
     } catch {
       setAssets([]);
-      showToast('Failed to load assets', 'error');
     }
     setLoading(false);
   };
 
-  useEffect(() => { fetchAssets(); }, []);
+  useEffect(() => {
+    fetchAssets();
+  }, []);
 
   const handleUpload = async () => {
-    if (!selectedFile || uploading) return;
-    if (!password.trim()) { showToast('Password is required', 'error'); return; }
+    if (!selectedFile || !password.trim()) return;
     setUploading(true);
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+    formData.append('password', password);
+
     try {
-      const formData = new FormData();
-      formData.append('file', selectedFile);
-      formData.append('password', password);
       await axiosInstance.post('/api/encryption/upload/', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
+      showToast('Asset encrypted and uploaded successfully');
       setShowModal(false);
       setSelectedFile(null);
       setPassword('');
-      showToast('File encrypted and uploaded successfully');
       fetchAssets();
     } catch (err) {
-      const msg = err.response?.data?.detail || err.response?.data?.error || 'Upload failed. Please try again.';
+      const msg = err.response?.data?.detail || 'Encryption upload failed';
       showToast(typeof msg === 'string' ? msg : 'Upload failed', 'error');
     }
     setUploading(false);
@@ -67,17 +68,16 @@ export default function MyData() {
     setDeletingId(id);
     try {
       await axiosInstance.delete(`/api/encryption/assets/${id}/`);
-      setAssets((prev) => prev.filter((a) => a.id !== id));
-      showToast('File deleted successfully');
-    } catch {
-      showToast('Failed to delete file', 'error');
+      showToast('Asset deleted successfully');
+      fetchAssets();
+    } catch (err) {
+      showToast('Failed to delete asset', 'error');
     }
     setDeletingId(null);
   };
 
   const handleDownload = async () => {
-    if (!downloadModal || downloading) return;
-    if (!downloadPassword.trim()) { showToast('Password is required to decrypt', 'error'); return; }
+    if (!downloadModal || !downloadPassword.trim()) return;
     setDownloading(true);
     try {
       const res = await axiosInstance.post(
@@ -85,18 +85,15 @@ export default function MyData() {
         { password: downloadPassword },
         { responseType: 'blob' }
       );
-      const blob = new Blob([res.data]);
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      const contentDisp = res.headers['content-disposition'];
-      const fileName = contentDisp
-        ? contentDisp.split('filename=')[1]?.replace(/"/g, '').trim()
-        : downloadModal.name || 'download';
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
+
+      // Trigger file download in browser
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', downloadModal.name);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
       window.URL.revokeObjectURL(url);
       setDownloadModal(null);
       setDownloadPassword('');
@@ -164,18 +161,18 @@ export default function MyData() {
       )}
 
       {/* Header */}
-      <div className="flex items-start justify-between mb-8">
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-8">
         <div>
           <p className="text-[10px] tracking-[0.2em] uppercase font-bold mb-2" style={{ color: 'var(--text-muted)' }}>
             🔒 Encryption Vault
           </p>
           <h1 className="text-2xl font-bold mb-1" style={{ color: 'var(--text-primary)' }}>My Encrypted Data</h1>
-          <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+          <p className="text-sm text-slate-400" style={{ color: 'var(--text-secondary)' }}>
             Manage your encrypted assets and upload new files for secure storage.
           </p>
         </div>
         <div
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-accent-blue cursor-pointer hover:bg-accent-glow transition-all duration-200 hover:shadow-lg hover:shadow-accent-blue/25 active:scale-[0.97]"
+          className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-accent-blue cursor-pointer hover:bg-accent-glow transition-all duration-200 hover:shadow-lg hover:shadow-accent-blue/25 active:scale-[0.97] w-full sm:w-auto"
           onClick={() => setShowModal(true)}
           role="button" tabIndex={0} id="encrypt-new-file-btn"
         >
@@ -188,7 +185,7 @@ export default function MyData() {
 
       {/* Assets Grid */}
       {loading ? (
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div key={i} className="p-5 rounded-2xl border" style={{ background: 'var(--bg-card)', borderColor: 'var(--border-primary)' }}>
               <Skeleton className="h-5 w-3/4 mb-3" />
@@ -217,23 +214,31 @@ export default function MyData() {
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {assets.map((asset) => (
             <div
               key={asset.id}
               className="p-5 rounded-2xl border transition-all duration-300 hover:-translate-y-0.5 group"
               style={{ background: 'var(--bg-card)', borderColor: 'var(--border-primary)', boxShadow: 'var(--shadow-card)' }}
             >
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-3 min-w-0">
-                  <span className="text-2xl shrink-0">{fileIcon(asset.name)}</span>
+              <div className="flex items-start justify-between mb-3 min-w-0 gap-3">
+                <div className="flex items-start gap-3 min-w-0">
+                  <span className="text-2xl shrink-0 mt-0.5">{fileIcon(asset.name)}</span>
                   <div className="min-w-0">
                     <p className="text-sm font-semibold truncate" style={{ color: 'var(--text-primary)' }}>{asset.name || 'Untitled'}</p>
-                    <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{formatFileSize(asset.file_size)}</p>
+                    {/* Vertical stacked file info below the name */}
+                    <div className="flex flex-col gap-0.5 mt-1">
+                      <p className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>
+                        Size: <span style={{ color: 'var(--text-secondary)' }}>{formatFileSize(asset.file_size)}</span>
+                      </p>
+                      <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                        Added: <span style={{ color: 'var(--text-secondary)' }}>{asset.created_at ? new Date(asset.created_at).toLocaleDateString() : '--'}</span>
+                      </p>
+                    </div>
                   </div>
                 </div>
-                {/* Action buttons */}
-                <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                {/* Action buttons - always visible on mobile, hover visible on desktop */}
+                <div className="flex items-center gap-1.5 shrink-0 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
                   {/* Download */}
                   <div
                     className="w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer transition-colors"
@@ -264,13 +269,11 @@ export default function MyData() {
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-2 mt-3">
+              <div className="flex items-center gap-2 mt-3 pt-2.5 border-t" style={{ borderColor: 'var(--border-secondary)' }}>
                 <span className="text-[9px] tracking-wider uppercase font-bold px-2 py-0.5 rounded-full" style={{ background: 'var(--badge-success-bg)', color: 'var(--badge-success-text)' }}>
                   AES-256
                 </span>
-                <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
-                  {asset.created_at ? new Date(asset.created_at).toLocaleDateString() : '--'}
-                </span>
+                <span className="text-[10px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Protected</span>
               </div>
             </div>
           ))}
@@ -279,8 +282,8 @@ export default function MyData() {
 
       {/* ─── Upload Modal ─── */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center animate-fade-in" style={{ background: 'var(--bg-modal-overlay)' }} onClick={(e) => { if (e.target === e.currentTarget) setShowModal(false); }}>
-          <div className="w-full max-w-lg rounded-2xl p-6 animate-slide-up" style={{ background: 'var(--bg-modal)', border: '1px solid var(--border-secondary)' }}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in" style={{ background: 'var(--bg-modal-overlay)' }} onClick={(e) => { if (e.target === e.currentTarget) setShowModal(false); }}>
+          <div className="w-full max-w-lg rounded-2xl p-5 sm:p-6 animate-slide-up" style={{ background: 'var(--bg-modal)', border: '1px solid var(--border-secondary)' }}>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>Secure Ingestion</h2>
               <div className="w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer" style={{ background: 'var(--bg-hover)' }} onClick={() => setShowModal(false)} role="button" tabIndex={0} id="close-modal-btn">
@@ -289,7 +292,7 @@ export default function MyData() {
             </div>
 
             <div
-              className={`border-2 border-dashed rounded-xl p-10 text-center mb-5 cursor-pointer transition-all`}
+              className={`border-2 border-dashed rounded-xl p-6 sm:p-10 text-center mb-5 cursor-pointer transition-all w-full`}
               style={{ borderColor: dragActive ? '#2563eb' : 'var(--border-secondary)', background: dragActive ? 'rgba(37,99,235,0.05)' : 'var(--bg-input)' }}
               onDragEnter={handleDrag} onDragOver={handleDrag} onDragLeave={handleDrag} onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()} role="button" tabIndex={0} id="drop-zone"
@@ -300,7 +303,7 @@ export default function MyData() {
               </div>
               {selectedFile ? (
                 <div>
-                  <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{selectedFile.name}</p>
+                  <p className="text-sm font-medium truncate max-w-xs mx-auto" style={{ color: 'var(--text-primary)' }}>{selectedFile.name}</p>
                   <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>{formatFileSize(selectedFile.size)}</p>
                 </div>
               ) : (
@@ -311,16 +314,16 @@ export default function MyData() {
               )}
             </div>
 
-            <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
               <div>
                 <label className="block text-[10px] tracking-[0.15em] uppercase font-bold mb-1.5" style={{ color: 'var(--text-muted)' }}>Asset Type</label>
-                <select value={assetType} onChange={(e) => setAssetType(e.target.value)} className="w-full px-3 py-2.5 rounded-lg text-sm appearance-none cursor-pointer" style={{ background: 'var(--bg-input)', border: '1px solid var(--border-secondary)', color: 'var(--text-primary)' }} id="asset-type-select">
+                <select value={assetType} onChange={(e) => setAssetType(e.target.value)} className="w-full px-3 py-2.5 rounded-lg text-sm appearance-none cursor-pointer border focus:border-accent-blue focus:ring-1 focus:ring-accent-blue/20" style={{ background: 'var(--bg-input)', borderColor: 'var(--border-secondary)', color: 'var(--text-primary)' }} id="asset-type-select">
                   <option>System Backup</option><option>Database</option><option>Documents</option><option>Media</option><option>Other</option>
                 </select>
               </div>
               <div>
                 <label className="block text-[10px] tracking-[0.15em] uppercase font-bold mb-1.5" style={{ color: 'var(--text-muted)' }}>Sensitivity</label>
-                <select value={sensitivity} onChange={(e) => setSensitivity(e.target.value)} className="w-full px-3 py-2.5 rounded-lg text-sm appearance-none cursor-pointer" style={{ background: 'var(--bg-input)', border: '1px solid var(--border-secondary)', color: 'var(--text-primary)' }} id="sensitivity-select">
+                <select value={sensitivity} onChange={(e) => setSensitivity(e.target.value)} className="w-full px-3 py-2.5 rounded-lg text-sm appearance-none cursor-pointer border focus:border-accent-blue focus:ring-1 focus:ring-accent-blue/20" style={{ background: 'var(--bg-input)', borderColor: 'var(--border-secondary)', color: 'var(--text-primary)' }} id="sensitivity-select">
                   <option>Tier 1 - Low</option><option>Tier 2 - Medium</option><option>Tier 3 - Critical</option>
                 </select>
               </div>
@@ -341,7 +344,7 @@ export default function MyData() {
 
             <div className="mb-5">
               <label className="block text-[10px] tracking-[0.15em] uppercase font-bold mb-1.5" style={{ color: 'var(--text-muted)' }}>Encryption Password</label>
-              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter a strong encryption password" className="w-full px-4 py-2.5 rounded-lg text-sm" style={{ background: 'var(--bg-input)', border: '1px solid var(--border-secondary)', color: 'var(--text-primary)' }} id="encryption-password" />
+              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter a strong encryption password" className="w-full px-4 py-2.5 rounded-lg text-sm border focus:border-accent-blue focus:ring-1 focus:ring-accent-blue/20" style={{ background: 'var(--bg-input)', borderColor: 'var(--border-secondary)', color: 'var(--text-primary)' }} id="encryption-password" />
             </div>
 
             <div className="flex items-center justify-end gap-3">
@@ -360,8 +363,8 @@ export default function MyData() {
 
       {/* ─── Download Password Modal ─── */}
       {downloadModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center animate-fade-in" style={{ background: 'var(--bg-modal-overlay)' }} onClick={(e) => { if (e.target === e.currentTarget) { setDownloadModal(null); setDownloadPassword(''); } }}>
-          <div className="w-full max-w-sm rounded-2xl p-6 animate-slide-up" style={{ background: 'var(--bg-modal)', border: '1px solid var(--border-secondary)' }}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in" style={{ background: 'var(--bg-modal-overlay)' }} onClick={(e) => { if (e.target === e.currentTarget) { setDownloadModal(null); setDownloadPassword(''); } }}>
+          <div className="w-full max-w-sm rounded-2xl p-5 sm:p-6 animate-slide-up" style={{ background: 'var(--bg-modal)', border: '1px solid var(--border-secondary)' }}>
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>Decrypt & Download</h2>
               <div className="w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer" style={{ background: 'var(--bg-hover)' }} onClick={() => { setDownloadModal(null); setDownloadPassword(''); }} role="button" tabIndex={0} id="close-download-modal">
@@ -372,7 +375,7 @@ export default function MyData() {
             <div className="flex items-center gap-3 p-3 rounded-xl mb-4" style={{ background: 'var(--bg-input)', border: '1px solid var(--border-secondary)' }}>
               <span className="text-xl">{fileIcon(downloadModal.name)}</span>
               <div className="min-w-0">
-                <p className="text-sm font-semibold truncate" style={{ color: 'var(--text-primary)' }}>{downloadModal.name}</p>
+                <p className="text-sm font-semibold truncate max-w-xs" style={{ color: 'var(--text-primary)' }}>{downloadModal.name}</p>
                 <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{formatFileSize(downloadModal.file_size)}</p>
               </div>
             </div>
@@ -382,8 +385,8 @@ export default function MyData() {
               <input
                 type="password" value={downloadPassword} onChange={(e) => setDownloadPassword(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter' && downloadPassword.trim()) handleDownload(); }}
-                placeholder="Enter your encryption password" className="w-full px-4 py-2.5 rounded-lg text-sm"
-                style={{ background: 'var(--bg-input)', border: '1px solid var(--border-secondary)', color: 'var(--text-primary)' }}
+                placeholder="Enter your encryption password" className="w-full px-4 py-2.5 rounded-lg text-sm border focus:border-accent-blue focus:ring-1 focus:ring-accent-blue/20"
+                style={{ background: 'var(--bg-input)', borderColor: 'var(--border-secondary)', color: 'var(--text-primary)' }}
                 id="download-password" autoFocus
               />
             </div>
