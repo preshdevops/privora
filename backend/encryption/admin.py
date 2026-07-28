@@ -1,3 +1,9 @@
 from django.contrib import admin
+from .models import EncryptedAsset
 
-# Register your models here.
+
+@admin.register(EncryptedAsset)
+class EncryptedAssetAdmin(admin.ModelAdmin):
+    list_display = ('name', 'user', 'file_size', 'created_at')
+    list_filter = ('created_at',)
+    search_fields = ('name', 'user__email')
