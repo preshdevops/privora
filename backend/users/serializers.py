@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
 from .models import User, UserSettings
+from privacy.models import PrivacySettings
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -24,6 +25,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             password=validated_data['password'],
         )
         UserSettings.objects.create(user=user)
+        PrivacySettings.objects.create(user=user)
         return user
 
 
