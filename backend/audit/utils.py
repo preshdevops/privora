@@ -1,4 +1,5 @@
 from .models import AuditLog
+from .rules import evaluate_rules
 
 def get_client_ip(request):
     if not request or not hasattr(request, 'META'):
@@ -16,7 +17,7 @@ def log_action(user, action, request=None, data_item='', status='success', metad
     if metadata is None:
         metadata = {}
 
-    return AuditLog.objects.create(
+    log_entry = AuditLog.objects.create(
         user=user,
         action=action,
         ip_address=ip_address,
@@ -24,3 +25,9 @@ def log_action(user, action, request=None, data_item='', status='success', metad
         status=status,
         metadata=metadata
     )
+
+    if user is not None:
+        evaluate_rules(user)
+
+    return log_entry
+
