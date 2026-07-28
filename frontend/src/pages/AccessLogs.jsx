@@ -6,8 +6,6 @@ export default function AccessLogs() {
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
   const [page, setPage] = useState(1);
-  const [nextUrl, setNextUrl] = useState(null);
-  const [prevUrl, setPrevUrl] = useState(null);
   const [search, setSearch] = useState('');
   const [dateRange, setDateRange] = useState('Last 24 Hours');
   const [eventType, setEventType] = useState('All Events');
@@ -25,8 +23,6 @@ export default function AccessLogs() {
       if (data.results) {
         setLogs(data.results);
         setTotalCount(data.count || 0);
-        setNextUrl(data.next);
-        setPrevUrl(data.previous);
       } else if (Array.isArray(data)) {
         setLogs(data);
         setTotalCount(data.length);
@@ -60,10 +56,10 @@ export default function AccessLogs() {
 
   const statusBadge = (status) => {
     const s = (status || '').toLowerCase();
-    if (s === 'success') return { bg: 'var(--badge-success-bg)', color: 'var(--badge-success-text)', label: 'SUCCESS' };
-    if (s === 'warning') return { bg: 'var(--badge-warning-bg)', color: 'var(--badge-warning-text)', label: 'WARNING' };
-    if (s === 'failed' || s === 'error') return { bg: 'var(--badge-danger-bg)', color: 'var(--badge-danger-text)', label: 'FAILED' };
-    return { bg: 'var(--badge-info-bg)', color: 'var(--badge-info-text)', label: (status || 'INFO').toUpperCase() };
+    if (s === 'success') return { color: 'var(--status-success)', label: 'SUCCESS' };
+    if (s === 'warning') return { color: 'var(--status-warning)', label: 'WARNING' };
+    if (s === 'failed' || s === 'error') return { color: 'var(--status-danger)', label: 'FAILED' };
+    return { color: 'var(--status-info)', label: (status || 'INFO').toUpperCase() };
   };
 
   const actionIcon = (action) => {
@@ -88,11 +84,11 @@ export default function AccessLogs() {
 
   const PageButton = ({ p, active }) => (
     <div
-      className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-medium cursor-pointer transition-all ${active ? 'text-white' : ''}`}
+      className={`w-8 h-8 rounded-none flex items-center justify-center text-xs font-mono font-bold cursor-pointer transition-colors`}
       style={{
-        background: active ? '#2563eb' : 'var(--bg-card)',
-        border: `1px solid ${active ? '#2563eb' : 'var(--border-secondary)'}`,
-        color: active ? '#fff' : 'var(--text-secondary)',
+        background: active ? 'var(--text-primary)' : 'var(--bg-card)',
+        border: `1px solid var(--border-secondary)`,
+        color: active ? 'var(--bg-primary)' : 'var(--text-secondary)',
       }}
       onClick={() => setPage(p)}
       role="button"
@@ -123,89 +119,77 @@ export default function AccessLogs() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-8">
         <div>
-          <p className="text-[10px] tracking-[0.2em] uppercase font-bold mb-2 flex items-center gap-1.5" style={{ color: 'var(--text-muted)' }}>
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          <p className="text-[10px] tracking-[0.2em] uppercase font-bold font-mono mb-2 flex items-center gap-1.5" style={{ color: 'var(--text-muted)' }}>
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="square" strokeLinejoin="miter" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
             </svg>
-            Audit Trail System
+            System Ledger
           </p>
-          <h1 className="text-2xl font-bold mb-1" style={{ color: 'var(--text-primary)' }}>Access Logs</h1>
-          <p className="text-sm max-w-lg" style={{ color: 'var(--text-secondary)' }}>
-            Monitor real-time authentication events, system handshakes, and potential security anomalies across your global infrastructure.
+          <h1 className="text-3xl font-bold font-display mb-1" style={{ color: 'var(--text-primary)' }}>Access & Security Logs</h1>
+          <p className="text-sm max-w-lg font-sans" style={{ color: 'var(--text-secondary)' }}>
+            Immutable record of authentication events, cryptographic operations, and system access.
           </p>
         </div>
         <div className="flex items-center gap-3 w-full sm:w-auto justify-start sm:justify-end">
           <div
-            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium cursor-pointer transition-all border flex-1 sm:flex-initial"
+            className="flex items-center justify-center gap-2 px-6 py-3 rounded-none text-sm font-bold cursor-pointer transition-colors border flex-1 sm:flex-initial"
             style={{
               background: 'var(--bg-card)',
               borderColor: 'var(--border-secondary)',
               color: 'var(--text-primary)',
             }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-hover)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--bg-card)'; }}
             role="button"
             tabIndex={0}
-            id="export-csv-btn"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="square" strokeLinejoin="miter" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            Export CSV
-          </div>
-          <div
-            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-accent-blue cursor-pointer hover:bg-accent-glow transition-all duration-200 border border-accent-blue flex-1 sm:flex-initial"
-            role="button"
-            tabIndex={0}
-            id="live-feed-btn"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-            Live Feed
+            EXPORT CSV
           </div>
         </div>
       </div>
 
       {/* Filter Bar */}
       <div
-        className="rounded-2xl border p-5 mb-6"
+        className="rounded-none border p-6 mb-8 shadow-[var(--shadow-card)]"
         style={{ background: 'var(--bg-card)', borderColor: 'var(--border-primary)' }}
       >
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Search */}
           <div>
-            <label className="block text-[10px] tracking-[0.15em] uppercase font-bold mb-1.5" style={{ color: 'var(--text-muted)' }}>
-              Search Logs
+            <label className="block text-[10px] tracking-[0.15em] uppercase font-bold font-mono mb-2" style={{ color: 'var(--text-muted)' }}>
+              Search Filter
             </label>
             <div
-              className="flex items-center gap-2 rounded-xl px-3 py-2.5 border transition-all duration-300 focus-within:border-accent-blue focus-within:ring-2 focus-within:ring-accent-blue/20"
+              className="flex items-center gap-2 rounded-none px-4 py-3 border transition-colors focus-within:border-[var(--accent-gold)]"
               style={{ background: 'var(--bg-input)', borderColor: 'var(--border-secondary)' }}
             >
-              <svg className="w-4 h-4 shrink-0" style={{ color: 'var(--text-muted)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <svg className="w-4 h-4 shrink-0" style={{ color: 'var(--text-muted)' }} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="square" strokeLinejoin="miter" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="IP Address, Action, or Location..."
-                className="flex-1 bg-transparent text-sm outline-none"
+                placeholder="IP, Hash, Target..."
+                className="flex-1 bg-transparent text-sm outline-none font-mono"
                 style={{ color: 'var(--text-primary)' }}
-                id="log-search-input"
               />
             </div>
           </div>
 
           {/* Date Range */}
           <div>
-            <label className="block text-[10px] tracking-[0.15em] uppercase font-bold mb-1.5" style={{ color: 'var(--text-muted)' }}>
-              Date Range
+            <label className="block text-[10px] tracking-[0.15em] uppercase font-bold font-mono mb-2" style={{ color: 'var(--text-muted)' }}>
+              Timeframe
             </label>
             <select
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-xl text-sm appearance-none cursor-pointer border transition-all duration-300 focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/20"
+              className="w-full px-4 py-3 rounded-none text-sm appearance-none cursor-pointer border transition-colors focus:border-[var(--accent-gold)] font-mono"
               style={{ background: 'var(--bg-input)', borderColor: 'var(--border-secondary)', color: 'var(--text-primary)' }}
-              id="date-range-select"
             >
               <option>Last 24 Hours</option>
               <option>Last 7 Days</option>
@@ -216,15 +200,14 @@ export default function AccessLogs() {
 
           {/* Event Type */}
           <div>
-            <label className="block text-[10px] tracking-[0.15em] uppercase font-bold mb-1.5" style={{ color: 'var(--text-muted)' }}>
-              Event Type
+            <label className="block text-[10px] tracking-[0.15em] uppercase font-bold font-mono mb-2" style={{ color: 'var(--text-muted)' }}>
+              Event Signature
             </label>
             <select
               value={eventType}
               onChange={(e) => setEventType(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-xl text-sm appearance-none cursor-pointer border transition-all duration-300 focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/20"
+              className="w-full px-4 py-3 rounded-none text-sm appearance-none cursor-pointer border transition-colors focus:border-[var(--accent-gold)] font-mono"
               style={{ background: 'var(--bg-input)', borderColor: 'var(--border-secondary)', color: 'var(--text-primary)' }}
-              id="event-type-select"
             >
               <option>All Events</option>
               <option>Login</option>
@@ -236,15 +219,14 @@ export default function AccessLogs() {
 
           {/* Status */}
           <div>
-            <label className="block text-[10px] tracking-[0.15em] uppercase font-bold mb-1.5" style={{ color: 'var(--text-muted)' }}>
-              Status
+            <label className="block text-[10px] tracking-[0.15em] uppercase font-bold font-mono mb-2" style={{ color: 'var(--text-muted)' }}>
+              Status Code
             </label>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-xl text-sm appearance-none cursor-pointer border transition-all duration-300 focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/20"
+              className="w-full px-4 py-3 rounded-none text-sm appearance-none cursor-pointer border transition-colors focus:border-[var(--accent-gold)] font-mono"
               style={{ background: 'var(--bg-input)', borderColor: 'var(--border-secondary)', color: 'var(--text-primary)' }}
-              id="status-filter-select"
             >
               <option>Any Status</option>
               <option>Success</option>
@@ -255,109 +237,86 @@ export default function AccessLogs() {
         </div>
       </div>
 
-      {/* Logs Table (Horizontally Scrollable Wrapper on Mobile) */}
+      {/* Logs Table */}
       <div
-        className="rounded-2xl border overflow-x-auto mb-6 w-full"
+        className="border overflow-x-auto mb-8 w-full shadow-[var(--shadow-card)]"
         style={{ background: 'var(--bg-card)', borderColor: 'var(--border-primary)' }}
       >
         <div className="min-w-[850px]">
           {/* Table Header */}
           <div
-            className="grid grid-cols-12 px-5 py-3 text-[10px] tracking-[0.15em] uppercase font-bold border-b"
-            style={{ color: 'var(--text-muted)', borderColor: 'var(--border-primary)' }}
+            className="grid grid-cols-12 px-6 py-4 text-[10px] tracking-[0.2em] uppercase font-bold border-b font-mono"
+            style={{ color: 'var(--text-muted)', borderColor: 'var(--border-primary)', background: 'var(--bg-secondary)' }}
           >
             <span className="col-span-2">Timestamp</span>
-            <span className="col-span-3">Action / Event</span>
-            <span className="col-span-2">IP Address</span>
-            <span className="col-span-2">Location</span>
-            <span className="col-span-2">Status</span>
-            <span className="col-span-1 text-right">Details</span>
+            <span className="col-span-3">Action Signature</span>
+            <span className="col-span-3">Target Resource</span>
+            <span className="col-span-2">Origin IP</span>
+            <span className="col-span-2 text-right">Status</span>
           </div>
 
           {/* Table Body */}
           {loading ? (
-            [1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="px-5 py-4 border-b" style={{ borderColor: 'var(--border-primary)' }}>
+            [1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={i} className="px-6 py-4 border-b" style={{ borderColor: 'var(--border-primary)' }}>
                 <Skeleton className="h-5 w-full" />
               </div>
             ))
           ) : filteredLogs.length === 0 ? (
-            <div className="px-5 py-16 text-center">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center" style={{ background: 'var(--bg-hover)' }}>
-                <svg className="w-8 h-8" style={{ color: 'var(--text-muted)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-              </div>
-              <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>No logs found</p>
-              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Try adjusting your filters or check back later.</p>
+            <div className="px-6 py-20 text-center">
+              <p className="text-sm font-mono" style={{ color: 'var(--text-muted)' }}>[ NO RECORDS MATCHING QUERY ]</p>
             </div>
           ) : (
             filteredLogs.map((log, idx) => {
               const badge = statusBadge(log.status);
               const ts = formatTimestamp(log.timestamp || log.created_at);
+              // subtle zebra striping
+              const bg = idx % 2 === 0 ? 'var(--bg-card)' : 'var(--bg-secondary)';
+              
               return (
                 <div
                   key={log.id || idx}
-                  className="grid grid-cols-12 items-center px-5 py-3.5 border-b transition-colors"
-                  style={{ borderColor: 'var(--border-primary)' }}
+                  className="grid grid-cols-12 items-center px-6 py-4 border-b transition-colors"
+                  style={{ borderColor: 'var(--border-primary)', background: bg }}
                   onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-hover)'; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = bg; }}
                 >
                   {/* Timestamp */}
                   <div className="col-span-2">
-                    <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{ts.date}</p>
-                    <p className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}>{ts.time}</p>
-                    <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{ts.tz}</p>
+                    <p className="text-sm font-bold font-mono" style={{ color: 'var(--text-primary)' }}>{ts.date}</p>
+                    <p className="text-xs font-mono" style={{ color: 'var(--text-secondary)' }}>{ts.time} <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{ts.tz}</span></p>
                   </div>
 
                   {/* Action */}
-                  <div className="col-span-3 flex items-center gap-2">
-                    <span className="text-sm">{actionIcon(log.action || log.event)}</span>
-                    <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+                  <div className="col-span-3 flex items-center gap-3">
+                    <span className="text-sm font-mono" style={{ color: 'var(--accent-gold)' }}>{actionIcon(log.action || log.event)}</span>
+                    <span className="text-sm font-bold font-sans" style={{ color: 'var(--text-primary)' }}>
                       {log.action || log.event || '--'}
+                    </span>
+                  </div>
+
+                  {/* Target / Data Item */}
+                  <div className="col-span-3 pr-4">
+                    <span className="text-sm font-mono truncate block w-full" style={{ color: 'var(--text-secondary)' }}>
+                      {log.data_item || log.location || '--'}
                     </span>
                   </div>
 
                   {/* IP Address */}
                   <div className="col-span-2">
                     <span className="text-sm font-mono" style={{ color: 'var(--text-secondary)' }}>
-                      {log.ip_address || 'Internal System'}
-                    </span>
-                  </div>
-
-                  {/* Location */}
-                  <div className="col-span-2">
-                    <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                      {log.location || '--'}
+                      {log.ip_address || 'SYS_INTERNAL'}
                     </span>
                   </div>
 
                   {/* Status */}
-                  <div className="col-span-2">
+                  <div className="col-span-2 flex justify-end">
                     <span
-                      className="text-[10px] tracking-wider uppercase font-bold px-3 py-1 rounded-full text-center inline-block"
-                      style={{ background: badge.bg, color: badge.color }}
+                      className="text-[10px] tracking-[0.1em] uppercase font-bold px-3 py-1 font-mono"
+                      style={{ border: `1px solid ${badge.color}40`, color: badge.color }}
                     >
-                      {badge.label}
+                      [{badge.label}]
                     </span>
-                  </div>
-
-                  {/* Details */}
-                  <div className="col-span-1 flex justify-end">
-                    <div
-                      className="w-7 h-7 rounded flex items-center justify-center cursor-pointer transition-colors"
-                      style={{ color: 'var(--text-muted)' }}
-                      onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--text-secondary)'; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-muted)'; }}
-                      role="button"
-                      tabIndex={0}
-                    >
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                        <circle cx="12" cy="6" r="1.5" />
-                        <circle cx="12" cy="12" r="1.5" />
-                        <circle cx="12" cy="18" r="1.5" />
-                      </svg>
-                    </div>
                   </div>
                 </div>
               );
@@ -369,120 +328,43 @@ export default function AccessLogs() {
       {/* Pagination (Responsive Layout) */}
       {!loading && totalCount > 0 && (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
-          <span className="text-sm text-center sm:text-left" style={{ color: 'var(--text-muted)' }}>
-            Showing {showStart}-{showEnd} of {totalCount.toLocaleString()} events
+          <span className="text-sm text-center sm:text-left font-mono" style={{ color: 'var(--text-muted)' }}>
+            RECORDS: {showStart}-{showEnd} / {totalCount.toLocaleString()}
           </span>
           <div className="flex items-center gap-2">
             <div
-              className={`w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer transition-all ${page <= 1 ? 'opacity-40 cursor-not-allowed' : ''}`}
+              className={`w-8 h-8 rounded-none flex items-center justify-center cursor-pointer transition-colors ${page <= 1 ? 'opacity-40 cursor-not-allowed' : ''}`}
               style={{ background: 'var(--bg-card)', border: '1px solid var(--border-secondary)', color: 'var(--text-secondary)' }}
               onClick={() => { if (page > 1) setPage(page - 1); }}
               role="button"
               tabIndex={0}
-              id="pagination-prev"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="square" strokeLinejoin="miter" d="M15 19l-7-7 7-7" />
               </svg>
             </div>
             {renderPagination().map((p, idx) =>
               p === '...' ? (
-                <span key={`dots-${idx}`} className="px-1 text-sm" style={{ color: 'var(--text-muted)' }}>...</span>
+                <span key={`dots-${idx}`} className="px-1 text-sm font-mono" style={{ color: 'var(--text-muted)' }}>...</span>
               ) : (
                 <PageButton key={p} p={p} active={p === page} />
               )
             )}
             <div
-              className={`w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer transition-all ${page >= totalPages ? 'opacity-40 cursor-not-allowed' : ''}`}
+              className={`w-8 h-8 rounded-none flex items-center justify-center cursor-pointer transition-colors ${page >= totalPages ? 'opacity-40 cursor-not-allowed' : ''}`}
               style={{ background: 'var(--bg-card)', border: '1px solid var(--border-secondary)', color: 'var(--text-secondary)' }}
               onClick={() => { if (page < totalPages) setPage(page + 1); }}
               role="button"
               tabIndex={0}
-              id="pagination-next"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="square" strokeLinejoin="miter" d="M9 5l7 7-7 7" />
               </svg>
             </div>
           </div>
         </div>
       )}
-
-      {/* Bottom Stats Cards (Fully Responsive cols) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {/* Health Index */}
-        <div
-          className="p-5 rounded-2xl border"
-          style={{ background: 'var(--bg-card)', borderColor: 'var(--border-primary)', boxShadow: 'var(--shadow-card)' }}
-        >
-          <div className="flex items-center gap-2 mb-3">
-            <svg className="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            </svg>
-            <span className="text-[10px] tracking-[0.2em] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>
-              Health Index
-            </span>
-          </div>
-          <p className="text-3xl font-bold mb-3" style={{ color: 'var(--text-primary)' }}>99.8%</p>
-          <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: 'var(--bg-hover)' }}>
-            <div className="h-full rounded-full bg-emerald-400" style={{ width: '99.8%' }} />
-          </div>
-        </div>
-
-        {/* Failed Attempts */}
-        <div
-          className="p-5 rounded-2xl border"
-          style={{ background: 'var(--bg-card)', borderColor: 'var(--border-primary)', boxShadow: 'var(--shadow-card)' }}
-        >
-          <div className="flex items-center gap-2 mb-3">
-            <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-            <span className="text-[10px] tracking-[0.2em] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>
-              Failed Attempts
-            </span>
-          </div>
-          <p className="text-3xl font-bold mb-3" style={{ color: 'var(--text-primary)' }}>12</p>
-          <p className="text-xs" style={{ color: 'var(--badge-danger-text)' }}>~6% from previous period</p>
-        </div>
-
-        {/* Active Sessions */}
-        <div
-          className="p-5 rounded-2xl border"
-          style={{ background: 'var(--bg-card)', borderColor: 'var(--border-primary)', boxShadow: 'var(--shadow-card)' }}
-        >
-          <div className="flex items-center gap-2 mb-3">
-            <svg className="w-4 h-4 text-accent-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-            </svg>
-            <span className="text-[10px] tracking-[0.2em] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>
-              Active Sessions
-            </span>
-          </div>
-          <p className="text-3xl font-bold mb-3" style={{ color: 'var(--text-primary)' }}>342</p>
-          <div className="flex items-center -space-x-2">
-            {['bg-blue-500', 'bg-amber-500', 'bg-purple-500'].map((bg, i) => (
-              <div
-                key={i}
-                className={`w-7 h-7 rounded-full ${bg} flex items-center justify-center text-white text-[10px] font-bold border-2`}
-                style={{ borderColor: 'var(--bg-card-solid)' }}
-              >
-                {['JC', 'A', 'MI'][i]}
-              </div>
-            ))}
-            <div
-              className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold border-2"
-              style={{
-                background: 'var(--bg-hover)',
-                borderColor: 'var(--bg-card-solid)',
-                color: 'var(--text-muted)',
-              }}
-            >
-              +
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
+

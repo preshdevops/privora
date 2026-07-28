@@ -6,34 +6,34 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-navy-950 text-white">
+    <div className="min-h-screen themed-bg themed-text">
       {/* ─── Navigation ─── */}
-      <nav className="sticky top-0 z-50 backdrop-blur-xl bg-navy-950/80 border-b border-navy-700/40">
+      <nav className="sticky top-0 z-50 themed-bg border-b themed-border">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-accent-blue flex items-center justify-center">
-              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 flex items-center justify-center">
+              <svg className="w-6 h-6 text-[var(--accent-gold)]" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v4.7c0 4.67-3.13 9.04-7 10.2-3.87-1.16-7-5.53-7-10.2V6.3l7-3.12z"/>
                 <path d="M12 7a2 2 0 00-2 2v2a2 2 0 001 1.73V15a1 1 0 002 0v-2.27A2 2 0 0014 11V9a2 2 0 00-2-2z"/>
               </svg>
             </div>
-            <span className="text-lg font-bold tracking-tight">Privora</span>
+            <span className="text-xl font-bold tracking-tight font-display">Privora</span>
           </div>
 
           <div className="hidden md:flex items-center gap-8">
-            <span onClick={() => scrollTo('features')} className="text-sm text-accent-light cursor-pointer hover:text-white transition-colors font-medium border-b-2 border-accent-blue pb-0.5">Features</span>
-            <span onClick={() => scrollTo('how-it-works')} className="text-sm text-slate-400 cursor-pointer hover:text-white transition-colors">How It Works</span>
-            <span onClick={() => scrollTo('features')} className="text-sm text-slate-400 cursor-pointer hover:text-white transition-colors">Security</span>
-            <span className="text-sm text-slate-400 cursor-pointer hover:text-white transition-colors">About</span>
+            <span onClick={() => scrollTo('features')} className="text-sm cursor-pointer themed-text-secondary hover:themed-text transition-colors font-medium border-b-2 border-[var(--accent-gold)] pb-0.5">Features</span>
+            <span onClick={() => scrollTo('how-it-works')} className="text-sm cursor-pointer themed-text-muted hover:themed-text transition-colors">How It Works</span>
+            <span onClick={() => scrollTo('features')} className="text-sm cursor-pointer themed-text-muted hover:themed-text transition-colors">Security</span>
+            <span className="text-sm cursor-pointer themed-text-muted hover:themed-text transition-colors">About</span>
           </div>
 
-          <div className="flex items-center gap-4">
-            <Link to="/login" className="text-sm text-slate-300 hover:text-white transition-colors">
+          <div className="flex items-center gap-5">
+            <Link to="/login" className="text-sm font-medium themed-text-secondary hover:themed-text transition-colors">
               Sign In
             </Link>
             <Link
               to="/register"
-              className="px-5 py-2 bg-accent-blue text-white text-sm font-semibold rounded-lg hover:bg-accent-glow transition-all duration-200 hover:shadow-lg hover:shadow-accent-blue/25"
+              className="px-5 py-2.5 bg-[var(--text-primary)] text-[var(--bg-primary)] text-sm font-bold rounded-none hover:bg-[var(--accent-gold)] hover:text-white transition-colors duration-200"
             >
               Get Started
             </Link>
@@ -42,105 +42,120 @@ export default function Landing() {
       </nav>
 
       {/* ─── Hero ─── */}
-      <section className="relative py-24 md:py-32 text-center overflow-hidden">
-        <div className="max-w-4xl mx-auto px-6 relative z-10">
-          {/* Shield Icon */}
-          <div className="w-20 h-20 mx-auto mb-8 rounded-2xl bg-accent-blue/15 border border-accent-blue/30 flex items-center justify-center animate-pulse-glow">
-            <svg className="w-10 h-10 text-accent-blue" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v4.7c0 4.67-3.13 9.04-7 10.2-3.87-1.16-7-5.53-7-10.2V6.3l7-3.12z"/>
-              <path d="M12 7a2 2 0 00-2 2v2a2 2 0 001 1.73V15a1 1 0 002 0v-2.27A2 2 0 0014 11V9a2 2 0 00-2-2z"/>
-            </svg>
+      <section className="relative py-20 md:py-32 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+          <div className="relative z-10 text-left">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-8 font-display animate-fade-in-up text-[var(--text-primary)]">
+              Your Data. <br />
+              <span className="text-[var(--accent-gold)] italic font-light">Absolute Control.</span>
+            </h1>
+            <p className="text-[var(--text-secondary)] text-lg max-w-lg mb-10 animate-fade-in-up-delay font-sans">
+              Privora is a zero-knowledge digital vault. We encrypt, monitor, and protect your most sensitive files so no one else can access them without your explicit cryptographic permission.
+            </p>
+
+            <div className="flex items-center gap-5 animate-fade-in-up-delay">
+              <Link
+                to="/register"
+                className="px-8 py-4 bg-[var(--accent-gold)] text-white font-bold rounded-none hover:bg-[var(--accent-gold-bright)] transition-colors duration-200"
+              >
+                Secure Your Vault
+              </Link>
+              <span
+                onClick={() => scrollTo('how-it-works')}
+                className="px-8 py-4 border border-[var(--border-primary)] themed-text font-bold rounded-none cursor-pointer hover:bg-[var(--bg-hover)] transition-colors duration-200"
+              >
+                View Protocol
+              </span>
+            </div>
           </div>
-
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 animate-fade-in-up">
-            Take Full Control of
-            <br />
-            Your Personal Data
-          </h1>
-          <p className="text-slate-400 text-lg max-w-xl mx-auto mb-10 animate-fade-in-up-delay">
-            Privora encrypts, monitors, and protects your data so no one else can
-            use it without your permission.
-          </p>
-
-          <div className="flex items-center justify-center gap-4 animate-fade-in-up-delay">
-            <Link
-              to="/register"
-              className="px-7 py-3.5 bg-accent-blue text-white font-semibold rounded-xl hover:bg-accent-glow transition-all duration-300 hover:shadow-xl hover:shadow-accent-blue/30 active:scale-[0.97]"
-            >
-              Get Protected
-            </Link>
-            <span
-              onClick={() => scrollTo('how-it-works')}
-              className="px-7 py-3.5 border border-navy-500 text-slate-300 font-semibold rounded-xl cursor-pointer hover:bg-navy-800 hover:border-navy-400 transition-all duration-200"
-            >
-              See How It Works
-            </span>
+          
+          <div className="hidden md:flex justify-end animate-fade-in-up-delay">
+             <div className="relative w-full max-w-md aspect-square bg-[var(--bg-card)] border border-[var(--border-primary)] shadow-[var(--shadow-card)] p-8 flex flex-col justify-between">
+                <div className="flex justify-between items-start">
+                   <span className="font-mono text-xs text-[var(--text-tertiary)] uppercase tracking-widest">Vault Status</span>
+                   <span className="flex items-center gap-2 font-mono text-xs text-[var(--status-success)]">
+                     <span className="w-2 h-2 rounded-full bg-[var(--status-success)] animate-pulse"></span>
+                     SECURE
+                   </span>
+                </div>
+                <div className="flex-1 flex items-center justify-center">
+                    <svg className="w-32 h-32 text-[var(--border-secondary)]" fill="none" stroke="currentColor" strokeWidth="1" viewBox="0 0 24 24">
+                        <path strokeLinecap="square" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                </div>
+                <div className="border-t border-[var(--border-primary)] pt-4 mt-4 font-mono text-[10px] text-[var(--text-muted)] flex justify-between">
+                    <span>SYS.ON</span>
+                    <span>AES-256-CBC</span>
+                    <span>{new Date().toISOString().split('T')[0]}</span>
+                </div>
+             </div>
           </div>
         </div>
-
-        {/* Background radial glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-accent-blue/5 rounded-full blur-3xl pointer-events-none" />
       </section>
 
       {/* ─── Stats Bar ─── */}
-      <section className="border-y border-navy-700/40 bg-navy-900/50">
-        <div className="max-w-7xl mx-auto px-6 py-6 grid grid-cols-2 md:grid-cols-4 gap-6">
+      <section className="border-y border-[var(--border-primary)] bg-[var(--bg-secondary)]">
+        <div className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-2 md:grid-cols-4 gap-8">
           {[
-            { label: 'Standard', value: '256-bit AES Encryption' },
-            { label: 'Governance', value: 'GDPR & NDPA Compliant' },
-            { label: 'Reliability', value: '99.9% Uptime' },
-            { label: 'Network', value: '10,000+ Users Protected' },
+            { label: 'Encryption Standard', value: '256-bit AES-CBC' },
+            { label: 'Key Architecture', value: 'Zero-Knowledge' },
+            { label: 'System Uptime', value: '99.999%' },
+            { label: 'Audit Logging', value: 'Immutable Ledger' },
           ].map((stat) => (
-            <div key={stat.label} className="text-center md:text-left">
-              <p className="text-[10px] tracking-[0.2em] text-slate-500 uppercase font-semibold mb-1">{stat.label}</p>
-              <p className="text-sm font-semibold text-white">{stat.value}</p>
+            <div key={stat.label} className="text-left border-l-2 border-[var(--border-primary)] pl-4">
+              <p className="text-[10px] tracking-[0.2em] text-[var(--text-tertiary)] uppercase font-mono mb-2">{stat.label}</p>
+              <p className="text-sm font-bold text-[var(--text-primary)] font-sans">{stat.value}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* ─── Features ─── */}
-      <section id="features" className="py-20 md:py-28">
+      <section id="features" className="py-24">
         <div className="max-w-7xl mx-auto px-6">
+          <div className="mb-16">
+            <h2 className="text-4xl font-bold font-display mb-4">Core Infrastructure</h2>
+            <p className="text-[var(--text-secondary)] max-w-2xl text-lg">Engineered for absolute privacy. Our systems are designed under the assumption that networks will be breached, ensuring your data remains secure regardless.</p>
+          </div>
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
                 icon: (
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    <path strokeLinecap="square" strokeLinejoin="miter" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                   </svg>
                 ),
-                title: 'Military-Grade Encryption',
-                desc: 'Your data is fragmented and encrypted with post-quantum algorithms before it ever leaves your device.',
+                title: 'Military-Grade Vault',
+                desc: 'Your files are encrypted client-side using AES-256-CBC before they ever leave your device. We hold the encrypted ciphertext; only you hold the key.',
               },
               {
                 icon: (
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                    <path strokeLinecap="square" strokeLinejoin="miter" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
                   </svg>
                 ),
-                title: 'Real-Time Breach Alerts',
-                desc: 'Get instant notifications the moment your credentials appear in dark web leaks or unauthorized access attempts.',
+                title: 'Active Threat Detection',
+                desc: 'Our autonomous audit system monitors every decryption attempt and login, triggering immediate account lockdowns upon detecting anomalous behavior.',
               },
               {
                 icon: (
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+                    <path strokeLinecap="square" strokeLinejoin="miter" strokeWidth={1.5} d="M4 6h16M4 12h16m-7 6h7"/>
                   </svg>
                 ),
-                title: 'Full Access Control',
-                desc: 'Revoke access to your personal information for any service, any time, with a single cryptographic switch.',
+                title: 'Immutable Ledger',
+                desc: 'Every security event, from file access to privacy toggles, is recorded in a tamper-evident ledger. You always know exactly who accessed what, and when.',
               },
             ].map((feature) => (
               <div
                 key={feature.title}
-                className="p-8 rounded-2xl bg-navy-900/60 border border-navy-700/40 hover:border-navy-500/60 transition-all duration-300 hover:-translate-y-1 group"
+                className="p-8 bg-[var(--bg-card)] border border-[var(--border-primary)] hover:border-[var(--accent-gold)] transition-colors duration-300 rounded-none flex flex-col h-full"
               >
-                <div className="w-12 h-12 rounded-xl bg-accent-blue/10 border border-accent-blue/20 flex items-center justify-center text-accent-blue mb-6 group-hover:bg-accent-blue/20 transition-colors duration-300">
+                <div className="mb-6 text-[var(--accent-gold)]">
                   {feature.icon}
                 </div>
-                <h3 className="text-lg font-bold text-white mb-3">{feature.title}</h3>
-                <p className="text-sm text-slate-400 leading-relaxed">{feature.desc}</p>
+                <h3 className="text-xl font-bold text-[var(--text-primary)] mb-4 font-display">{feature.title}</h3>
+                <p className="text-[var(--text-secondary)] leading-relaxed flex-grow">{feature.desc}</p>
               </div>
             ))}
           </div>
@@ -148,54 +163,43 @@ export default function Landing() {
       </section>
 
       {/* ─── How It Works ─── */}
-      <section id="how-it-works" className="py-20 md:py-28 border-t border-navy-700/40">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">How It Works</h2>
-          <p className="text-slate-400 mb-16 max-w-lg mx-auto">
-            Secure your digital footprint in three surgical steps.
-          </p>
+      <section id="how-it-works" className="py-24 border-t border-[var(--border-primary)] bg-[var(--bg-secondary)]">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16">
+             <div>
+                <h2 className="text-4xl font-bold mb-4 font-display">Execution Protocol</h2>
+                <p className="text-[var(--text-secondary)] max-w-lg">
+                  Secure your digital assets in three distinct phases.
+                </p>
+             </div>
+          </div>
 
-          <div className="grid md:grid-cols-3 gap-10">
+          <div className="grid md:grid-cols-3 gap-12">
             {[
               {
-                step: '1',
-                icon: (
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"/>
-                  </svg>
-                ),
-                title: 'Connect Identity',
-                desc: 'Securely link your existing digital accounts through our zero-knowledge handshake protocol.',
+                step: '01',
+                title: 'Initialization',
+                desc: 'Establish your cryptographic identity. Generate your master keys locally, ensuring zero-knowledge transfer to our servers.',
               },
               {
-                step: '2',
-                icon: (
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                  </svg>
-                ),
-                title: 'Audit & Scan',
-                desc: 'Our sentinel engine scans for vulnerabilities and existing data leaks across the open and dark web.',
+                step: '02',
+                title: 'Encapsulation',
+                desc: 'Upload your sensitive data. The client-side application encrypts the payload, transmitting only secure ciphertext to the vault.',
               },
               {
-                step: '3',
-                icon: (
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                  </svg>
-                ),
-                title: 'Enforce Privacy',
-                desc: 'Deploy active encryption layers and manage granular permissions for every third-party request.',
+                step: '03',
+                title: 'Surveillance',
+                desc: 'The Privora audit engine actively monitors access patterns, logging all activity and blocking unauthorized decryption attempts.',
               },
             ].map((item) => (
-              <div key={item.step} className="flex flex-col items-center">
-                <div className="w-14 h-14 rounded-2xl bg-accent-blue/10 border border-accent-blue/20 flex items-center justify-center text-accent-blue mb-5">
-                  {item.icon}
+              <div key={item.step} className="flex flex-col">
+                <div className="font-mono text-4xl text-[var(--border-secondary)] font-bold mb-6">
+                  {item.step}
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">
-                  {item.step}. {item.title}
+                <h3 className="text-xl font-bold text-[var(--text-primary)] mb-3 font-display">
+                  {item.title}
                 </h3>
-                <p className="text-sm text-slate-400 leading-relaxed max-w-xs">{item.desc}</p>
+                <p className="text-[var(--text-secondary)] leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -203,44 +207,48 @@ export default function Landing() {
       </section>
 
       {/* ─── CTA Section ─── */}
-      <section className="py-20">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="rounded-3xl bg-gradient-to-br from-accent-blue/20 via-navy-800 to-navy-900 border border-accent-blue/20 p-12 md:p-16 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">
-              Ready to reclaim your privacy?
+      <section className="py-24">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="bg-[var(--bg-card)] border border-[var(--border-primary)] p-12 md:p-20 text-center shadow-[var(--shadow-card)]">
+            <h2 className="text-4xl font-bold text-[var(--text-primary)] mb-8 font-display">
+              Ready to secure your vault?
             </h2>
-            <div className="flex items-center justify-center gap-4 flex-wrap">
+            <p className="text-[var(--text-secondary)] mb-10 max-w-xl mx-auto">
+              Stop relying on promises. Start relying on math. Deploy your personal Privora instance today.
+            </p>
+            <div className="flex items-center justify-center gap-6 flex-wrap">
               <Link
                 to="/register"
-                className="px-8 py-3.5 bg-white text-navy-950 font-semibold rounded-xl hover:bg-slate-100 transition-all duration-200"
+                className="px-8 py-4 bg-[var(--text-primary)] text-[var(--bg-primary)] font-bold hover:bg-[var(--accent-gold)] hover:text-white transition-colors duration-200"
               >
-                Start Your Free Audit
+                Initialize Vault
               </Link>
-              <span className="px-8 py-3.5 border border-accent-blue text-accent-light font-semibold rounded-xl cursor-pointer hover:bg-accent-blue/10 transition-all duration-200">
-                Talk to Security Expert
-              </span>
+              <Link to="/login" className="px-8 py-4 border border-[var(--border-primary)] text-[var(--text-primary)] font-bold hover:bg-[var(--bg-hover)] transition-colors duration-200">
+                Access Existing Vault
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
       {/* ─── Footer ─── */}
-      <footer className="border-t border-navy-700/40 py-8">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+      <footer className="border-t border-[var(--border-primary)] py-12 bg-[var(--bg-secondary)]">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
-            <span className="font-bold text-lg">Privora</span>
-            <p className="text-[10px] tracking-[0.1em] text-slate-500 uppercase mt-1">
-              © 2026 Privora Cybersecurity Inc. All rights reserved.
+            <span className="font-bold text-xl font-display">Privora</span>
+            <p className="text-[10px] tracking-[0.1em] text-[var(--text-muted)] uppercase font-mono mt-2">
+              © {new Date().getFullYear()} Privora Systems. All rights reserved.
             </p>
           </div>
-          <div className="flex items-center gap-6">
-            <span className="text-[10px] tracking-[0.1em] text-slate-500 uppercase cursor-pointer hover:text-slate-400 transition-colors">Privacy Policy</span>
-            <span className="text-[10px] tracking-[0.1em] text-slate-500 uppercase cursor-pointer hover:text-slate-400 transition-colors">Terms of Service</span>
-            <span className="text-[10px] tracking-[0.1em] text-slate-500 uppercase cursor-pointer hover:text-slate-400 transition-colors">Compliance</span>
-            <span className="text-[10px] tracking-[0.1em] text-slate-500 uppercase cursor-pointer hover:text-slate-400 transition-colors">Contact</span>
+          <div className="flex items-center gap-8">
+            <span className="text-[10px] tracking-[0.1em] text-[var(--text-muted)] font-mono uppercase cursor-pointer hover:text-[var(--text-primary)] transition-colors">Privacy Policy</span>
+            <span className="text-[10px] tracking-[0.1em] text-[var(--text-muted)] font-mono uppercase cursor-pointer hover:text-[var(--text-primary)] transition-colors">Terms of Service</span>
+            <span className="text-[10px] tracking-[0.1em] text-[var(--text-muted)] font-mono uppercase cursor-pointer hover:text-[var(--text-primary)] transition-colors">Compliance</span>
+            <span className="text-[10px] tracking-[0.1em] text-[var(--text-muted)] font-mono uppercase cursor-pointer hover:text-[var(--text-primary)] transition-colors">Contact</span>
           </div>
         </div>
       </footer>
     </div>
   );
 }
+

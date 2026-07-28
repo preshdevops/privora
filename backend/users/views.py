@@ -12,6 +12,7 @@ from .models import User, UserSettings
 from .serializers import RegisterSerializer, UserSerializer, UserSettingsSerializer
 from audit.utils import log_action, get_client_ip
 from audit.models import AuditAlert
+from .notifications import send_login_notification
 
 
 class RegisterView(APIView):
@@ -57,6 +58,8 @@ class LoginView(APIView):
             description=f"New login detected from IP {ip or 'Unknown'} at {timestamp_str}.",
             severity="low"
         )
+
+        send_login_notification(user, ip, timezone.now())
 
         refresh = RefreshToken.for_user(user)
         return Response({

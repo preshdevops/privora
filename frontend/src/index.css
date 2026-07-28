@@ -1,81 +1,94 @@
 @import "tailwindcss";
 
 @theme {
-  --color-navy-950: #050816;
-  --color-navy-900: #0a0e1a;
-  --color-navy-800: #0f1629;
-  --color-navy-700: #141c34;
-  --color-navy-600: #1a2440;
-  --color-navy-500: #243156;
-  --color-navy-400: #2d3d6b;
-  --color-navy-300: #3b4f8a;
-
-  --color-accent-blue: #2563eb;
-  --color-accent-glow: #3b82f6;
-  --color-accent-light: #60a5fa;
-
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Fraunces', serif;
+  --font-sans: 'Public Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 }
 
 /* ─── Theme CSS Variables ─── */
 :root,
 [data-theme="dark"] {
-  --bg-primary: #050816;
-  --bg-secondary: #0a0e1a;
-  --bg-card: rgba(10, 14, 26, 0.6);
-  --bg-card-solid: #0f1629;
-  --bg-input: rgba(15, 22, 41, 0.6);
-  --bg-sidebar: #070b14;
-  --bg-hover: #141c34;
-  --bg-modal-overlay: rgba(0, 0, 0, 0.6);
-  --bg-modal: #111827;
-  --border-primary: rgba(20, 28, 52, 0.4);
-  --border-secondary: #1a2440;
-  --border-input: #1a2440;
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-tertiary: #64748b;
-  --text-muted: #475569;
-  --badge-success-bg: rgba(16, 185, 129, 0.15);
-  --badge-success-text: #34d399;
-  --badge-warning-bg: rgba(251, 191, 36, 0.15);
-  --badge-warning-text: #fbbf24;
-  --badge-danger-bg: rgba(239, 68, 68, 0.15);
-  --badge-danger-text: #f87171;
-  --badge-info-bg: rgba(96, 165, 250, 0.15);
-  --badge-info-text: #60a5fa;
-  --scrollbar-track: #0a0e1a;
-  --scrollbar-thumb: #243156;
-  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3);
+  --bg-primary: #14120F;
+  --bg-secondary: #1A1714;
+  --bg-card: #201C18;
+  --bg-card-solid: #201C18;
+  --bg-input: #17140F;
+  --bg-sidebar: #100E0B;
+  --bg-hover: #2A2520;
+  --bg-modal-overlay: rgba(0, 0, 0, 0.8);
+  --bg-modal: #1F1B16;
+  --border-primary: #322C24;
+  --border-secondary: #3A332A;
+  --border-input: #322C24;
+  
+  --text-primary: #F2ECE1;
+  --text-secondary: #B3A791;
+  --text-tertiary: #8A7F6C;
+  --text-muted: #6B6153;
+
+  --accent-gold: #C9A227;
+  --accent-gold-bright: #E0BC4A;
+  --accent-gold-dim: #8A7020;
+
+  --status-danger: #C4573F;
+  --status-warning: #D9A441;
+  --status-success: #6B9080;
+  --status-info: #7A8CA3;
+
+  --badge-success-bg: #212824; /* muted sage tint over card */
+  --badge-success-text: var(--status-success);
+  --badge-warning-bg: #2C2618; /* warning tint */
+  --badge-warning-text: var(--status-warning);
+  --badge-danger-bg: #291C18; /* danger tint */
+  --badge-danger-text: var(--status-danger);
+  --badge-info-bg: #1B2129; /* info tint */
+  --badge-info-text: var(--status-info);
+  
+  --scrollbar-track: #100E0B;
+  --scrollbar-thumb: #3A332A;
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.5);
 }
 
 [data-theme="light"] {
-  --bg-primary: #f8fafc;
-  --bg-secondary: #ffffff;
-  --bg-card: rgba(255, 255, 255, 0.8);
-  --bg-card-solid: #ffffff;
-  --bg-input: rgba(241, 245, 249, 0.8);
-  --bg-sidebar: #ffffff;
-  --bg-hover: #f1f5f9;
-  --bg-modal-overlay: rgba(0, 0, 0, 0.4);
-  --bg-modal: #ffffff;
-  --border-primary: rgba(226, 232, 240, 0.6);
-  --border-secondary: #e2e8f0;
-  --border-input: #cbd5e1;
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-tertiary: #64748b;
-  --text-muted: #94a3b8;
-  --badge-success-bg: rgba(16, 185, 129, 0.1);
-  --badge-success-text: #059669;
-  --badge-warning-bg: rgba(245, 158, 11, 0.1);
-  --badge-warning-text: #d97706;
-  --badge-danger-bg: rgba(239, 68, 68, 0.1);
-  --badge-danger-text: #dc2626;
-  --badge-info-bg: rgba(37, 99, 235, 0.1);
-  --badge-info-text: #2563eb;
-  --scrollbar-track: #f1f5f9;
-  --scrollbar-thumb: #cbd5e1;
+  --bg-primary: #F7F3EC;
+  --bg-secondary: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --bg-card-solid: #FFFFFF;
+  --bg-input: #F0EAE1;
+  --bg-sidebar: #FFFFFF;
+  --bg-hover: #F2ECE1;
+  --bg-modal-overlay: rgba(0, 0, 0, 0.6);
+  --bg-modal: #FFFFFF;
+  --border-primary: #E3DACB;
+  --border-secondary: #D1C5B4;
+  --border-input: #D1C5B4;
+  
+  --text-primary: #211C14;
+  --text-secondary: #5C5343;
+  --text-tertiary: #7D725F;
+  --text-muted: #9C907A;
+
+  --accent-gold: #A5801E;
+  --accent-gold-bright: #C9A227;
+  --accent-gold-dim: #D9C8A0;
+
+  --status-danger: #A64732;
+  --status-warning: #B88A33;
+  --status-success: #577869;
+  --status-info: #64758C;
+
+  --badge-success-bg: #E8F0EC;
+  --badge-success-text: var(--status-success);
+  --badge-warning-bg: #F4EBD7;
+  --badge-warning-text: var(--status-warning);
+  --badge-danger-bg: #F2DFDA;
+  --badge-danger-text: var(--status-danger);
+  --badge-info-bg: #E8ECEF;
+  --badge-info-text: var(--status-info);
+  
+  --scrollbar-track: #F7F3EC;
+  --scrollbar-thumb: #D1C5B4;
   --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.06);
 }
 
@@ -133,10 +146,10 @@ select:focus {
 
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(37, 99, 235, 0.3);
+    box-shadow: 0 0 20px rgba(201, 162, 39, 0.3); /* gold accent */
   }
   50% {
-    box-shadow: 0 0 40px rgba(37, 99, 235, 0.6);
+    box-shadow: 0 0 40px rgba(201, 162, 39, 0.6); /* gold accent */
   }
 }
 
@@ -261,7 +274,7 @@ select:focus {
   transition: background-color 0.2s ease;
 }
 .toggle-track.active {
-  background-color: #2563eb;
+  background-color: var(--accent-gold);
 }
 .toggle-track.inactive {
   background-color: var(--border-secondary);
