@@ -3,13 +3,13 @@ import { motion } from 'framer-motion';
 
 /**
  * Privora's Signature Motion Element: "The Ledger Seal"
- * An authentic brass/wax emblem that presses down and settles into the ledger page
- * whenever an item is officially sealed and protected.
+ * An unhurried, calm brass seal stamp that presses down and settles into the ledger
+ * for significant completion moments (file protected, login succeeded, onboarding finished).
  */
 export default function SealStamp({ 
   label = "SEALED", 
-  subtitle = "OFFICIAL RECORD", 
-  size = "md", // "sm" | "md" | "lg"
+  subtitle = "OFFICIAL ENTRY", 
+  size = "md",
   onComplete,
   className = "" 
 }) {
@@ -21,47 +21,38 @@ export default function SealStamp({
 
   return (
     <div className={`relative inline-flex items-center justify-center ${className}`}>
-      {/* Pressed Seal Container with Spring Impact Animation */}
       <motion.div
-        initial={{ scale: 2.2, opacity: 0, rotate: -18 }}
-        animate={{ scale: 1, opacity: 1, rotate: -4 }}
+        initial={{ scale: 1.8, opacity: 0, rotate: -12 }}
+        animate={{ scale: 1, opacity: 1, rotate: -3 }}
         transition={{ 
-          type: "spring", 
-          stiffness: 350, 
-          damping: 22,
-          mass: 1.2
+          duration: 0.75, 
+          ease: [0.16, 1, 0.3, 1] 
         }}
         onAnimationComplete={onComplete}
-        className={`${dimensions} rounded-full border-2 border-[var(--accent-brass)] bg-[var(--bg-primary)] p-1 flex items-center justify-center relative shadow-[var(--shadow-layered)] select-none pointer-events-none`}
-        style={{
-          boxShadow: '0 0 0 1px var(--bg-primary), 0 0 20px var(--accent-brass-glow)'
-        }}
+        className={`${dimensions} rounded-full border-2 border-[var(--accent-brass)] bg-[var(--bg-primary)] p-1 flex items-center justify-center relative select-none pointer-events-none`}
       >
-        {/* Outer Serrated Ring */}
-        <div className="w-full h-full rounded-full border border-dashed border-[var(--accent-brass)] flex flex-col items-center justify-center text-center p-1 bg-gradient-to-b from-[var(--bg-secondary)] to-[var(--bg-primary)]">
-          {/* Inner Seal Content */}
-          <div className="w-full h-full rounded-full border border-[var(--accent-brass-dim)] flex flex-col items-center justify-center p-1">
-            <span className="font-mono uppercase font-semibold text-[var(--accent-brass)] tracking-widest leading-none block">
-              PRIVORA
+        {/* Inner Seal Circle */}
+        <div className="w-full h-full rounded-full border border-dashed border-[var(--accent-brass)] flex flex-col items-center justify-center text-center p-1 bg-[var(--bg-secondary)]">
+          <span className="font-mono text-[8px] font-semibold text-[var(--accent-brass)] tracking-widest block uppercase">
+            PRIVORA
+          </span>
+          <div className="w-6 h-[1px] bg-[var(--accent-brass)] my-0.5" />
+          <span className="font-serif font-semibold text-[var(--accent-brass-bright)] tracking-wider block uppercase">
+            {label}
+          </span>
+          {subtitle && (
+            <span className="font-mono text-[7px] text-[var(--text-tertiary)] uppercase tracking-tight block mt-0.5">
+              {subtitle}
             </span>
-            <div className="w-8 h-[1px] bg-[var(--accent-brass)] my-1" />
-            <span className="font-serif font-bold text-[var(--accent-brass-bright)] tracking-wider block uppercase">
-              {label}
-            </span>
-            {subtitle && (
-              <span className="font-mono text-[7px] text-[var(--text-tertiary)] uppercase tracking-tighter block mt-0.5">
-                {subtitle}
-              </span>
-            )}
-          </div>
+          )}
         </div>
 
-        {/* Settling Ripple Impact */}
+        {/* Unhurried Settling Pulse */}
         <motion.div
-          initial={{ scale: 0.8, opacity: 0.8 }}
-          animate={{ scale: 1.3, opacity: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="absolute inset-0 rounded-full border-2 border-[var(--accent-brass)] pointer-events-none"
+          initial={{ scale: 0.9, opacity: 0.6 }}
+          animate={{ scale: 1.25, opacity: 0 }}
+          transition={{ duration: 0.9, ease: "easeOut" }}
+          className="absolute inset-0 rounded-full border border-[var(--accent-brass)] pointer-events-none"
         />
       </motion.div>
     </div>

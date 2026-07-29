@@ -1,22 +1,20 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import axiosInstance from '../api/axiosInstance';
 import DataJourney from '../components/DataJourney';
 import ComplianceBadge from '../components/ComplianceBadge';
 import SecurityActionBtn from '../components/SecurityActionBtn';
 import EmptyState from '../components/EmptyState';
-import { ShieldCheck, HardDrive, AlertTriangle, Download, Activity, Lock, ArrowUpRight, Sparkles } from 'lucide-react';
-import cyberShieldImg from '../assets/cyber-shield.png';
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [score, setScore] = useState(null);
   const [encryptionCount, setEncryptionCount] = useState(0);
-  const [logsCount, setLogsCount] = useState(0);
   const [recentLogs, setRecentLogs] = useState([]);
   const [alerts, setAlerts] = useState([]);
+  const [expandedLogId, setExpandedLogId] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,7 +34,6 @@ export default function Dashboard() {
         }
         if (logsRes.status === 'fulfilled') {
           const d = logsRes.value.data;
-          setLogsCount(d.count || (Array.isArray(d) ? d.length : 0));
           const items = d.results || (Array.isArray(d) ? d : []);
           setRecentLogs(items.slice(0, 5));
         }
@@ -45,7 +42,7 @@ export default function Dashboard() {
           setAlerts(Array.isArray(d) ? d : d.results || []);
         }
       } catch {
-        // silently fail, show empty state
+        // silently handle
       }
       setLoading(false);
     };
@@ -65,233 +62,191 @@ export default function Dashboard() {
     URL.revokeObjectURL(url);
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.12,
-        delayChildren: 0.05
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 18 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5, ease: [0.25, 1, 0.5, 1] }
-    }
+  const toggleAccordion = (id) => {
+    setExpandedLogId(prev => prev === id ? null : id);
   };
 
   return (
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-      className="space-y-8"
-    >
-      {/* Visual Hero Header Banner */}
-      <motion.div 
-        variants={itemVariants} 
-        className="layered-card-accent p-6 sm:p-8 rounded-sm bg-gradient-to-r from-[var(--bg-card)] via-[var(--bg-card-elevated)] to-[var(--bg-card)] relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6"
-      >
-        <div className="absolute top-0 right-0 w-80 h-80 bg-[var(--accent-brass-glow)] rounded-full blur-3xl -z-10 pointer-events-none" />
+    <div className="space-y-12">
+      {/* Eyebrow Label & Page Header */}
+      <header className="space-y-2 border-b border-[var(--border-primary)] pb-8">
+        <span className="text-xs font-mono text-[var(--accent-brass)] tracking-widest uppercase block">
+          OVERVIEW
+        </span>
+        <h1 className="text-3xl sm:text-4xl font-serif text-[var(--text-primary)]">
+          Your privacy, at a glance
+        </h1>
+        <p className="text-sm text-[var(--text-secondary)] leading-relaxed max-w-xl">
+          Privora protects your personal data under client-isolated encryption. Only your password can unseal your files.
+        </p>
+      </header>
 
-        <div className="space-y-2 text-left max-w-xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--badge-success-bg)] border border-[var(--status-success)]/30 text-[var(--badge-success-text)] text-xs font-mono">
-            <Sparkles className="w-3.5 h-3.5 text-[var(--accent-brass)]" />
-            <span>Vault Operational & Secure</span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-serif font-semibold text-[var(--text-primary)]">
-            Your Privacy, at a Glance
-          </h1>
-          <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
-            Your data is protected under client-isolated encryption. Only your password can unseal your files.
-          </p>
+      {/* Primary Action Button */}
+      <div className="flex items-center justify-between">
+        <div className="text-xs text-[var(--text-secondary)]">
+          System status: <span className="text-[var(--status-success)] font-medium">Active & protected</span>
         </div>
 
-        <div className="flex items-center gap-4 shrink-0">
-          <motion.img 
-            src={cyberShieldImg} 
-            alt="Cyber Shield Visual" 
-            animate={{ rotate: [0, 3, 0, -3, 0] }}
-            transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-            className="w-24 h-24 object-contain hidden sm:block drop-shadow-[0_8px_16px_rgba(0,0,0,0.5)]"
-          />
+        <SecurityActionBtn
+          onClick={handleExportLedger}
+          actionLabel="Preparing export…"
+          successLabel="Exported"
+          delayMs={600}
+          variant="outline"
+        >
+          <span>Export activity log</span>
+        </SecurityActionBtn>
+      </div>
 
-          <SecurityActionBtn
-            onClick={handleExportLedger}
-            actionLabel="Preparing download…"
-            successLabel="Downloaded"
-            delayMs={700}
-            variant="outline"
-          >
-            <Download className="w-4 h-4 text-[var(--accent-brass)]" />
-            <span>Export Activity Log</span>
-          </SecurityActionBtn>
-        </div>
-      </motion.div>
-
-      {/* Data Protection Flow Visualization */}
-      <motion.div variants={itemVariants}>
+      {/* Sequential Data Journey Ledger */}
+      <section className="space-y-3">
+        <h2 className="text-xl font-serif text-[var(--text-primary)]">
+          Protection pipeline
+        </h2>
         <DataJourney />
-      </motion.div>
+      </section>
 
-      {/* Core Security Metrics Cards */}
-      <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Compliance Status Badge */}
-        <ComplianceBadge score={score ?? 85} unresolvedAlertsCount={unresolvedAlerts.length} />
+      {/* Metrics Summary — Simple Ledger Rule List, Not Cards */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-serif text-[var(--text-primary)]">
+          Vault status summary
+        </h2>
 
-        {/* Protected Files Card */}
-        <motion.div 
-          whileHover={{ y: -3 }}
-          className="layered-card p-6 rounded-sm flex flex-col justify-between group transition-all"
-        >
-          <div>
-            <div className="flex items-center justify-between mb-4 pb-3 border-b border-[var(--border-primary)]">
-              <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded bg-[var(--bg-input)] text-[var(--accent-brass)] group-hover:bg-[var(--accent-brass)] group-hover:text-[#12141C] transition-colors">
-                  <HardDrive className="w-4 h-4" />
-                </div>
-                <h3 className="text-sm font-serif text-[var(--text-primary)]">
-                  Protected Files
-                </h3>
-              </div>
-              <span className="text-xs font-mono text-[var(--status-success)]">
-                Encrypted
-              </span>
+        <div className="ledger-list">
+          {/* Entry 1: Protection Index */}
+          <div className="ledger-entry flex items-center justify-between py-4">
+            <div>
+              <span className="text-sm font-medium text-[var(--text-primary)] block">Data protection score</span>
+              <span className="text-xs text-[var(--text-secondary)]">Calculated compliance index</span>
             </div>
-
-            <div className="my-3">
-              <span className="text-5xl font-serif text-[var(--text-primary)] font-semibold tracking-tight">
-                {loading ? "--" : String(encryptionCount).padStart(2, '0')}
+            <div className="text-right">
+              <span className="font-serif text-2xl font-semibold text-[var(--accent-brass)]">
+                {score ?? 85}
               </span>
-              <p className="text-xs text-[var(--text-secondary)] mt-2 leading-relaxed">
-                Files safely stored in private isolation — accessible only with your password key.
-              </p>
+              <span className="text-xs text-[var(--text-tertiary)] block">/ 100</span>
             </div>
           </div>
 
-          <button
-            onClick={() => navigate('/my-data')}
-            className="w-full mt-4 py-2.5 rounded-sm bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] border border-[var(--border-primary)] text-xs text-[var(--text-primary)] font-mono transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
-          >
-            <span>Manage Files</span>
-            <ArrowUpRight className="w-3.5 h-3.5 text-[var(--accent-brass)]" />
-          </button>
-        </motion.div>
-
-        {/* Security Alerts Card */}
-        <motion.div 
-          whileHover={{ y: -3 }}
-          className="layered-card p-6 rounded-sm flex flex-col justify-between group transition-all"
-        >
-          <div>
-            <div className="flex items-center justify-between mb-4 pb-3 border-b border-[var(--border-primary)]">
-              <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded bg-[var(--bg-input)] text-[var(--accent-brass)] group-hover:bg-[var(--accent-brass)] group-hover:text-[#12141C] transition-colors">
-                  <AlertTriangle className="w-4 h-4" />
-                </div>
-                <h3 className="text-sm font-serif text-[var(--text-primary)]">
-                  Security Alerts
-                </h3>
-              </div>
-              <span className={`text-xs font-mono ${unresolvedAlerts.length > 0 ? 'text-[var(--status-danger)]' : 'text-[var(--status-success)]'}`}>
-                {unresolvedAlerts.length > 0 ? 'ALERT' : 'ALL CLEAR'}
-              </span>
+          {/* Entry 2: Protected Files */}
+          <div className="ledger-entry flex items-center justify-between py-4">
+            <div>
+              <span className="text-sm font-medium text-[var(--text-primary)] block">Protected files</span>
+              <span className="text-xs text-[var(--text-secondary)]">Encrypted records stored safely</span>
             </div>
-
-            <div className="my-3">
-              <span className={`text-5xl font-serif font-semibold tracking-tight ${unresolvedAlerts.length > 0 ? 'text-[var(--status-danger)]' : 'text-[var(--text-primary)]'}`}>
-                {loading ? "--" : String(unresolvedAlerts.length).padStart(2, '0')}
+            <div className="flex items-center gap-4">
+              <span className="font-serif text-2xl font-semibold text-[var(--text-primary)]">
+                {loading ? "--" : encryptionCount}
               </span>
-              <p className="text-xs text-[var(--text-secondary)] mt-2 leading-relaxed">
-                {unresolvedAlerts.length > 0 ? "Security alerts detected that require your attention." : "All access metrics are nominal — zero suspicious activity."}
-              </p>
+              <button
+                onClick={() => navigate('/my-data')}
+                className="text-xs font-mono text-[var(--accent-brass)] hover:underline"
+              >
+                View files →
+              </button>
             </div>
           </div>
 
-          <button
-            onClick={() => navigate('/access-logs')}
-            className="w-full mt-4 py-2.5 rounded-sm bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] border border-[var(--border-primary)] text-xs text-[var(--text-primary)] font-mono transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
-          >
-            <span>View Activity Log</span>
-            <ArrowUpRight className="w-3.5 h-3.5 text-[var(--accent-brass)]" />
-          </button>
-        </motion.div>
-      </motion.div>
+          {/* Entry 3: Security Alerts */}
+          <div className="ledger-entry flex items-center justify-between py-4">
+            <div>
+              <span className="text-sm font-medium text-[var(--text-primary)] block">Security alerts</span>
+              <span className="text-xs text-[var(--text-secondary)]">
+                {unresolvedAlerts.length > 0 ? "Alerts requiring attention" : "All access metrics nominal"}
+              </span>
+            </div>
+            <div className="flex items-center gap-4">
+              <span className={`font-serif text-2xl font-semibold ${unresolvedAlerts.length > 0 ? 'text-[var(--status-danger)]' : 'text-[var(--text-primary)]'}`}>
+                {loading ? "--" : unresolvedAlerts.length}
+              </span>
+              <button
+                onClick={() => navigate('/access-logs')}
+                className="text-xs font-mono text-[var(--accent-brass)] hover:underline"
+              >
+                View logs →
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
 
-      {/* Audit Trail Section */}
-      <motion.div variants={itemVariants} className="space-y-4">
+      {/* Recent Activity Trail — Accordion Detail Expansion */}
+      <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-serif text-[var(--text-primary)]">
-              Recent Activity Trail
-            </h2>
-            <p className="text-xs text-[var(--text-secondary)] font-mono">
-              Live audit events recorded for user verification.
-            </p>
-          </div>
+          <h2 className="text-xl font-serif text-[var(--text-primary)]">
+            Recent activity
+          </h2>
           <button
             onClick={() => navigate('/access-logs')}
-            className="text-xs font-mono text-[var(--accent-brass)] hover:underline flex items-center gap-1"
+            className="text-xs font-mono text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors"
           >
-            <span>View All</span>
-            <ArrowUpRight className="w-3.5 h-3.5" />
+            View all logs →
           </button>
         </div>
 
         {loading ? (
-          <div className="layered-card p-8 text-center text-xs font-mono text-[var(--text-tertiary)]">
-            Loading activity…
+          <div className="py-6 text-xs text-[var(--text-tertiary)] text-center font-mono">
+            Loading activity entries…
           </div>
         ) : recentLogs.length === 0 ? (
           <EmptyState
             title="No activity yet"
-            description="Once you upload a file or sign in again, your activity will appear here."
+            description="Once you upload a file or sign in, activity entries will appear here."
             iconType="logs"
           />
         ) : (
-          <div className="layered-card rounded-sm overflow-hidden divide-y divide-[var(--border-primary)] border border-[var(--border-primary)]">
-            {recentLogs.map((log, idx) => (
-              <motion.div
-                key={log.id || idx}
-                whileHover={{ backgroundColor: 'var(--bg-hover)' }}
-                className="p-4 flex items-center justify-between text-xs transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded bg-[var(--bg-input)] text-[var(--accent-brass)]">
-                    <Activity className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <span className="font-mono text-[var(--text-primary)] font-medium block">
-                      {log.action || log.event || 'Activity'}
-                    </span>
-                    <span className="text-[11px] text-[var(--text-tertiary)] font-mono">
-                      {log.timestamp ? new Date(log.timestamp).toUTCString() : 'Just now'}
-                    </span>
-                  </div>
-                </div>
+          <div className="ledger-list">
+            {recentLogs.map((log, idx) => {
+              const isExpanded = expandedLogId === (log.id || idx);
+              return (
+                <div key={log.id || idx} className="ledger-entry">
+                  <div 
+                    onClick={() => toggleAccordion(log.id || idx)}
+                    className="flex items-center justify-between cursor-pointer py-1"
+                  >
+                    <div className="space-y-0.5">
+                      <span className="text-sm font-medium text-[var(--text-primary)] block">
+                        {log.action || log.event || 'System activity'}
+                      </span>
+                      <span className="text-xs text-[var(--text-tertiary)] font-mono block">
+                        {log.timestamp ? new Date(log.timestamp).toUTCString() : 'Just now'}
+                      </span>
+                    </div>
 
-                <div className="flex items-center gap-4">
-                  <span className="font-mono text-[var(--text-secondary)] hidden sm:inline">
-                    {log.ip_address || '127.0.0.1'}
-                  </span>
-                  <span className={`px-2.5 py-0.5 font-mono text-[10px] rounded uppercase border ${
-                    log.status === 'success' || log.status === 'completed'
-                      ? 'bg-[var(--badge-success-bg)] text-[var(--badge-success-text)] border-[var(--status-success)]/30'
-                      : 'bg-[var(--badge-danger-bg)] text-[var(--badge-danger-text)] border-[var(--status-danger)]/30'
-                  }`}>
-                    {log.status || 'OK'}
-                  </span>
+                    <div className="flex items-center gap-4 text-xs font-mono">
+                      <span className="text-[var(--text-tertiary)] hidden sm:inline">
+                        {log.ip_address || '127.0.0.1'}
+                      </span>
+                      <span className={`px-2 py-0.5 text-[11px] rounded uppercase ${
+                        log.status === 'success' || log.status === 'completed'
+                          ? 'text-[var(--badge-success-text)]'
+                          : 'text-[var(--badge-danger-text)]'
+                      }`}>
+                        {log.status || 'OK'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Accordion Detail Drawer */}
+                  <AnimatePresence>
+                    {isExpanded && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="pt-3 pb-1 text-xs font-mono text-[var(--text-tertiary)] space-y-1 border-t border-[var(--border-primary)] mt-3"
+                      >
+                        <p>• Data item: {log.data_item || log.location || 'N/A'}</p>
+                        <p>• IP address: {log.ip_address || '127.0.0.1'}</p>
+                        <p>• Telemetry status: {log.status || 'Verified'}</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
-              </motion.div>
-            ))}
+              );
+            })}
           </div>
         )}
-      </motion.div>
-    </motion.div>
+      </section>
+    </div>
   );
 }

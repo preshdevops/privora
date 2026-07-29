@@ -4,22 +4,7 @@ import axiosInstance from '../api/axiosInstance';
 import SecurityActionBtn from '../components/SecurityActionBtn';
 import EmptyState from '../components/EmptyState';
 import SealStamp from '../components/SealStamp';
-import { 
-  Lock, 
-  Unlock, 
-  Trash2, 
-  Upload, 
-  FileText, 
-  FileCode, 
-  Archive, 
-  Database, 
-  Image as ImageIcon,
-  X,
-  Plus,
-  ShieldCheck,
-  CheckCircle,
-  AlertCircle
-} from 'lucide-react';
+import { Lock, Unlock, Trash2, Upload, X, Plus } from 'lucide-react';
 
 export default function MyData() {
   const [assets, setAssets] = useState([]);
@@ -31,7 +16,8 @@ export default function MyData() {
   const [downloadModal, setDownloadModal] = useState(null);
   const [downloadPassword, setDownloadPassword] = useState('');
   const [toast, setToast] = useState(null);
-  const [sealModal, setSealModal] = useState(null); // File object that was just sealed
+  const [sealModal, setSealModal] = useState(null);
+  const [expandedFileId, setExpandedFileId] = useState(null);
 
   const fileInputRef = useRef(null);
 
@@ -72,7 +58,7 @@ export default function MyData() {
       setPassword('');
       fetchAssets();
 
-      // Trigger Signature Moment: The Ledger Seal
+      // Signature Moment: The Ledger Seal
       setSealModal({ name: uploadedName });
       setTimeout(() => setSealModal(null), 2500);
     } catch (err) {
@@ -143,32 +129,26 @@ export default function MyData() {
     return `${(bytes / 1073741824).toFixed(2)} GB`;
   };
 
-  const fileIcon = (name) => {
-    const ext = (name || '').split('.').pop()?.toLowerCase();
-    if (['zip', 'rar', '7z', 'tar', 'gz'].includes(ext)) return <Archive className="w-4 h-4 text-[var(--accent-brass)]" />;
-    if (['sql', 'db', 'sqlite'].includes(ext)) return <Database className="w-4 h-4 text-[var(--accent-brass)]" />;
-    if (['json', 'xml', 'csv'].includes(ext)) return <FileCode className="w-4 h-4 text-[var(--accent-brass)]" />;
-    if (['jpg', 'jpeg', 'png', 'gif', 'svg'].includes(ext)) return <ImageIcon className="w-4 h-4 text-[var(--accent-brass)]" />;
-    return <FileText className="w-4 h-4 text-[var(--accent-brass)]" />;
+  const toggleAccordion = (id) => {
+    setExpandedFileId(prev => prev === id ? null : id);
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-12">
       {/* Toast Notification */}
       <AnimatePresence>
         {toast && (
           <motion.div
-            initial={{ opacity: 0, y: -20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            initial={{ opacity: 0, y: -15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
             className="fixed top-6 right-6 z-[60]"
           >
-            <div className={`flex items-center gap-3 px-5 py-3.5 rounded-sm text-xs font-mono border shadow-[var(--shadow-layered)] ${
+            <div className={`px-5 py-3 rounded-sm text-xs font-mono border ${
               toast.type === 'error'
                 ? 'bg-[var(--badge-danger-bg)] text-[var(--badge-danger-text)] border-[var(--status-danger)]/40'
                 : 'bg-[var(--badge-success-bg)] text-[var(--badge-success-text)] border-[var(--status-success)]/40'
             }`}>
-              {toast.type === 'error' ? <AlertCircle className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
               <span>{toast.message}</span>
             </div>
           </motion.div>
@@ -182,39 +162,33 @@ export default function MyData() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[70] flex items-center justify-center bg-[var(--bg-modal-overlay)] backdrop-blur-none"
+            className="fixed inset-0 z-[70] flex items-center justify-center bg-[var(--bg-modal-overlay)]"
           >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              className="ledger-sheet p-8 rounded-sm bg-[var(--bg-card)] text-center max-w-sm flex flex-col items-center justify-center space-y-4"
-            >
+            <div className="p-8 rounded-sm bg-[var(--bg-card)] border border-[var(--border-primary)] text-center max-w-sm flex flex-col items-center justify-center space-y-4">
               <SealStamp label="OFFICIALLY SEALED" subtitle="RECORD LOGGED" size="lg" />
               <div className="space-y-1">
                 <h3 className="text-xl font-serif text-[var(--text-primary)]">
-                  File Sealed & Recorded
+                  File sealed and logged
                 </h3>
                 <p className="text-xs text-[var(--text-secondary)] font-mono truncate max-w-xs">
                   {sealModal.name}
                 </p>
               </div>
-            </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+      {/* Eyebrow Label & Page Header */}
+      <header className="space-y-2 border-b border-[var(--border-primary)] pb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <span className="text-xs font-mono text-[var(--accent-brass)] uppercase tracking-widest flex items-center gap-1.5">
-            <Lock className="w-3.5 h-3.5" />
-            Protected File Ledger
+          <span className="text-xs font-mono text-[var(--accent-brass)] tracking-widest uppercase block">
+            FILE LEDGER
           </span>
-          <h1 className="text-3xl font-serif font-semibold text-[var(--text-primary)] mt-1">
-            Vault Ledger Entries
+          <h1 className="text-3xl sm:text-4xl font-serif text-[var(--text-primary)] mt-1">
+            Protected files
           </h1>
-          <p className="text-xs text-[var(--text-secondary)] mt-1">
+          <p className="text-sm text-[var(--text-secondary)] leading-relaxed max-w-xl">
             Sealed file records protected under zero-knowledge key isolation.
           </p>
         </div>
@@ -222,19 +196,17 @@ export default function MyData() {
         <SecurityActionBtn
           onClick={() => setShowModal(true)}
           actionLabel="Opening…"
-          delayMs={300}
+          delayMs={0}
         >
           <Plus className="w-4 h-4" />
-          <span>Protect File</span>
+          <span>Protect file</span>
         </SecurityActionBtn>
-      </div>
+      </header>
 
-      {/* Vault Assets — Ledger Sheet Layout Primitive */}
+      {/* Vault Assets — Ledger Rule List Primitive with In-Place Accordion Expansion */}
       {loading ? (
-        <div className="ledger-sheet p-6 rounded-sm space-y-4">
-          {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="skeleton h-12 w-full" />
-          ))}
+        <div className="py-6 text-xs text-[var(--text-tertiary)] text-center font-mono">
+          Loading file entries…
         </div>
       ) : assets.length === 0 ? (
         <EmptyState
@@ -244,73 +216,89 @@ export default function MyData() {
             <SecurityActionBtn
               onClick={() => setShowModal(true)}
               actionLabel="Opening…"
-              delayMs={300}
+              delayMs={0}
             >
               <Upload className="w-4 h-4" />
-              <span>Protect First File</span>
+              <span>Protect first file</span>
             </SecurityActionBtn>
           }
           iconType="vault"
         />
       ) : (
-        <div className="ledger-sheet rounded-sm divide-y divide-[var(--border-primary)] overflow-hidden border border-[var(--border-primary)]">
-          {assets.map((asset, idx) => (
-            <motion.div
-              key={asset.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: idx * 0.05 }}
-              className="ledger-entry-row"
-            >
-              <div className="flex items-center gap-4 min-w-0">
-                <span className="font-mono text-xs text-[var(--accent-brass)] shrink-0 font-semibold">
-                  #{String(idx + 1).padStart(3, '0')}
-                </span>
+        <div className="ledger-list">
+          {assets.map((asset, idx) => {
+            const isExpanded = expandedFileId === asset.id;
+            return (
+              <div key={asset.id} className="ledger-entry">
+                <div 
+                  onClick={() => toggleAccordion(asset.id)}
+                  className="flex items-center justify-between cursor-pointer py-1"
+                >
+                  <div className="flex items-center gap-4 min-w-0">
+                    <span className="font-mono text-xs text-[var(--accent-brass)] shrink-0">
+                      #{String(idx + 1).padStart(3, '0')}
+                    </span>
+                    <div className="min-w-0">
+                      <span className="text-sm font-medium text-[var(--text-primary)] block truncate">
+                        {asset.name || 'Untitled file'}
+                      </span>
+                      <span className="text-xs text-[var(--text-tertiary)] font-mono block">
+                        {formatFileSize(asset.file_size)} &middot; Added {asset.created_at ? new Date(asset.created_at).toLocaleDateString() : '--'}
+                      </span>
+                    </div>
+                  </div>
 
-                <div className="p-2 rounded bg-[var(--bg-input)] border border-[var(--border-primary)] shrink-0">
-                  {fileIcon(asset.name)}
+                  <div className="flex items-center gap-4 shrink-0">
+                    <span className="text-[11px] font-mono text-[var(--badge-success-text)]">
+                      Sealed
+                    </span>
+                    <span className="text-xs text-[var(--text-tertiary)] font-mono">
+                      {isExpanded ? '–' : '+'}
+                    </span>
+                  </div>
                 </div>
 
-                <div className="min-w-0">
-                  <h3 className="text-xs font-medium text-[var(--text-primary)] truncate">
-                    {asset.name || 'Untitled File'}
-                  </h3>
-                  <span className="text-[10px] font-mono text-[var(--text-tertiary)] block mt-0.5">
-                    {formatFileSize(asset.file_size)} &middot; Added {asset.created_at ? new Date(asset.created_at).toLocaleDateString() : '--'}
-                  </span>
-                </div>
+                {/* Accordion Detail & Action Drawer */}
+                <AnimatePresence>
+                  {isExpanded && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="pt-4 pb-2 border-t border-[var(--border-primary)] mt-3 flex items-center justify-between text-xs font-mono"
+                    >
+                      <div className="space-y-1 text-[var(--text-tertiary)]">
+                        <p>• Encryption engine: Client-derived key</p>
+                        <p>• Protection status: Sealed & isolated</p>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={() => { setDownloadModal(asset); setDownloadPassword(''); }}
+                          className="px-3 py-1.5 border border-[var(--border-primary)] rounded-sm text-[var(--text-primary)] hover:border-[var(--text-primary)] transition-colors cursor-pointer flex items-center gap-1.5"
+                        >
+                          <Unlock className="w-3.5 h-3.5" />
+                          <span>Unseal & download</span>
+                        </button>
+
+                        <SecurityActionBtn
+                          onClick={() => handleDelete(asset.id)}
+                          actionLabel="Purging…"
+                          successLabel="Purged"
+                          delayMs={500}
+                          variant="danger"
+                          className="!px-3 !py-1.5"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Purge</span>
+                        </SecurityActionBtn>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-
-              <div className="flex items-center gap-4 shrink-0">
-                <span className="text-[10px] font-mono text-[var(--badge-success-text)] hidden sm:flex items-center gap-1 bg-[var(--badge-success-bg)] px-2 py-0.5 rounded border border-[var(--status-success)]/30">
-                  <ShieldCheck className="w-3 h-3" />
-                  SEALED
-                </span>
-
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => { setDownloadModal(asset); setDownloadPassword(''); }}
-                    className="p-1.5 rounded bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] border border-[var(--border-primary)] text-[var(--text-primary)] hover:text-[var(--accent-brass)] transition-colors cursor-pointer"
-                    title="Unseal & Download"
-                  >
-                    <Unlock className="w-3.5 h-3.5" />
-                  </button>
-
-                  <SecurityActionBtn
-                    onClick={() => handleDelete(asset.id)}
-                    actionLabel="Purging…"
-                    successLabel="Purged"
-                    delayMs={500}
-                    variant="danger"
-                    className="!p-1.5 !text-xs"
-                    title="Delete Record"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </SecurityActionBtn>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -319,24 +307,23 @@ export default function MyData() {
         {showModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--bg-modal-overlay)]">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
-              className="ledger-sheet p-6 sm:p-8 rounded-sm max-w-lg w-full bg-[var(--bg-card)] relative"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              className="p-6 sm:p-8 rounded-sm max-w-lg w-full bg-[var(--bg-card)] border border-[var(--border-primary)] space-y-6"
             >
-              <div className="flex items-center justify-between mb-6 pb-4 border-b border-[var(--border-primary)]">
+              <div className="flex items-center justify-between pb-4 border-b border-[var(--border-primary)]">
                 <div>
-                  <span className="text-[10px] font-mono text-[var(--accent-brass)] uppercase tracking-wider">
-                    Ledger Ingestion
+                  <span className="text-xs font-mono text-[var(--accent-brass)] uppercase tracking-wider block">
+                    LEDGER INGESTION
                   </span>
                   <h2 className="text-xl font-serif text-[var(--text-primary)] mt-0.5">
-                    Seal & Record File
+                    Seal & record file
                   </h2>
                 </div>
                 <button
                   onClick={() => setShowModal(false)}
-                  className="p-1 rounded text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+                  className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -344,10 +331,10 @@ export default function MyData() {
 
               {/* Drag & Drop Zone */}
               <div
-                className={`border border-dashed rounded-sm p-6 text-center mb-5 cursor-pointer transition-all ${
+                className={`border border-dashed rounded-sm p-6 text-center cursor-pointer transition-colors ${
                   dragActive
                     ? 'border-[var(--accent-brass)] bg-[var(--bg-hover)]'
-                    : 'border-[var(--border-secondary)] bg-[var(--bg-input)]'
+                    : 'border-[var(--border-primary)] bg-[var(--bg-input)]'
                 }`}
                 onDragEnter={handleDrag}
                 onDragOver={handleDrag}
@@ -361,43 +348,40 @@ export default function MyData() {
                   className="hidden"
                   onChange={(e) => { if (e.target.files?.[0]) setSelectedFile(e.target.files[0]); }}
                 />
-                <Upload className="w-8 h-8 mx-auto text-[var(--accent-brass)] mb-2" />
+                <Upload className="w-6 h-6 mx-auto text-[var(--text-tertiary)] mb-2" />
                 {selectedFile ? (
                   <div>
                     <p className="text-xs font-mono font-medium text-[var(--text-primary)] truncate max-w-xs mx-auto">
                       {selectedFile.name}
                     </p>
-                    <p className="text-[10px] font-mono text-[var(--text-tertiary)] mt-1">
+                    <p className="text-xs font-mono text-[var(--text-tertiary)] mt-1">
                       {formatFileSize(selectedFile.size)}
                     </p>
                   </div>
                 ) : (
                   <div>
-                    <p className="text-xs font-medium text-[var(--text-primary)]">
+                    <p className="text-sm text-[var(--text-primary)]">
                       Click to select or drag a file here
                     </p>
-                    <p className="text-[10px] text-[var(--text-tertiary)] mt-1 font-mono">
-                      File will be encrypted in memory before ledger entry
+                    <p className="text-xs text-[var(--text-tertiary)] mt-1">
+                      File will be encrypted in memory before entry
                     </p>
                   </div>
                 )}
               </div>
 
               {/* Password Input */}
-              <div className="mb-6 space-y-2">
-                <label className="block text-xs font-mono text-[var(--text-secondary)]">
-                  Master Decryption Passphrase
+              <div className="space-y-1.5">
+                <label className="block text-xs text-[var(--text-secondary)]">
+                  Master passphrase
                 </label>
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter secret passphrase…"
-                  className="w-full px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-xs text-[var(--text-primary)] outline-none font-mono"
+                  className="w-full px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-sm text-[var(--text-primary)] outline-none"
                 />
-                <p className="text-[10px] text-[var(--text-tertiary)] leading-normal font-mono">
-                  Privora never persists your password. Losing this passphrase means the record cannot be unsealed.
-                </p>
               </div>
 
               {/* Action Controls */}
@@ -405,7 +389,7 @@ export default function MyData() {
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="px-4 py-2 text-xs font-mono text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                  className="px-4 py-2 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                 >
                   Cancel
                 </button>
@@ -413,12 +397,12 @@ export default function MyData() {
                 <SecurityActionBtn
                   onClick={handleUpload}
                   disabled={!selectedFile || !password.trim()}
-                  actionLabel="Encrypting & Sealing…"
+                  actionLabel="Sealing file…"
                   successLabel="SEALED"
-                  delayMs={850}
+                  delayMs={750}
                 >
-                  <Lock className="w-3.5 h-3.5" />
-                  <span>Seal & Record</span>
+                  <Lock className="w-4 h-4" />
+                  <span>Seal & record</span>
                 </SecurityActionBtn>
               </div>
             </motion.div>
@@ -431,52 +415,44 @@ export default function MyData() {
         {downloadModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--bg-modal-overlay)]">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
-              className="ledger-sheet p-6 sm:p-8 rounded-sm max-w-md w-full bg-[var(--bg-card)] relative"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              className="p-6 sm:p-8 rounded-sm max-w-md w-full bg-[var(--bg-card)] border border-[var(--border-primary)] space-y-6"
             >
-              <div className="flex items-center justify-between mb-6 pb-4 border-b border-[var(--border-primary)]">
+              <div className="flex items-center justify-between pb-4 border-b border-[var(--border-primary)]">
                 <div>
-                  <span className="text-[10px] font-mono text-[var(--accent-brass)] uppercase tracking-wider">
-                    Unseal Verification
+                  <span className="text-xs font-mono text-[var(--accent-brass)] uppercase tracking-wider block">
+                    UNSEAL VERIFICATION
                   </span>
                   <h2 className="text-xl font-serif text-[var(--text-primary)] mt-0.5">
-                    Unseal Ledger Entry
+                    Unseal file entry
                   </h2>
                 </div>
                 <button
                   onClick={() => { setDownloadModal(null); setDownloadPassword(''); }}
-                  className="p-1 rounded text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+                  className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <div className="p-3 rounded bg-[var(--bg-input)] border border-[var(--border-primary)] flex items-center gap-3 mb-5">
-                {fileIcon(downloadModal.name)}
-                <div className="min-w-0">
-                  <p className="text-xs font-mono font-medium text-[var(--text-primary)] truncate">
-                    {downloadModal.name}
-                  </p>
-                  <p className="text-[10px] font-mono text-[var(--text-tertiary)]">
-                    {formatFileSize(downloadModal.file_size)}
-                  </p>
-                </div>
+              <div className="p-3 rounded bg-[var(--bg-input)] border border-[var(--border-primary)] text-xs font-mono">
+                <p className="text-[var(--text-primary)] font-medium truncate">{downloadModal.name}</p>
+                <p className="text-[var(--text-tertiary)]">{formatFileSize(downloadModal.file_size)}</p>
               </div>
 
-              <div className="mb-6 space-y-2">
-                <label className="block text-xs font-mono text-[var(--text-secondary)]">
-                  Enter master passphrase to unseal
+              <div className="space-y-1.5">
+                <label className="block text-xs text-[var(--text-secondary)]">
+                  Master passphrase
                 </label>
                 <input
                   type="password"
                   value={downloadPassword}
                   onChange={(e) => setDownloadPassword(e.target.value)}
                   onKeyDown={(e) => { if (e.key === 'Enter' && downloadPassword.trim()) handleDownload(); }}
-                  placeholder="Passphrase…"
-                  className="w-full px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-xs text-[var(--text-primary)] outline-none font-mono"
+                  placeholder="Enter passphrase…"
+                  className="w-full px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-sm text-[var(--text-primary)] outline-none"
                   autoFocus
                 />
               </div>
@@ -485,7 +461,7 @@ export default function MyData() {
                 <button
                   type="button"
                   onClick={() => { setDownloadModal(null); setDownloadPassword(''); }}
-                  className="px-4 py-2 text-xs font-mono text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                  className="px-4 py-2 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                 >
                   Cancel
                 </button>
@@ -493,12 +469,12 @@ export default function MyData() {
                 <SecurityActionBtn
                   onClick={handleDownload}
                   disabled={!downloadPassword.trim()}
-                  actionLabel="Unsealing Key…"
+                  actionLabel="Unsealing…"
                   successLabel="UNSEALED"
-                  delayMs={750}
+                  delayMs={650}
                 >
-                  <Unlock className="w-3.5 h-3.5" />
-                  <span>Unseal & Download</span>
+                  <Unlock className="w-4 h-4" />
+                  <span>Unseal & download</span>
                 </SecurityActionBtn>
               </div>
             </motion.div>

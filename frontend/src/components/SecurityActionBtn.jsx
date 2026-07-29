@@ -1,21 +1,20 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2 } from 'lucide-react';
 import SealStamp from './SealStamp';
 
 /**
- * SecurityActionBtn provides a deliberate 600-900ms confirmation animation
- * before performing critical security actions.
- * Upon success, it displays Privora's signature "Ledger Seal" emblem.
+ * SecurityActionBtn
+ * Provides a calm confirmation state for security-critical operations.
+ * Routine actions remain instant; security operations get a deliberate beat.
  */
 export default function SecurityActionBtn({
   children,
   onClick,
-  actionLabel = "Securing…",
-  successLabel = "SEALED",
-  delayMs = 750,
+  actionLabel = "Processing…",
+  successLabel = "Confirmed",
+  delayMs = 600,
   className = "",
-  variant = "primary", // "primary" | "danger" | "outline"
+  variant = "primary", // "primary" | "outline" | "danger"
   disabled = false,
   type = "button",
   showSealOnSuccess = false,
@@ -26,17 +25,17 @@ export default function SecurityActionBtn({
   const handleClick = async (e) => {
     if (disabled || status !== 'idle') return;
 
-    setStatus('working');
-    
-    // Deliberate trust delay
-    await new Promise((resolve) => setTimeout(resolve, delayMs));
+    if (delayMs > 0) {
+      setStatus('working');
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+    }
 
     try {
       if (onClick) {
         await onClick(e);
       }
       setStatus('success');
-      setTimeout(() => setStatus('idle'), showSealOnSuccess ? 1800 : 1300);
+      setTimeout(() => setStatus('idle'), showSealOnSuccess ? 1800 : 1200);
     } catch (err) {
       setStatus('idle');
       throw err;
@@ -48,10 +47,10 @@ export default function SecurityActionBtn({
       case 'danger':
         return 'bg-[var(--status-danger)] text-white border border-transparent hover:opacity-90';
       case 'outline':
-        return 'bg-transparent text-[var(--text-primary)] border border-[var(--border-primary)] hover:border-[var(--accent-brass)] hover:text-[var(--accent-brass)]';
+        return 'bg-transparent text-[var(--text-primary)] border border-[var(--border-primary)] hover:border-[var(--text-primary)]';
       case 'primary':
       default:
-        return 'bg-[var(--accent-brass)] text-[#12141C] font-semibold border border-transparent hover:bg-[var(--accent-brass-bright)] shadow-[var(--shadow-layered)]';
+        return 'bg-[var(--accent-brass)] text-[#14171F] font-semibold border border-transparent hover:bg-[var(--accent-brass-bright)]';
     }
   };
 
@@ -60,20 +59,19 @@ export default function SecurityActionBtn({
       type={type}
       disabled={disabled || status !== 'idle'}
       onClick={handleClick}
-      className={`relative inline-flex items-center justify-center px-5 py-3 rounded-sm text-xs font-mono transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${getVariantStyles()} ${className}`}
+      className={`relative inline-flex items-center justify-center px-5 py-2.5 rounded-sm text-sm transition-colors duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${getVariantStyles()} ${className}`}
       {...props}
     >
       <AnimatePresence mode="wait">
         {status === 'working' && (
           <motion.span
             key="working"
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.15 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             className="flex items-center gap-2"
           >
-            <Loader2 className="w-4 h-4 animate-spin text-current" />
+            <span className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin" />
             <span>{actionLabel}</span>
           </motion.span>
         )}
@@ -81,11 +79,10 @@ export default function SecurityActionBtn({
         {status === 'success' && (
           <motion.span
             key="success"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="flex items-center gap-1.5 font-bold tracking-wider uppercase"
+            className="flex items-center gap-2 font-medium"
           >
             {showSealOnSuccess ? (
               <SealStamp label={successLabel} size="sm" />

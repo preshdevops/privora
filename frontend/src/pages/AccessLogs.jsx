@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import axiosInstance from '../api/axiosInstance';
 import SecurityActionBtn from '../components/SecurityActionBtn';
 import EmptyState from '../components/EmptyState';
-import { Activity, Search, Download, Terminal } from 'lucide-react';
 
 export default function AccessLogs() {
   const [logs, setLogs] = useState([]);
@@ -11,7 +10,8 @@ export default function AccessLogs() {
   const [totalCount, setTotalCount] = useState(0);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('Any Status');
+  const [statusFilter, setStatusFilter] = useState('Any status');
+  const [expandedLogId, setExpandedLogId] = useState(null);
 
   const pageSize = 50;
 
@@ -65,142 +65,149 @@ export default function AccessLogs() {
       log.action, log.event, log.ip_address, log.location, log.status, log.data_item
     ].some((field) => (field || '').toLowerCase().includes(q));
 
-    const matchesStatus = statusFilter === 'Any Status' || (log.status || '').toLowerCase() === statusFilter.toLowerCase();
+    const matchesStatus = statusFilter === 'Any status' || (log.status || '').toLowerCase() === statusFilter.toLowerCase();
     return matchesSearch && matchesStatus;
   });
 
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
 
+  const toggleAccordion = (id) => {
+    setExpandedLogId(prev => prev === id ? null : id);
+  };
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+      <header className="space-y-2 border-b border-[var(--border-primary)] pb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <span className="text-xs font-mono text-[var(--accent-brass)] uppercase tracking-widest flex items-center gap-1.5">
-            <Terminal className="w-3.5 h-3.5" />
-            Audit Ledger Telemetry
+          <span className="text-xs font-mono text-[var(--accent-brass)] tracking-widest uppercase block">
+            AUDIT LEDGER
           </span>
-          <h1 className="text-3xl font-serif font-semibold text-[var(--text-primary)] mt-1">
-            Access & Security Audit Logs
+          <h1 className="text-3xl sm:text-4xl font-serif text-[var(--text-primary)] mt-1">
+            Access logs
           </h1>
-          <p className="text-xs text-[var(--text-secondary)] mt-1">
-            Immutable ledger trail recording all authentication events, file protection actions, and privacy changes.
+          <p className="text-sm text-[var(--text-secondary)] leading-relaxed max-w-xl">
+            A complete record of logins, file actions, and security settings changes on your account.
           </p>
         </div>
 
         <SecurityActionBtn
           onClick={handleExportCSV}
-          actionLabel="Formatting CSV…"
-          successLabel="CSV Exported"
-          delayMs={650}
+          actionLabel="Exporting…"
+          successLabel="Exported"
+          delayMs={500}
           variant="outline"
         >
-          <Download className="w-4 h-4 text-[var(--accent-brass)]" />
-          <span>Export Audit CSV</span>
+          <span>Export CSV</span>
         </SecurityActionBtn>
-      </div>
+      </header>
 
-      {/* Filter Bar */}
-      <div className="ledger-sheet p-5 rounded-sm flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] w-full md:w-80">
-          <Search className="w-4 h-4 text-[var(--text-tertiary)] shrink-0" />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search IP, action signature, or resource…"
-            className="bg-transparent text-xs font-mono text-[var(--text-primary)] outline-none w-full"
-          />
-        </div>
+      {/* Filter Controls */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono">
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search by IP, action, or file name…"
+          className="w-full sm:w-80 px-3.5 py-2 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-[var(--text-primary)] outline-none"
+        />
 
-        <div className="flex items-center gap-3 w-full md:w-auto justify-end font-mono text-xs">
-          <label className="text-[var(--text-tertiary)] shrink-0">
-            Status Filter:
-          </label>
+        <div className="flex items-center gap-2 self-end sm:self-center">
+          <span className="text-[var(--text-tertiary)]">Status:</span>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-1.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-xs text-[var(--text-primary)] outline-none"
+            className="px-3 py-2 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-[var(--text-primary)] outline-none cursor-pointer"
           >
-            <option>Any Status</option>
+            <option>Any status</option>
             <option value="success">Success</option>
             <option value="failed">Failed</option>
           </select>
         </div>
       </div>
 
-      {/* Ledger Table */}
+      {/* Ledger List Primitive with Accordion Expansion */}
       {loading ? (
-        <div className="ledger-sheet p-8 rounded-sm space-y-4">
-          {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="skeleton h-10 w-full" />
-          ))}
+        <div className="py-6 text-xs text-[var(--text-tertiary)] text-center font-mono">
+          Loading audit entries…
         </div>
       ) : filteredLogs.length === 0 ? (
         <EmptyState
-          title="No matching ledger entries"
-          description="No security events match your current filter criteria."
+          title="No matching logs"
+          description="No security events match your current filter."
           iconType="logs"
         />
       ) : (
-        <div className="ledger-sheet rounded-sm overflow-hidden border border-[var(--border-primary)]">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs font-mono">
-              <thead className="bg-[var(--bg-sidebar)] border-b border-[var(--border-primary)] text-[var(--text-tertiary)] uppercase text-[10px] tracking-wider">
-                <tr>
-                  <th className="px-5 py-3.5">ENTRY #</th>
-                  <th className="px-5 py-3.5">Timestamp (UTC)</th>
-                  <th className="px-5 py-3.5">Action Signature</th>
-                  <th className="px-5 py-3.5">Target Resource</th>
-                  <th className="px-5 py-3.5">IP Address</th>
-                  <th className="px-5 py-3.5 text-right">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[var(--border-primary)] text-[var(--text-secondary)]">
-                {filteredLogs.map((log, idx) => (
-                  <tr key={log.id || idx} className="hover:bg-[var(--bg-hover)] transition-colors">
-                    <td className="px-5 py-3.5 text-[var(--accent-brass)] font-semibold">
+        <div className="ledger-list">
+          {filteredLogs.map((log, idx) => {
+            const isExpanded = expandedLogId === (log.id || idx);
+            return (
+              <div key={log.id || idx} className="ledger-entry">
+                <div 
+                  onClick={() => toggleAccordion(log.id || idx)}
+                  className="flex items-center justify-between cursor-pointer py-1"
+                >
+                  <div className="flex items-center gap-4 min-w-0">
+                    <span className="font-mono text-xs text-[var(--accent-brass)] shrink-0 font-semibold">
                       #{String((page - 1) * pageSize + idx + 1).padStart(4, '0')}
-                    </td>
-                    <td className="px-5 py-3.5 text-[var(--text-primary)]">
-                      {log.timestamp ? new Date(log.timestamp).toISOString().replace('T', ' ').slice(0, 19) : '--'}
-                    </td>
-                    <td className="px-5 py-3.5 font-medium text-[var(--text-primary)] flex items-center gap-2">
-                      <Activity className="w-3.5 h-3.5 text-[var(--accent-brass)]" />
-                      <span>{log.action || log.event || 'System Activity'}</span>
-                    </td>
-                    <td className="px-5 py-3.5 text-[var(--text-secondary)] truncate max-w-xs">
-                      {log.data_item || log.location || '—'}
-                    </td>
-                    <td className="px-5 py-3.5 text-[var(--text-tertiary)]">
-                      {log.ip_address || '127.0.0.1'}
-                    </td>
-                    <td className="px-5 py-3.5 text-right">
-                      <span className={`px-2.5 py-0.5 rounded text-[10px] border uppercase ${
-                        log.status === 'success' || log.status === 'completed'
-                          ? 'bg-[var(--badge-success-bg)] text-[var(--badge-success-text)] border-[var(--status-success)]/30'
-                          : 'bg-[var(--badge-danger-bg)] text-[var(--badge-danger-text)] border-[var(--status-danger)]/30'
-                      }`}>
-                        {log.status || 'INFO'}
+                    </span>
+                    <div className="min-w-0">
+                      <span className="text-sm font-medium text-[var(--text-primary)] block truncate">
+                        {log.action || log.event || 'System activity'}
                       </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                      <span className="text-xs text-[var(--text-tertiary)] font-mono block">
+                        {log.timestamp ? new Date(log.timestamp).toUTCString() : 'Just now'}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4 text-xs font-mono shrink-0">
+                    <span className="text-[var(--text-tertiary)] hidden sm:inline">
+                      {log.ip_address || '127.0.0.1'}
+                    </span>
+                    <span className={`px-2 py-0.5 rounded text-[11px] uppercase ${
+                      log.status === 'success' || log.status === 'completed'
+                        ? 'text-[var(--badge-success-text)]'
+                        : 'text-[var(--badge-danger-text)]'
+                    }`}>
+                      {log.status || 'OK'}
+                    </span>
+                    <span className="text-[var(--text-tertiary)]">
+                      {isExpanded ? '–' : '+'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Accordion Detail Drawer */}
+                <AnimatePresence>
+                  {isExpanded && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="pt-3 pb-1 text-xs font-mono text-[var(--text-tertiary)] space-y-1 border-t border-[var(--border-primary)] mt-3"
+                    >
+                      <p>• Data item: {log.data_item || log.location || 'N/A'}</p>
+                      <p>• IP address: {log.ip_address || '127.0.0.1'}</p>
+                      <p>• Telemetry status: {log.status || 'Verified'}</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            );
+          })}
         </div>
       )}
 
       {/* Pagination Controls */}
       {!loading && totalCount > 0 && (
-        <div className="flex items-center justify-between font-mono text-xs text-[var(--text-tertiary)] pt-2">
-          <span>Total Ledger Records: {totalCount}</span>
+        <div className="flex items-center justify-between font-mono text-xs text-[var(--text-tertiary)] pt-2 border-t border-[var(--border-primary)]">
+          <span>Total entries: {totalCount}</span>
           <div className="flex items-center gap-2">
             <button
               disabled={page <= 1}
               onClick={() => setPage(prev => Math.max(1, prev - 1))}
-              className="px-3 py-1.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] hover:border-[var(--border-secondary)] disabled:opacity-40"
+              className="px-3 py-1.5 rounded-sm border border-[var(--border-primary)] hover:border-[var(--text-primary)] disabled:opacity-40"
             >
               Previous
             </button>
@@ -208,7 +215,7 @@ export default function AccessLogs() {
             <button
               disabled={page >= totalPages}
               onClick={() => setPage(prev => Math.min(totalPages, prev + 1))}
-              className="px-3 py-1.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] hover:border-[var(--border-secondary)] disabled:opacity-40"
+              className="px-3 py-1.5 rounded-sm border border-[var(--border-primary)] hover:border-[var(--text-primary)] disabled:opacity-40"
             >
               Next
             </button>
