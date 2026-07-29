@@ -1,4 +1,7 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { ShieldCheck, Lock, KeyRound, EyeOff, Activity, ArrowRight } from 'lucide-react';
 
 export default function Landing() {
   const scrollTo = (id) => {
@@ -6,249 +9,208 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen themed-bg themed-text">
-      {/* ─── Navigation ─── */}
-      <nav className="sticky top-0 z-50 themed-bg border-b themed-border">
+    <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] font-sans">
+      {/* Navigation */}
+      <nav className="sticky top-0 z-50 bg-[var(--bg-primary)] border-b border-[var(--border-primary)]">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 flex items-center justify-center">
-              <svg className="w-6 h-6 text-[var(--accent-gold)]" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v4.7c0 4.67-3.13 9.04-7 10.2-3.87-1.16-7-5.53-7-10.2V6.3l7-3.12z"/>
-                <path d="M12 7a2 2 0 00-2 2v2a2 2 0 001 1.73V15a1 1 0 002 0v-2.27A2 2 0 0014 11V9a2 2 0 00-2-2z"/>
-              </svg>
+            <div className="w-8 h-8 rounded-sm bg-[var(--accent-brass)] flex items-center justify-center text-[#12141C]">
+              <Lock className="w-4 h-4 stroke-[2.5]" />
             </div>
-            <span className="text-xl font-bold tracking-tight font-display">Privora</span>
+            <span className="text-lg font-serif font-semibold tracking-tight text-[var(--text-primary)]">
+              Privora
+            </span>
           </div>
 
-          <div className="hidden md:flex items-center gap-8">
-            <span onClick={() => scrollTo('features')} className="text-sm cursor-pointer themed-text-secondary hover:themed-text transition-colors font-medium border-b-2 border-[var(--accent-gold)] pb-0.5">Features</span>
-            <span onClick={() => scrollTo('how-it-works')} className="text-sm cursor-pointer themed-text-muted hover:themed-text transition-colors">How It Works</span>
-            <span onClick={() => scrollTo('features')} className="text-sm cursor-pointer themed-text-muted hover:themed-text transition-colors">Security</span>
-            <span className="text-sm cursor-pointer themed-text-muted hover:themed-text transition-colors">About</span>
+          <div className="hidden md:flex items-center gap-8 text-xs font-mono text-[var(--text-secondary)]">
+            <button onClick={() => scrollTo('architecture')} className="hover:text-[var(--accent-brass)] transition-colors">
+              Architecture
+            </button>
+            <button onClick={() => scrollTo('protocol')} className="hover:text-[var(--accent-brass)] transition-colors">
+              Protocol
+            </button>
+            <button onClick={() => scrollTo('compliance')} className="hover:text-[var(--accent-brass)] transition-colors">
+              Compliance
+            </button>
           </div>
 
-          <div className="flex items-center gap-5">
-            <Link to="/login" className="text-sm font-medium themed-text-secondary hover:themed-text transition-colors">
+          <div className="flex items-center gap-4 text-xs font-mono">
+            <Link to="/login" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
               Sign In
             </Link>
             <Link
               to="/register"
-              className="px-5 py-2.5 bg-[var(--text-primary)] text-[var(--bg-primary)] text-sm font-bold rounded-none hover:bg-[var(--accent-gold)] hover:text-white transition-colors duration-200"
+              className="px-4 py-2 bg-[var(--accent-brass)] text-[#12141C] font-medium rounded-sm hover:bg-[var(--accent-brass-bright)] shadow-[var(--shadow-layered)] transition-all"
             >
-              Get Started
+              Open Vault
             </Link>
           </div>
         </div>
       </nav>
 
-      {/* ─── Hero ─── */}
-      <section className="relative py-20 md:py-32 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
-          <div className="relative z-10 text-left">
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-8 font-display animate-fade-in-up text-[var(--text-primary)]">
-              Your Data. <br />
-              <span className="text-[var(--accent-gold)] italic font-light">Absolute Control.</span>
+      {/* Hero Section */}
+      <section className="relative py-20 lg:py-28 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-12 gap-12 items-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
+            className="lg:col-span-7 space-y-6 text-left"
+          >
+            <span className="text-xs font-mono text-[var(--accent-brass)] uppercase tracking-widest block">
+              NDPR 2023 / GAID 2025 Standard
+            </span>
+
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-semibold text-[var(--text-primary)] leading-[1.15]">
+              A Deliberate Vault for <br />
+              <span className="text-[var(--accent-brass)] italic">Personal Data Integrity.</span>
             </h1>
-            <p className="text-[var(--text-secondary)] text-lg max-w-lg mb-10 animate-fade-in-up-delay font-sans">
-              Privora is a zero-knowledge digital vault. We encrypt, monitor, and protect your most sensitive files so no one else can access them without your explicit cryptographic permission.
+
+            <p className="text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed max-w-xl">
+              Privora provides cryptographic file isolation, active threat detection, and audit ledger telemetry. Designed to give Nigerian citizens and data controllers absolute sovereignty over sensitive records.
             </p>
 
-            <div className="flex items-center gap-5 animate-fade-in-up-delay">
+            <div className="flex items-center gap-4 pt-4 font-mono text-xs">
               <Link
                 to="/register"
-                className="px-8 py-4 bg-[var(--accent-gold)] text-white font-bold rounded-none hover:bg-[var(--accent-gold-bright)] transition-colors duration-200"
+                className="px-6 py-3 bg-[var(--accent-brass)] text-[#12141C] font-medium rounded-sm hover:bg-[var(--accent-brass-bright)] shadow-[var(--shadow-layered)] transition-all flex items-center gap-2"
               >
-                Secure Your Vault
+                <span>Initialize Vault</span>
+                <ArrowRight className="w-4 h-4" />
               </Link>
-              <span
-                onClick={() => scrollTo('how-it-works')}
-                className="px-8 py-4 border border-[var(--border-primary)] themed-text font-bold rounded-none cursor-pointer hover:bg-[var(--bg-hover)] transition-colors duration-200"
+              <button
+                onClick={() => scrollTo('architecture')}
+                className="px-6 py-3 layered-card rounded-sm text-[var(--text-primary)] hover:border-[var(--accent-brass)] transition-colors"
               >
-                View Protocol
-              </span>
+                Inspect Protocol
+              </button>
             </div>
-          </div>
-          
-          <div className="hidden md:flex justify-end animate-fade-in-up-delay">
-             <div className="relative w-full max-w-md aspect-square bg-[var(--bg-card)] border border-[var(--border-primary)] shadow-[var(--shadow-card)] p-8 flex flex-col justify-between">
-                <div className="flex justify-between items-start">
-                   <span className="font-mono text-xs text-[var(--text-tertiary)] uppercase tracking-widest">Vault Status</span>
-                   <span className="flex items-center gap-2 font-mono text-xs text-[var(--status-success)]">
-                     <span className="w-2 h-2 rounded-full bg-[var(--status-success)] animate-pulse"></span>
-                     SECURE
-                   </span>
-                </div>
-                <div className="flex-1 flex items-center justify-center">
-                    <svg className="w-32 h-32 text-[var(--border-secondary)]" fill="none" stroke="currentColor" strokeWidth="1" viewBox="0 0 24 24">
-                        <path strokeLinecap="square" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                    </svg>
-                </div>
-                <div className="border-t border-[var(--border-primary)] pt-4 mt-4 font-mono text-[10px] text-[var(--text-muted)] flex justify-between">
-                    <span>SYS.ON</span>
-                    <span>AES-256-CBC</span>
-                    <span>{new Date().toISOString().split('T')[0]}</span>
-                </div>
-             </div>
-          </div>
+          </motion.div>
+
+          {/* Custom Minimal SVG Illustration */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1], delay: 0.2 }}
+            className="lg:col-span-5"
+          >
+            <div className="layered-card-accent p-8 rounded-sm bg-[var(--bg-card)] flex flex-col justify-between aspect-square relative">
+              <div className="flex items-center justify-between text-xs font-mono">
+                <span className="text-[var(--text-tertiary)] uppercase">Cipher Stream</span>
+                <span className="text-[var(--badge-success-text)] flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-[var(--status-success)] animate-pulse" />
+                  AES-256-CBC
+                </span>
+              </div>
+
+              {/* Minimal Line Vault Illustration */}
+              <div className="my-auto py-6 flex justify-center">
+                <svg className="w-48 h-48 text-[var(--accent-brass)]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="20" y="30" width="60" height="50" rx="3" stroke="currentColor" strokeWidth="1.5" />
+                  <path d="M35 30V22C35 13.716 41.716 7 50 7C58.284 7 65 13.716 65 22V30" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  <circle cx="50" cy="50" r="7" stroke="currentColor" strokeWidth="1.5" />
+                  <line x1="50" y1="57" x2="50" y2="67" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  {/* Concentric Security Lines */}
+                  <circle cx="50" cy="50" r="28" stroke="currentColor" strokeWidth="1" strokeDasharray="3 3" opacity="0.6" />
+                  <circle cx="50" cy="50" r="38" stroke="currentColor" strokeWidth="1" strokeDasharray="4 4" opacity="0.3" />
+                </svg>
+              </div>
+
+              <div className="pt-4 border-t border-[var(--border-primary)] flex items-center justify-between text-[11px] font-mono text-[var(--text-tertiary)]">
+                <span>PBKDF2-HMAC-SHA256</span>
+                <span>600,000 ITER</span>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* ─── Stats Bar ─── */}
-      <section className="border-y border-[var(--border-primary)] bg-[var(--bg-secondary)]">
-        <div className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-2 md:grid-cols-4 gap-8">
+      {/* Protocol Metrics Bar */}
+      <section className="border-y border-[var(--border-primary)] bg-[var(--bg-secondary)] py-6">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-6 font-mono text-xs">
           {[
-            { label: 'Encryption Standard', value: '256-bit AES-CBC' },
-            { label: 'Key Architecture', value: 'Zero-Knowledge' },
-            { label: 'System Uptime', value: '99.999%' },
-            { label: 'Audit Logging', value: 'Immutable Ledger' },
-          ].map((stat) => (
-            <div key={stat.label} className="text-left border-l-2 border-[var(--border-primary)] pl-4">
-              <p className="text-[10px] tracking-[0.2em] text-[var(--text-tertiary)] uppercase font-mono mb-2">{stat.label}</p>
-              <p className="text-sm font-bold text-[var(--text-primary)] font-sans">{stat.value}</p>
+            { label: "Encryption Engine", value: "AES-256-CBC" },
+            { label: "Key Derivation", value: "PBKDF2 SHA-256" },
+            { label: "Compliance Standard", value: "NDPR 2023 / GAID" },
+            { label: "Telemetry Ledger", value: "Immutable Audit" }
+          ].map((item, i) => (
+            <div key={i} className="space-y-1">
+              <span className="text-[10px] text-[var(--text-tertiary)] uppercase block">{item.label}</span>
+              <span className="text-[var(--text-primary)] font-medium block">{item.value}</span>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ─── Features ─── */}
-      <section id="features" className="py-24">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="mb-16">
-            <h2 className="text-4xl font-bold font-display mb-4">Core Infrastructure</h2>
-            <p className="text-[var(--text-secondary)] max-w-2xl text-lg">Engineered for absolute privacy. Our systems are designed under the assumption that networks will be breached, ensuring your data remains secure regardless.</p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: (
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="square" strokeLinejoin="miter" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                  </svg>
-                ),
-                title: 'Military-Grade Vault',
-                desc: 'Your files are encrypted client-side using AES-256-CBC before they ever leave your device. We hold the encrypted ciphertext; only you hold the key.',
-              },
-              {
-                icon: (
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="square" strokeLinejoin="miter" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                  </svg>
-                ),
-                title: 'Active Threat Detection',
-                desc: 'Our autonomous audit system monitors every decryption attempt and login, triggering immediate account lockdowns upon detecting anomalous behavior.',
-              },
-              {
-                icon: (
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="square" strokeLinejoin="miter" strokeWidth={1.5} d="M4 6h16M4 12h16m-7 6h7"/>
-                  </svg>
-                ),
-                title: 'Immutable Ledger',
-                desc: 'Every security event, from file access to privacy toggles, is recorded in a tamper-evident ledger. You always know exactly who accessed what, and when.',
-              },
-            ].map((feature) => (
-              <div
-                key={feature.title}
-                className="p-8 bg-[var(--bg-card)] border border-[var(--border-primary)] hover:border-[var(--accent-gold)] transition-colors duration-300 rounded-none flex flex-col h-full"
-              >
-                <div className="mb-6 text-[var(--accent-gold)]">
-                  {feature.icon}
-                </div>
-                <h3 className="text-xl font-bold text-[var(--text-primary)] mb-4 font-display">{feature.title}</h3>
-                <p className="text-[var(--text-secondary)] leading-relaxed flex-grow">{feature.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── How It Works ─── */}
-      <section id="how-it-works" className="py-24 border-t border-[var(--border-primary)] bg-[var(--bg-secondary)]">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16">
-             <div>
-                <h2 className="text-4xl font-bold mb-4 font-display">Execution Protocol</h2>
-                <p className="text-[var(--text-secondary)] max-w-lg">
-                  Secure your digital assets in three distinct phases.
-                </p>
-             </div>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-12">
-            {[
-              {
-                step: '01',
-                title: 'Initialization',
-                desc: 'Establish your cryptographic identity. Generate your master keys locally, ensuring zero-knowledge transfer to our servers.',
-              },
-              {
-                step: '02',
-                title: 'Encapsulation',
-                desc: 'Upload your sensitive data. The client-side application encrypts the payload, transmitting only secure ciphertext to the vault.',
-              },
-              {
-                step: '03',
-                title: 'Surveillance',
-                desc: 'The Privora audit engine actively monitors access patterns, logging all activity and blocking unauthorized decryption attempts.',
-              },
-            ].map((item) => (
-              <div key={item.step} className="flex flex-col">
-                <div className="font-mono text-4xl text-[var(--border-secondary)] font-bold mb-6">
-                  {item.step}
-                </div>
-                <h3 className="text-xl font-bold text-[var(--text-primary)] mb-3 font-display">
-                  {item.title}
-                </h3>
-                <p className="text-[var(--text-secondary)] leading-relaxed">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── CTA Section ─── */}
-      <section className="py-24">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="bg-[var(--bg-card)] border border-[var(--border-primary)] p-12 md:p-20 text-center shadow-[var(--shadow-card)]">
-            <h2 className="text-4xl font-bold text-[var(--text-primary)] mb-8 font-display">
-              Ready to secure your vault?
-            </h2>
-            <p className="text-[var(--text-secondary)] mb-10 max-w-xl mx-auto">
-              Stop relying on promises. Start relying on math. Deploy your personal Privora instance today.
-            </p>
-            <div className="flex items-center justify-center gap-6 flex-wrap">
-              <Link
-                to="/register"
-                className="px-8 py-4 bg-[var(--text-primary)] text-[var(--bg-primary)] font-bold hover:bg-[var(--accent-gold)] hover:text-white transition-colors duration-200"
-              >
-                Initialize Vault
-              </Link>
-              <Link to="/login" className="px-8 py-4 border border-[var(--border-primary)] text-[var(--text-primary)] font-bold hover:bg-[var(--bg-hover)] transition-colors duration-200">
-                Access Existing Vault
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── Footer ─── */}
-      <footer className="border-t border-[var(--border-primary)] py-12 bg-[var(--bg-secondary)]">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+      {/* Architecture Highlights */}
+      <section id="architecture" className="py-20">
+        <div className="max-w-7xl mx-auto px-6 space-y-12">
           <div>
-            <span className="font-bold text-xl font-display">Privora</span>
-            <p className="text-[10px] tracking-[0.1em] text-[var(--text-muted)] uppercase font-mono mt-2">
-              © {new Date().getFullYear()} Privora Systems. All rights reserved.
-            </p>
+            <span className="text-xs font-mono text-[var(--accent-brass)] uppercase tracking-widest">
+              Core Principles
+            </span>
+            <h2 className="text-3xl font-serif text-[var(--text-primary)] mt-1">
+              Engineered for Sovereignty
+            </h2>
           </div>
-          <div className="flex items-center gap-8">
-            <span className="text-[10px] tracking-[0.1em] text-[var(--text-muted)] font-mono uppercase cursor-pointer hover:text-[var(--text-primary)] transition-colors">Privacy Policy</span>
-            <span className="text-[10px] tracking-[0.1em] text-[var(--text-muted)] font-mono uppercase cursor-pointer hover:text-[var(--text-primary)] transition-colors">Terms of Service</span>
-            <span className="text-[10px] tracking-[0.1em] text-[var(--text-muted)] font-mono uppercase cursor-pointer hover:text-[var(--text-primary)] transition-colors">Compliance</span>
-            <span className="text-[10px] tracking-[0.1em] text-[var(--text-muted)] font-mono uppercase cursor-pointer hover:text-[var(--text-primary)] transition-colors">Contact</span>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                icon: ShieldCheck,
+                title: "Zero-Knowledge Encryption",
+                desc: "Payloads are encrypted using AES-256-CBC with keys derived via 600,000 PBKDF2 iterations. Master passwords are never persisted."
+              },
+              {
+                icon: Activity,
+                title: "Autonomous Threat Detection",
+                desc: "Rule-based audit checks analyze access frequencies and failed logins in real time, automatically invalidating compromised sessions."
+              },
+              {
+                icon: EyeOff,
+                title: "Privacy Minimization",
+                desc: "Configurable protection controls for ad/tracker blocking, cookie isolation, and fingerprint defense built for NDPR compliance."
+              }
+            ].map((feature, i) => {
+              const Icon = feature.icon;
+              return (
+                <div key={i} className="layered-card p-6 rounded-sm space-y-3">
+                  <div className="p-3 rounded bg-[var(--bg-input)] text-[var(--accent-brass)] w-fit">
+                    <Icon className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-lg font-serif text-[var(--text-primary)]">
+                    {feature.title}
+                  </h3>
+                  <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                    {feature.desc}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         </div>
-      </footer>
+      </section>
+
+      {/* CTA Footer */}
+      <section className="py-16 border-t border-[var(--border-primary)] bg-[var(--bg-secondary)] text-center">
+        <div className="max-w-3xl mx-auto px-6 space-y-6">
+          <h2 className="text-3xl font-serif text-[var(--text-primary)]">
+            Take Control of Your Data Protection.
+          </h2>
+          <p className="text-xs font-mono text-[var(--text-secondary)]">
+            Deploy your secure personal vault today under NDPR standards.
+          </p>
+          <div className="pt-2">
+            <Link
+              to="/register"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--accent-brass)] text-[#12141C] text-xs font-mono font-medium rounded-sm hover:bg-[var(--accent-brass-bright)] shadow-[var(--shadow-layered)]"
+            >
+              <span>Initialize Vault Account</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
-

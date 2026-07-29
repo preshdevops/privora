@@ -1,7 +1,9 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import axiosInstance from '../api/axiosInstance';
-import registerCrystal from '../assets/register-crystal.png';
+import SecurityActionBtn from '../components/SecurityActionBtn';
+import { Lock, Mail, User, KeyRound, ShieldCheck, ArrowRight } from 'lucide-react';
 
 export default function Register() {
   const [fullName, setFullName] = useState('');
@@ -10,42 +12,24 @@ export default function Register() {
   const [password2, setPassword2] = useState('');
   const [agree, setAgree] = useState(false);
   const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
-  // Password strength calculation
-  const strength = useMemo(() => {
-    if (!password) return { level: 0, label: '', color: '' };
-    let score = 0;
-    if (password.length >= 8) score++;
-    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
-    if (/\d/.test(password)) score++;
-    if (/[^a-zA-Z0-9]/.test(password)) score++;
-
-    if (score <= 1) return { level: 1, label: 'WEAK', color: 'var(--status-danger)' };
-    if (score === 2) return { level: 2, label: 'FAIR', color: 'var(--status-warning)' };
-    if (score === 3) return { level: 3, label: 'STRONG', color: 'var(--status-success)' };
-    return { level: 4, label: 'SECURE', color: 'var(--status-success)' };
-  }, [password]);
 
   const handleRegister = async () => {
     setErrors({});
 
-    // Client-side validation
     const newErrors = {};
     if (!fullName.trim()) newErrors.full_name = 'Full name is required';
     if (!email.trim()) newErrors.email = 'Email is required';
-    if (!password) newErrors.password = 'Password is required';
+    if (!password) newErrors.password = 'Passphrase is required';
     if (password && password.length < 8) newErrors.password = 'Must be at least 8 characters';
-    if (password !== password2) newErrors.password2 = 'Passwords do not match';
-    if (!agree) newErrors.agree = 'You must acknowledge the terms';
+    if (password !== password2) newErrors.password2 = 'Passphrases do not match';
+    if (!agree) newErrors.agree = 'Must acknowledge privacy policy';
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      return;
+      throw new Error('Validation failed');
     }
 
-    setLoading(true);
     try {
       await axiosInstance.post('/api/users/register/', {
         email,
@@ -65,247 +49,183 @@ export default function Register() {
           });
           setErrors(mapped);
         } else {
-          setErrors({ general: 'Registration failed. Please try again.' });
+          setErrors({ general: 'Registration failed.' });
         }
       } else {
-        setErrors({ general: 'Network error. Please check your connection.' });
+        setErrors({ general: 'Network connection failure.' });
       }
-    } finally {
-      setLoading(false);
+      throw err;
     }
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') handleRegister();
-  };
-
   return (
-    <div className="min-h-screen flex" style={{ background: 'var(--bg-primary)' }}>
-      {/* Left Panel */}
-      <div className="hidden lg:flex lg:w-1/2 flex-col justify-between p-12 relative overflow-hidden border-r" style={{ background: 'var(--bg-card)', borderColor: 'var(--border-primary)' }}>
-        {/* Brand */}
-        <div className="flex items-center gap-4 z-10">
-          <div className="w-12 h-12 border flex items-center justify-center" style={{ borderColor: 'var(--border-secondary)', background: 'var(--bg-primary)' }}>
-            <svg className="w-6 h-6" style={{ color: 'var(--text-primary)' }} fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v4.7c0 4.67-3.13 9.04-7 10.2-3.87-1.16-7-5.53-7-10.2V6.3l7-3.12z"/>
-              <path d="M12 7a2 2 0 00-2 2v2a2 2 0 001 1.73V15a1 1 0 002 0v-2.27A2 2 0 0014 11V9a2 2 0 00-2-2z"/>
-            </svg>
-          </div>
-          <span className="text-2xl font-bold font-display" style={{ color: 'var(--text-primary)' }}>Privora</span>
-        </div>
-
-        {/* Tagline */}
-        <div className="z-10 mt-16">
-          <h1 className="text-5xl xl:text-7xl font-extrabold font-display leading-[1.05] tracking-tight" style={{ color: 'var(--text-primary)' }}>
-            Your Data.
-            <br />
-            <span style={{ color: 'var(--text-secondary)' }}>Your Rights.</span>
-            <br />
-            <span style={{ color: 'var(--accent-gold)' }}>Protected.</span>
-          </h1>
-          <p className="text-lg font-sans max-w-md mt-8" style={{ color: 'var(--text-secondary)' }}>
-            Join the elite network of security professionals using Privora
-            Sentinel to monitor, encrypt, and authorize data access
-            across distributed architectures.
-          </p>
-        </div>
-
-        {/* Crystal Image */}
-        <div className="z-10 mt-12 mb-auto">
-          <div className="border border-[var(--border-secondary)] grayscale contrast-125 opacity-90 p-2" style={{ background: 'var(--bg-primary)' }}>
-            <img
-              src={registerCrystal}
-              alt="Encryption crystal"
-              className="w-full h-auto object-cover border border-[var(--border-primary)]"
-            />
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="z-10 mt-8 pt-6 border-t" style={{ borderColor: 'var(--border-secondary)' }}>
-          <p className="text-[10px] tracking-[0.2em] font-mono uppercase font-bold" style={{ color: 'var(--text-muted)' }}>
-            © {new Date().getFullYear()} Privora. Sentinel Protocol v4.2
-          </p>
-        </div>
-      </div>
-
-      {/* Right Panel — Registration Form */}
-      <div className="w-full lg:w-1/2 flex flex-col justify-center p-8 md:p-12 lg:p-16 overflow-y-auto bg-[var(--bg-primary)]">
-        <div className="max-w-md mx-auto w-full py-12">
-          {/* Header */}
-          <div className="mb-10 animate-fade-in-up">
-            <h2 className="text-3xl font-bold font-display mb-3" style={{ color: 'var(--text-primary)' }}>Establish Identity</h2>
-            <p className="font-sans" style={{ color: 'var(--text-secondary)' }}>Enter credentials to generate your cryptographic profile.</p>
-          </div>
-
-          {/* General Error */}
-          {(errors.general || errors.detail || errors.non_field_errors) && (
-            <div className="mb-6 p-4 border font-mono text-xs uppercase tracking-wider" style={{ background: 'var(--bg-card)', borderColor: 'var(--status-danger)', color: 'var(--status-danger)' }}>
-              {errors.general || errors.detail || errors.non_field_errors}
+    <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)] p-4 sm:p-6 text-[var(--text-primary)] font-sans">
+      <motion.div
+        initial={{ opacity: 0, y: 15, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
+        className="layered-card-accent p-8 sm:p-10 rounded-sm max-w-lg w-full bg-[var(--bg-card)] relative"
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8 pb-4 border-b border-[var(--border-primary)]">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-sm bg-[var(--accent-brass)] flex items-center justify-center text-[#12141C]">
+              <Lock className="w-4 h-4 stroke-[2.5]" />
             </div>
-          )}
+            <div>
+              <span className="font-serif font-semibold text-lg text-[var(--text-primary)] block leading-none">
+                Privora
+              </span>
+              <span className="text-[10px] font-mono text-[var(--text-tertiary)] uppercase">
+                Vault Identity Setup
+              </span>
+            </div>
+          </div>
+          <span className="text-[10px] font-mono text-[var(--badge-success-text)] flex items-center gap-1">
+            <ShieldCheck className="w-3.5 h-3.5" />
+            NDPR 2023
+          </span>
+        </div>
 
-          {/* Full Name */}
-          <div className="mb-6">
-            <label className="block text-[10px] tracking-[0.2em] font-mono uppercase font-bold mb-2" style={{ color: 'var(--text-muted)' }}>
+        {/* General Error */}
+        {(errors.general || errors.detail || errors.non_field_errors) && (
+          <div className="mb-6 p-3 rounded bg-[var(--badge-danger-bg)] border border-[var(--status-danger)]/40 text-[var(--badge-danger-text)] text-xs font-mono">
+            {errors.general || errors.detail || errors.non_field_errors}
+          </div>
+        )}
+
+        {/* Register Form */}
+        <form onSubmit={(e) => { e.preventDefault(); handleRegister(); }} className="space-y-4">
+          <div>
+            <label className="block text-xs font-mono text-[var(--text-secondary)] mb-1">
               Full Name
             </label>
-            <div className={`bg-[var(--bg-input)] border ${errors.full_name ? 'border-[var(--status-danger)]' : 'border-[var(--border-secondary)]'} p-4 transition-colors focus-within:border-[var(--accent-gold)]`}>
+            <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] focus-within:border-[var(--accent-brass)]">
+              <User className="w-4 h-4 text-[var(--text-tertiary)] shrink-0" />
               <input
                 id="register-fullname"
                 type="text"
-                placeholder="Operative Name"
+                placeholder="Aremu Olaseeni"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className="w-full bg-transparent font-mono text-sm outline-none"
-                style={{ color: 'var(--text-primary)' }}
+                className="w-full bg-transparent text-xs font-mono text-[var(--text-primary)] outline-none"
               />
             </div>
-            {errors.full_name && <p className="mt-2 text-[10px] tracking-widest font-mono uppercase" style={{ color: 'var(--status-danger)' }}>{errors.full_name}</p>}
+            {errors.full_name && (
+              <span className="text-[10px] font-mono text-[var(--status-danger)] mt-1 block">
+                {errors.full_name}
+              </span>
+            )}
           </div>
 
-          {/* Email */}
-          <div className="mb-6">
-            <label className="block text-[10px] tracking-[0.2em] font-mono uppercase font-bold mb-2" style={{ color: 'var(--text-muted)' }}>
-              Network Address
+          <div>
+            <label className="block text-xs font-mono text-[var(--text-secondary)] mb-1">
+              Email Identity
             </label>
-            <div className={`bg-[var(--bg-input)] border ${errors.email ? 'border-[var(--status-danger)]' : 'border-[var(--border-secondary)]'} p-4 transition-colors focus-within:border-[var(--accent-gold)]`}>
+            <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] focus-within:border-[var(--accent-brass)]">
+              <Mail className="w-4 h-4 text-[var(--text-tertiary)] shrink-0" />
               <input
                 id="register-email"
                 type="email"
-                placeholder="j.doe@sentinel.io"
+                placeholder="user@privora.local"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className="w-full bg-transparent font-mono text-sm outline-none"
-                style={{ color: 'var(--text-primary)' }}
+                className="w-full bg-transparent text-xs font-mono text-[var(--text-primary)] outline-none"
               />
             </div>
-            {errors.email && <p className="mt-2 text-[10px] tracking-widest font-mono uppercase" style={{ color: 'var(--status-danger)' }}>{errors.email}</p>}
+            {errors.email && (
+              <span className="text-[10px] font-mono text-[var(--status-danger)] mt-1 block">
+                {errors.email}
+              </span>
+            )}
           </div>
 
-          {/* Password + Confirm Row */}
-          <div className="flex flex-col sm:flex-row gap-6 mb-3">
-            <div className="flex-1">
-              <label className="block text-[10px] tracking-[0.2em] font-mono uppercase font-bold mb-2" style={{ color: 'var(--text-muted)' }}>
-                Master Key
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-mono text-[var(--text-secondary)] mb-1">
+                Passphrase
               </label>
-              <div className={`bg-[var(--bg-input)] border ${errors.password ? 'border-[var(--status-danger)]' : 'border-[var(--border-secondary)]'} p-4 transition-colors focus-within:border-[var(--accent-gold)]`}>
+              <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] focus-within:border-[var(--accent-brass)]">
+                <KeyRound className="w-4 h-4 text-[var(--text-tertiary)] shrink-0" />
                 <input
                   id="register-password"
                   type="password"
-                  placeholder="••••••••"
+                  placeholder="••••••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  className="w-full bg-transparent font-mono text-sm outline-none"
-                  style={{ color: 'var(--text-primary)' }}
+                  className="w-full bg-transparent text-xs font-mono text-[var(--text-primary)] outline-none"
                 />
               </div>
-              {errors.password && <p className="mt-2 text-[10px] tracking-widest font-mono uppercase" style={{ color: 'var(--status-danger)' }}>{errors.password}</p>}
+              {errors.password && (
+                <span className="text-[10px] font-mono text-[var(--status-danger)] mt-1 block">
+                  {errors.password}
+                </span>
+              )}
             </div>
-            <div className="flex-1">
-              <label className="block text-[10px] tracking-[0.2em] font-mono uppercase font-bold mb-2" style={{ color: 'var(--text-muted)' }}>
-                Verify Key
+
+            <div>
+              <label className="block text-xs font-mono text-[var(--text-secondary)] mb-1">
+                Confirm Passphrase
               </label>
-              <div className={`bg-[var(--bg-input)] border ${errors.password2 ? 'border-[var(--status-danger)]' : 'border-[var(--border-secondary)]'} p-4 transition-colors focus-within:border-[var(--accent-gold)]`}>
+              <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] focus-within:border-[var(--accent-brass)]">
+                <KeyRound className="w-4 h-4 text-[var(--text-tertiary)] shrink-0" />
                 <input
                   id="register-password2"
                   type="password"
-                  placeholder="••••••••"
+                  placeholder="••••••••••••"
                   value={password2}
                   onChange={(e) => setPassword2(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  className="w-full bg-transparent font-mono text-sm outline-none"
-                  style={{ color: 'var(--text-primary)' }}
+                  className="w-full bg-transparent text-xs font-mono text-[var(--text-primary)] outline-none"
                 />
               </div>
-              {errors.password2 && <p className="mt-2 text-[10px] tracking-widest font-mono uppercase" style={{ color: 'var(--status-danger)' }}>{errors.password2}</p>}
-            </div>
-          </div>
-
-          {/* Password Strength Indicator */}
-          <div className="mb-8 min-h-[32px]">
-            {password && (
-              <>
-                <div className="flex gap-2 mb-2">
-                  {[1, 2, 3].map((i) => (
-                    <div
-                      key={i}
-                      className="h-1 flex-1 transition-colors"
-                      style={{ background: i <= strength.level ? strength.color : 'var(--border-secondary)' }}
-                    />
-                  ))}
-                </div>
-                <p className="text-[10px] tracking-[0.2em] uppercase font-bold font-mono text-center" style={{ color: strength.color }}>
-                  {strength.label}
-                </p>
-              </>
-            )}
-          </div>
-
-          {/* Terms Checkbox */}
-          <div className="flex items-start gap-4 mb-8">
-            <div
-              className={`w-5 h-5 border flex items-center justify-center shrink-0 cursor-pointer transition-colors mt-0.5 ${agree ? '' : 'bg-[var(--bg-input)]'}`}
-              style={{ borderColor: agree ? 'var(--text-primary)' : 'var(--border-secondary)', background: agree ? 'var(--text-primary)' : 'var(--bg-input)' }}
-              onClick={() => setAgree(!agree)}
-              role="checkbox"
-              tabIndex={0}
-              id="terms-checkbox"
-            >
-              {agree && (
-                <svg className="w-4 h-4" style={{ color: 'var(--bg-primary)' }} fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-                  <path strokeLinecap="square" strokeLinejoin="miter" d="M5 13l4 4L19 7"/>
-                </svg>
+              {errors.password2 && (
+                <span className="text-[10px] font-mono text-[var(--status-danger)] mt-1 block">
+                  {errors.password2}
+                </span>
               )}
             </div>
-            <span className="text-xs font-mono uppercase tracking-wider cursor-pointer leading-relaxed" style={{ color: 'var(--text-secondary)' }} onClick={() => setAgree(!agree)}>
-              I acknowledge the{' '}
-              <span className="font-bold underline underline-offset-4 decoration-2" style={{ color: 'var(--text-primary)' }}>Service Protocols</span>
-              {' '}and{' '}
-              <span className="font-bold underline underline-offset-4 decoration-2" style={{ color: 'var(--text-primary)' }}>Encryption Policy</span>.
+          </div>
+
+          <div className="flex items-center gap-3 pt-2">
+            <input
+              id="agree-checkbox"
+              type="checkbox"
+              checked={agree}
+              onChange={(e) => setAgree(e.target.checked)}
+              className="rounded bg-[var(--bg-input)] border-[var(--border-primary)] accent-[var(--accent-brass)]"
+            />
+            <label htmlFor="agree-checkbox" className="text-xs font-mono text-[var(--text-secondary)] cursor-pointer">
+              I acknowledge NDPR data protection policy & zero-knowledge terms.
+            </label>
+          </div>
+          {errors.agree && (
+            <span className="text-[10px] font-mono text-[var(--status-danger)] block">
+              {errors.agree}
             </span>
-          </div>
-          {errors.agree && <p className="-mt-6 mb-6 text-[10px] tracking-widest font-mono uppercase" style={{ color: 'var(--status-danger)' }}>{errors.agree}</p>}
+          )}
 
-          {/* Register Button */}
-          <div
-            className={`w-full py-4 border text-center cursor-pointer select-none transition-colors font-sans font-bold uppercase tracking-widest ${
-              loading ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-            style={{
-              background: 'var(--text-primary)',
-              borderColor: 'var(--text-primary)',
-              color: 'var(--bg-primary)',
-            }}
-            onMouseEnter={(e) => { if (!loading) e.currentTarget.style.opacity = '0.9'; }}
-            onMouseLeave={(e) => { if (!loading) e.currentTarget.style.opacity = '1'; }}
-            onClick={loading ? undefined : handleRegister}
-            role="button"
-            tabIndex={0}
-            id="register-submit-btn"
-          >
-            {loading ? (
-              <span className="flex items-center justify-center gap-3">
-                <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                GENERATING PROFILE...
-              </span>
-            ) : (
-              <span>INITIALIZE PROFILE</span>
-            )}
+          <div className="pt-3">
+            <SecurityActionBtn
+              type="submit"
+              actionLabel="Deriving Master Salt & Key..."
+              successLabel="Vault Created"
+              delayMs={750}
+              className="w-full justify-center !py-3"
+            >
+              <span>Initialize Vault Account</span>
+              <ArrowRight className="w-4 h-4" />
+            </SecurityActionBtn>
           </div>
+        </form>
 
-          {/* Login Link */}
-          <p className="text-center text-xs font-mono uppercase tracking-wider mt-8" style={{ color: 'var(--text-secondary)' }}>
-            EXISTING OPERATIVE?{' '}
-            <Link to="/login" className="font-bold underline underline-offset-4 decoration-2" style={{ color: 'var(--text-primary)' }}>
-              AUTHENTICATE
-            </Link>
-          </p>
+        {/* Footer Link */}
+        <div className="mt-8 pt-4 border-t border-[var(--border-primary)] text-center text-xs font-mono text-[var(--text-secondary)]">
+          Already registered?{" "}
+          <Link to="/login" className="text-[var(--accent-brass)] hover:underline">
+            Sign In to Vault
+          </Link>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

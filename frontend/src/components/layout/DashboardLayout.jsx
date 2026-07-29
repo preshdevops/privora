@@ -1,46 +1,44 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import axiosInstance from '../../api/axiosInstance';
+import OnboardingFlow from '../OnboardingFlow';
+import { 
+  ShieldCheck, 
+  KeyRound, 
+  Activity, 
+  Settings as SettingsIcon, 
+  LogOut, 
+  Sun, 
+  Moon, 
+  HelpCircle, 
+  Menu, 
+  X, 
+  Search,
+  Lock
+} from 'lucide-react';
 
 const navItems = [
   {
     to: '/dashboard',
     label: 'Dashboard',
-    icon: (
-      <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-      </svg>
-    ),
+    icon: <ShieldCheck className="w-4 h-4" />,
   },
   {
     to: '/my-data',
     label: 'My Data',
-    icon: (
-      <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-      </svg>
-    ),
+    icon: <KeyRound className="w-4 h-4" />,
   },
   {
     to: '/access-logs',
     label: 'Access Logs',
-    icon: (
-      <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-      </svg>
-    ),
+    icon: <Activity className="w-4 h-4" />,
   },
   {
     to: '/settings',
     label: 'Settings',
-    icon: (
-      <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-      </svg>
-    ),
+    icon: <SettingsIcon className="w-4 h-4" />,
   },
 ];
 
@@ -50,6 +48,14 @@ export default function DashboardLayout({ children }) {
   const navigate = useNavigate();
   const [loggingOut, setLoggingOut] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  useEffect(() => {
+    const onboarded = localStorage.getItem('privora_onboarded');
+    if (!onboarded) {
+      setShowOnboarding(true);
+    }
+  }, []);
 
   const handleLogout = async () => {
     if (loggingOut) return;
@@ -64,81 +70,74 @@ export default function DashboardLayout({ children }) {
   };
 
   return (
-    <div className="min-h-screen flex" style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
-      {/* ─── Sidebar Overlay (Mobile/Tablet Only) ─── */}
+    <div className="min-h-screen flex bg-[var(--bg-primary)] text-[var(--text-primary)] font-sans">
+      {/* Onboarding Flow Overlay */}
+      {showOnboarding && (
+        <OnboardingFlow onComplete={() => setShowOnboarding(false)} />
+      )}
+
+      {/* Mobile Sidebar Overlay */}
       {mobileSidebarOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden animate-fade-in"
+          className="fixed inset-0 z-40 bg-[var(--bg-modal-overlay)] lg:hidden"
           onClick={() => setMobileSidebarOpen(false)}
         />
       )}
 
-      {/* ─── Sidebar ─── */}
+      {/* Sidebar */}
       <aside
-        className={`w-[220px] shrink-0 flex flex-col fixed top-0 left-0 h-screen z-50 border-r transition-transform duration-300 lg:translate-x-0 ${
+        className={`w-[240px] shrink-0 flex flex-col fixed top-0 left-0 h-screen z-50 border-r border-[var(--border-primary)] bg-[var(--bg-sidebar)] transition-transform duration-300 lg:translate-x-0 ${
           mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
-        style={{ background: 'var(--bg-sidebar)', borderColor: 'var(--border-primary)' }}
       >
         {/* Logo */}
-        <div className="px-5 pt-6 pb-4 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-lg bg-accent-blue flex items-center justify-center">
-              <svg className="w-[18px] h-[18px] text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v4.7c0 4.67-3.13 9.04-7 10.2-3.87-1.16-7-5.53-7-10.2V6.3l7-3.12z" />
-                <path d="M12 7a2 2 0 00-2 2v2a2 2 0 001 1.73V15a1 1 0 002 0v-2.27A2 2 0 0014 11V9a2 2 0 00-2-2z" />
-              </svg>
+        <div className="px-6 pt-7 pb-5 flex items-center justify-between border-b border-[var(--border-primary)]">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-sm bg-[var(--accent-brass)] flex items-center justify-center text-[#12141C]">
+              <Lock className="w-4 h-4 stroke-[2.5]" />
             </div>
             <div>
-              <span className="font-bold text-sm tracking-tight" style={{ color: 'var(--text-primary)' }}>
-                Privora Sentinel
+              <span className="font-serif font-semibold text-base text-[var(--text-primary)] tracking-tight block">
+                Privora
               </span>
-              <p className="text-[10px] text-emerald-400 font-semibold tracking-wider flex items-center gap-1.5 mt-0.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
-                SYSTEM ACTIVE
+              <p className="text-[10px] text-[var(--accent-brass)] font-mono font-medium tracking-wider flex items-center gap-1.5 mt-0.5 uppercase">
+                <span className="w-1.5 h-1.5 rounded-full bg-[var(--status-success)] inline-block animate-pulse" />
+                Vault Secured
               </p>
             </div>
           </div>
           
-          {/* Close button for mobile */}
           <button
             onClick={() => setMobileSidebarOpen(false)}
-            className="p-1 lg:hidden text-slate-400 hover:text-white"
+            className="p-1 lg:hidden text-[var(--text-muted)] hover:text-[var(--text-primary)]"
             title="Close navigation"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-3 mt-2 space-y-0.5">
+        <nav className="flex-1 px-3 mt-4 space-y-1">
           {navItems.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
               onClick={() => setMobileSidebarOpen(false)}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all duration-200 group relative ${
+                `flex items-center gap-3 px-3.5 py-2.5 rounded-sm text-xs font-medium transition-all duration-200 group relative ${
                   isActive
-                    ? 'text-accent-light'
-                    : ''
+                    ? 'bg-[var(--bg-card-elevated)] text-[var(--accent-brass)] border border-[var(--border-accent)] shadow-[var(--shadow-layered)]'
+                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)]'
                 }`
               }
-              style={({ isActive }) => ({
-                color: isActive ? '#60a5fa' : 'var(--text-secondary)',
-                background: isActive ? 'rgba(37, 99, 235, 0.08)' : 'transparent',
-              })}
               id={`nav-${item.label.toLowerCase().replace(/\s/g, '-')}`}
             >
               {({ isActive }) => (
                 <>
-                  {isActive && (
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-6 bg-accent-blue rounded-r-full" />
-                  )}
-                  <span className={isActive ? 'text-accent-blue' : ''}>{item.icon}</span>
-                  {item.label}
+                  <span className={isActive ? 'text-[var(--accent-brass)]' : 'text-[var(--text-tertiary)] group-hover:text-[var(--text-secondary)]'}>
+                    {item.icon}
+                  </span>
+                  <span>{item.label}</span>
                 </>
               )}
             </NavLink>
@@ -146,123 +145,77 @@ export default function DashboardLayout({ children }) {
         </nav>
 
         {/* Bottom Section */}
-        <div className="px-4 pb-5 mt-auto space-y-3">
-          {/* Security Status Card */}
-          <div
-            className="rounded-xl p-3.5 border"
-            style={{ background: 'var(--bg-card)', borderColor: 'var(--border-primary)' }}
-          >
-            <p className="text-[10px] tracking-[0.15em] font-bold uppercase mb-2" style={{ color: 'var(--text-muted)' }}>
-              Security Status
+        <div className="px-4 pb-6 mt-auto space-y-3">
+          {/* Security Status Motif Card */}
+          <div className="layered-card p-3.5 rounded-sm bg-[var(--bg-card)]">
+            <p className="text-[10px] font-mono tracking-widest text-[var(--text-muted)] uppercase mb-2">
+              Cryptographic Integrity
             </p>
-            <p className="text-xs flex items-center gap-2 text-emerald-400 font-medium">
-              <span className="w-2 h-2 rounded-full bg-emerald-400" />
-              End-to-End Encrypted
+            <p className="text-xs flex items-center gap-2 text-[var(--badge-success-text)] font-mono">
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--status-success)]" />
+              AES-256-CBC Active
             </p>
-            <div
-              className="mt-3 w-full py-2 rounded-lg bg-emerald-500/20 text-emerald-400 text-xs font-semibold text-center cursor-pointer hover:bg-emerald-500/30 transition-colors"
-              role="button"
-              tabIndex={0}
-              id="upgrade-security-btn"
+            <button
+              onClick={() => setShowOnboarding(true)}
+              className="mt-3 w-full py-1.5 rounded-sm bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] border border-[var(--border-primary)] text-[var(--text-secondary)] hover:text-[var(--accent-brass)] text-[11px] font-mono transition-colors text-center cursor-pointer"
             >
-              Upgrade Security
-            </div>
-          </div>
-
-          {/* Help Center */}
-          <div
-            className="flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-colors text-[13px]"
-            style={{ color: 'var(--text-secondary)' }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-hover)'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
-            role="button"
-            tabIndex={0}
-            id="help-center-btn"
-          >
-            <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            Help Center
+              Review Protection Flow
+            </button>
           </div>
 
           {/* Logout */}
           <div
-            className="flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-colors text-[13px]"
-            style={{ color: 'var(--text-secondary)' }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-hover)'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+            className="flex items-center gap-3 px-3.5 py-2 rounded-sm cursor-pointer transition-colors text-xs text-[var(--text-secondary)] hover:text-[var(--status-danger)] hover:bg-[var(--bg-hover)]"
             onClick={handleLogout}
             role="button"
             tabIndex={0}
             id="sidebar-logout-btn"
           >
-            <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-            </svg>
-            {loggingOut ? 'Signing out...' : 'Logout'}
+            <LogOut className="w-4 h-4 text-current" />
+            <span>{loggingOut ? 'Signing out...' : 'Sign Out'}</span>
           </div>
         </div>
       </aside>
 
-      {/* ─── Main Content Area ─── */}
-      <div className="flex-1 lg:ml-[220px] flex flex-col min-h-screen min-w-0">
+      {/* Main Content Area */}
+      <div className="flex-1 lg:ml-[240px] flex flex-col min-h-screen min-w-0">
         {/* Top Bar */}
-        <header
-          className="sticky top-0 z-20 border-b backdrop-blur-xl px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between"
-          style={{
-            background: theme === 'dark' ? 'rgba(10, 14, 26, 0.8)' : 'rgba(255, 255, 255, 0.85)',
-            borderColor: 'var(--border-primary)',
-          }}
-        >
-          {/* Left section of topbar: hamburger and logo on mobile/tablet */}
+        <header className="sticky top-0 z-20 border-b border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setMobileSidebarOpen(true)}
-              className="p-2 -ml-2 text-slate-400 hover:text-white lg:hidden cursor-pointer rounded-lg hover:bg-slate-500/10 transition-colors"
+              className="p-2 -ml-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] lg:hidden cursor-pointer rounded hover:bg-[var(--bg-hover)] transition-colors"
               id="hamburger-menu-btn"
               title="Open Navigation Menu"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
+              <Menu className="w-5 h-5" />
             </button>
 
-            {/* Mobile/Tablet Logo representation */}
             <div className="flex items-center gap-2 lg:hidden">
-              <div className="w-8 h-8 rounded-lg bg-accent-blue flex items-center justify-center">
-                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v4.7c0 4.67-3.13 9.04-7 10.2-3.87-1.16-7-5.53-7-10.2V6.3l7-3.12z" />
-                </svg>
+              <div className="w-7 h-7 rounded-sm bg-[var(--accent-brass)] flex items-center justify-center text-[#12141C]">
+                <Lock className="w-3.5 h-3.5 stroke-[2.5]" />
               </div>
-              <span className="font-bold text-sm tracking-tight hidden sm:inline" style={{ color: 'var(--text-primary)' }}>
+              <span className="font-serif font-semibold text-sm text-[var(--text-primary)] hidden sm:inline">
                 Privora
               </span>
             </div>
 
-            {/* Search (Desktop only: hidden lg:flex) */}
-            <div
-              className="hidden lg:flex items-center gap-3 rounded-xl px-4 py-2.5 w-[360px] transition-all duration-300 border focus-within:border-accent-blue focus-within:ring-2 focus-within:ring-accent-blue/20"
-              style={{ background: 'var(--bg-input)', borderColor: 'var(--border-secondary)' }}
-            >
-              <svg className="w-4 h-4" style={{ color: 'var(--text-muted)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+            {/* Global Search Input */}
+            <div className="hidden lg:flex items-center gap-2.5 rounded-sm px-3.5 py-2 w-[320px] bg-[var(--bg-input)] border border-[var(--border-primary)] focus-within:border-[var(--accent-brass)]">
+              <Search className="w-3.5 h-3.5 text-[var(--text-tertiary)]" />
               <input
                 type="text"
-                placeholder="Search system logs or files..."
-                className="flex-1 bg-transparent text-sm outline-none"
-                style={{ color: 'var(--text-primary)' }}
+                placeholder="Search encrypted vault or logs..."
+                className="flex-1 bg-transparent text-xs text-[var(--text-primary)] outline-none placeholder:[var(--text-muted)]"
                 id="global-search"
               />
             </div>
           </div>
 
-          {/* Right section of topbar */}
-          <div className="flex items-center gap-3 sm:gap-5">
+          <div className="flex items-center gap-4">
             {/* Theme Toggle */}
             <div
-              className="w-9 h-9 rounded-lg flex items-center justify-center cursor-pointer transition-colors"
-              style={{ background: 'var(--bg-input)', border: '1px solid var(--border-secondary)' }}
+              className="w-8 h-8 rounded-sm flex items-center justify-center cursor-pointer transition-colors bg-[var(--bg-input)] border border-[var(--border-primary)] hover:border-[var(--border-secondary)] text-[var(--text-secondary)]"
               onClick={toggleTheme}
               role="button"
               tabIndex={0}
@@ -270,72 +223,43 @@ export default function DashboardLayout({ children }) {
               title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
             >
               {theme === 'dark' ? (
-                <svg className="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
+                <Sun className="w-4 h-4 text-[var(--accent-brass)]" />
               ) : (
-                <svg className="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                </svg>
+                <Moon className="w-4 h-4 text-[var(--text-secondary)]" />
               )}
             </div>
 
-            {/* Notification Bell (Hidden on very narrow mobile screens) */}
-            <div className="relative cursor-pointer hidden sm:block" id="notification-bell">
-              <svg className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-              </svg>
-              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2" style={{ borderColor: 'var(--bg-secondary)' }} />
-            </div>
-
             {/* User Info */}
-            <div className="flex items-center gap-3 pl-2 sm:pl-4 border-l" style={{ borderColor: 'var(--border-secondary)' }}>
+            <div className="flex items-center gap-3 pl-4 border-l border-[var(--border-primary)]">
               <div className="text-right hidden sm:block">
-                <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
+                <p className="text-xs font-medium text-[var(--text-primary)]">
                   {user?.full_name || user?.email?.split('@')[0] || 'User'}
                 </p>
-                <p className="text-[10px] tracking-[0.1em] uppercase font-semibold" style={{ color: 'var(--text-muted)' }}>
-                  Security Lead
+                <p className="text-[10px] font-mono text-[var(--text-tertiary)] uppercase">
+                  Data Subject
                 </p>
               </div>
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-accent-blue to-accent-light flex items-center justify-center text-white text-sm font-bold shadow-md">
+              <div className="w-8 h-8 rounded-sm bg-[var(--bg-card-elevated)] border border-[var(--border-accent)] flex items-center justify-center text-[var(--accent-brass)] font-serif font-semibold text-xs shadow-[var(--shadow-layered)]">
                 {(user?.full_name?.[0] || user?.email?.[0] || 'U').toUpperCase()}
               </div>
             </div>
           </div>
         </header>
 
-        {/* Page Content */}
-        <main className="flex-1 px-4 sm:px-6 lg:px-8 py-6">
+        {/* Main Content */}
+        <main className="flex-1 px-4 sm:px-6 lg:px-8 py-8">
           {children}
         </main>
 
         {/* Footer */}
-        <footer
-          className="border-t px-4 sm:px-6 lg:px-8 py-5 mt-auto"
-          style={{ borderColor: 'var(--border-primary)' }}
-        >
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <footer className="border-t border-[var(--border-primary)] px-4 sm:px-6 lg:px-8 py-4 bg-[var(--bg-primary)]">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-[var(--text-tertiary)]">
             <div className="flex items-center gap-2">
-              <span className="font-bold text-sm tracking-wider uppercase" style={{ color: 'var(--text-primary)' }}>
-                Privora
-              </span>
-              <span className="text-[10px] tracking-[0.1em] uppercase text-center sm:text-left" style={{ color: 'var(--text-muted)' }}>
-                © 2026 Privora Cybersecurity. All Rights Reserved.
-              </span>
+              <span className="font-serif font-medium text-[var(--text-primary)]">Privora Vault</span>
+              <span>— NDPR 2023 / GAID 2025 Standard</span>
             </div>
-            <div className="flex items-center gap-4 sm:gap-6 flex-wrap justify-center">
-              {['Privacy Policy', 'Terms of Service', 'Compliance', 'Contact'].map((link) => (
-                <span
-                  key={link}
-                  className="text-[10px] tracking-[0.1em] uppercase cursor-pointer transition-colors"
-                  style={{ color: 'var(--text-muted)' }}
-                  onMouseEnter={(e) => { e.target.style.color = 'var(--text-secondary)'; }}
-                  onMouseLeave={(e) => { e.target.style.color = 'var(--text-muted)'; }}
-                >
-                  {link}
-                </span>
-              ))}
+            <div>
+              AES-256-CBC • PBKDF2-HMAC-SHA256 • 600,000 Iterations
             </div>
           </div>
         </footer>
