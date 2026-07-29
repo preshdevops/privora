@@ -1,5 +1,6 @@
 import React from 'react';
-import { ShieldAlert, CheckCircle2, FileLock, Scale } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { CheckCircle2, Scale } from 'lucide-react';
 
 export default function ComplianceBadge({ score = 85, unresolvedAlertsCount = 0 }) {
   const isHealthy = score >= 70 && unresolvedAlertsCount === 0;
@@ -10,12 +11,22 @@ export default function ComplianceBadge({ score = 85, unresolvedAlertsCount = 0 
     { name: "File Protection", status: "Active", detail: "Not even we can read your files" }
   ];
 
+  // SVG Gauge calculations
+  const radius = 36;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (score / 100) * circumference;
+
   return (
-    <div className="layered-card p-5 rounded-sm flex flex-col justify-between">
+    <motion.div 
+      whileHover={{ y: -3 }}
+      className="layered-card p-6 rounded-sm flex flex-col justify-between group transition-all"
+    >
       <div>
         <div className="flex items-center justify-between mb-4 pb-3 border-b border-[var(--border-primary)]">
-          <div className="flex items-center gap-2">
-            <Scale className="w-4 h-4 text-[var(--accent-brass)]" />
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded bg-[var(--bg-input)] text-[var(--accent-brass)] group-hover:bg-[var(--accent-brass)] group-hover:text-[#12141C] transition-colors">
+              <Scale className="w-4 h-4" />
+            </div>
             <h3 className="text-sm font-serif text-[var(--text-primary)]">
               Compliance Status
             </h3>
@@ -29,7 +40,45 @@ export default function ComplianceBadge({ score = 85, unresolvedAlertsCount = 0 
           </span>
         </div>
 
-        <div className="space-y-3 mb-4">
+        {/* Circular Protection Score Gauge */}
+        <div className="my-4 flex items-center justify-between p-3.5 rounded bg-[var(--bg-input)] border border-[var(--border-primary)]">
+          <div>
+            <span className="text-xs text-[var(--text-secondary)] font-mono block">Data Protection Index</span>
+            <span className="text-xs text-[var(--text-tertiary)] block mt-0.5">Calculated in real-time</span>
+          </div>
+
+          <div className="relative w-20 h-20 flex items-center justify-center">
+            <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 90 90">
+              <circle
+                cx="45"
+                cy="45"
+                r={radius}
+                stroke="var(--border-primary)"
+                strokeWidth="7"
+                fill="transparent"
+              />
+              <motion.circle
+                cx="45"
+                cy="45"
+                r={radius}
+                stroke="var(--accent-brass)"
+                strokeWidth="7"
+                strokeDasharray={circumference}
+                initial={{ strokeDashoffset: circumference }}
+                animate={{ strokeDashoffset }}
+                transition={{ duration: 1.4, ease: [0.25, 1, 0.5, 1] }}
+                strokeLinecap="round"
+                fill="transparent"
+              />
+            </svg>
+            <span className="absolute font-serif text-lg font-bold text-[var(--accent-brass)]">
+              {score}
+            </span>
+          </div>
+        </div>
+
+        {/* Principles Checklist */}
+        <div className="space-y-3">
           {principles.map((item, i) => (
             <div key={i} className="flex items-start justify-between text-xs">
               <div className="flex items-center gap-2">
@@ -46,13 +95,6 @@ export default function ComplianceBadge({ score = 85, unresolvedAlertsCount = 0 
           ))}
         </div>
       </div>
-
-      <div className="p-3 rounded bg-[var(--bg-input)] border border-[var(--border-primary)] flex items-center justify-between text-xs">
-        <span className="text-[var(--text-secondary)]">Protection Score</span>
-        <span className="font-serif text-lg text-[var(--accent-brass)] font-semibold">
-          {score} / 100
-        </span>
-      </div>
-    </div>
+    </motion.div>
   );
 }

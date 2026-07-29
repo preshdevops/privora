@@ -3,8 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import SecurityActionBtn from '../components/SecurityActionBtn';
-import { Lock, Mail, KeyRound, ShieldCheck, ArrowRight } from 'lucide-react';
-import loginGlobe from '../assets/login-globe.png';
+import { Lock, Mail, KeyRound, ShieldCheck, ArrowRight, Sparkles } from 'lucide-react';
+import loginGlobeImg from '../assets/login-globe.png';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -48,37 +48,57 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex bg-[var(--bg-primary)] text-[var(--text-primary)] font-sans">
-      {/* Left visual panel — hidden on mobile */}
-      <div className="hidden lg:flex lg:w-1/2 items-center justify-center p-12 relative overflow-hidden">
+    <div className="min-h-screen flex bg-[var(--bg-primary)] text-[var(--text-primary)] font-sans relative overflow-hidden">
+      {/* Ambient Glow Filter */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[var(--accent-brass-glow)] rounded-full blur-3xl pointer-events-none -z-10" />
+
+      {/* Left Visual Panel with High-Res Photographic Globe */}
+      <div className="hidden lg:flex lg:w-1/2 items-center justify-center p-12 relative overflow-hidden bg-[var(--bg-sidebar)] border-r border-[var(--border-primary)]">
         <motion.img
-          src={loginGlobe}
-          alt=""
-          initial={{ opacity: 0, scale: 1.05 }}
-          animate={{ opacity: 0.25, scale: 1 }}
-          transition={{ duration: 1.4, ease: [0.25, 1, 0.5, 1] }}
+          src={loginGlobeImg}
+          alt="Secure Network Globe"
+          initial={{ opacity: 0, scale: 1.08 }}
+          animate={{ opacity: 0.35, scale: 1 }}
+          transition={{ duration: 1.6, ease: [0.25, 1, 0.5, 1] }}
           className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
-          style={{ filter: 'saturate(0.3)' }}
+          style={{ filter: 'saturate(0.5) contrast(1.1)' }}
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-sidebar)] via-transparent to-[var(--bg-sidebar)]/80" />
+
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 25 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="relative z-10 max-w-md text-center"
+          className="relative z-10 max-w-md text-center space-y-4"
         >
-          <h2 className="text-3xl font-serif font-semibold text-[var(--text-primary)] mb-3">
-            Welcome back
+          <div className="w-14 h-14 mx-auto rounded-sm bg-[var(--accent-brass)] flex items-center justify-center text-[#12141C] shadow-[var(--shadow-layered-lg)]">
+            <Lock className="w-7 h-7 stroke-[2.5]" />
+          </div>
+
+          <h2 className="text-3xl font-serif font-semibold text-[var(--text-primary)]">
+            Welcome Back to Your Vault
           </h2>
           <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-            Your files are protected and waiting. Sign in to access your private vault.
+            Sign in to access your protected files, review security alerts, and inspect your private audit trail.
           </p>
+
+          <div className="pt-4 flex items-center justify-center gap-6 text-xs font-mono text-[var(--text-tertiary)]">
+            <span className="flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-[var(--accent-brass)]" />
+              Private Key Isolation
+            </span>
+            <span className="flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-[var(--status-success)]" />
+              Zero Password Storage
+            </span>
+          </div>
         </motion.div>
       </div>
 
-      {/* Right form panel */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6">
+      {/* Right Form Panel */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-8">
         <motion.div
-          initial={{ opacity: 0, y: 15, scale: 0.98 }}
+          initial={{ opacity: 0, y: 20, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
           className="layered-card-accent p-8 sm:p-10 rounded-sm max-w-md w-full bg-[var(--bg-card)] relative"
@@ -94,30 +114,34 @@ export default function Login() {
                   Privora
                 </span>
                 <span className="text-[10px] font-mono text-[var(--text-tertiary)] uppercase">
-                  Sign In
+                  Vault Authentication
                 </span>
               </div>
             </div>
             <span className="text-[10px] font-mono text-[var(--badge-success-text)] flex items-center gap-1">
               <ShieldCheck className="w-3.5 h-3.5" />
-              Secure
+              Protected
             </span>
           </div>
 
           {/* General Error Alert */}
           {(errors.general || errors.detail || errors.non_field_errors) && (
-            <div className="mb-6 p-3 rounded bg-[var(--badge-danger-bg)] border border-[var(--status-danger)]/40 text-[var(--badge-danger-text)] text-xs">
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              className="mb-6 p-3.5 rounded bg-[var(--badge-danger-bg)] border border-[var(--status-danger)]/40 text-[var(--badge-danger-text)] text-xs font-mono"
+            >
               {errors.general || errors.detail || errors.non_field_errors}
-            </div>
+            </motion.div>
           )}
 
-          {/* Login Form — no onSubmit, button onClick drives the request */}
+          {/* Login Form */}
           <form onSubmit={(e) => e.preventDefault()} className="space-y-5">
             <div>
-              <label className="block text-xs text-[var(--text-secondary)] mb-1.5">
-                Email
+              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">
+                Email Address
               </label>
-              <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] focus-within:border-[var(--accent-brass)]">
+              <div className="flex items-center gap-2.5 px-3.5 py-3 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] focus-within:border-[var(--accent-brass)] transition-colors">
                 <Mail className="w-4 h-4 text-[var(--text-tertiary)] shrink-0" />
                 <input
                   id="login-email"
@@ -129,17 +153,17 @@ export default function Login() {
                 />
               </div>
               {errors.email && (
-                <span className="text-[10px] text-[var(--status-danger)] mt-1 block">
+                <span className="text-[10px] font-mono text-[var(--status-danger)] mt-1 block">
                   {errors.email}
                 </span>
               )}
             </div>
 
             <div>
-              <label className="block text-xs text-[var(--text-secondary)] mb-1.5">
-                Password
+              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">
+                Master Password
               </label>
-              <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] focus-within:border-[var(--accent-brass)]">
+              <div className="flex items-center gap-2.5 px-3.5 py-3 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] focus-within:border-[var(--accent-brass)] transition-colors">
                 <KeyRound className="w-4 h-4 text-[var(--text-tertiary)] shrink-0" />
                 <input
                   id="login-password"
@@ -151,21 +175,21 @@ export default function Login() {
                 />
               </div>
               {errors.password && (
-                <span className="text-[10px] text-[var(--status-danger)] mt-1 block">
+                <span className="text-[10px] font-mono text-[var(--status-danger)] mt-1 block">
                   {errors.password}
                 </span>
               )}
             </div>
 
-            <div className="pt-2">
+            <div className="pt-3">
               <SecurityActionBtn
                 onClick={handleLogin}
-                actionLabel="Signing in…"
-                successLabel="Welcome back"
+                actionLabel="Authenticating Key…"
+                successLabel="Access Granted"
                 delayMs={650}
-                className="w-full justify-center !py-3"
+                className="w-full justify-center !py-3.5"
               >
-                <span>Sign In</span>
+                <span>Sign In to Vault</span>
                 <ArrowRight className="w-4 h-4" />
               </SecurityActionBtn>
             </div>
@@ -173,9 +197,9 @@ export default function Login() {
 
           {/* Footer Links */}
           <div className="mt-8 pt-4 border-t border-[var(--border-primary)] text-center text-xs text-[var(--text-secondary)]">
-            Don't have an account?{" "}
-            <Link to="/register" className="text-[var(--accent-brass)] hover:underline">
-              Create one
+            Don't have a vault account yet?{" "}
+            <Link to="/register" className="text-[var(--accent-brass)] font-medium hover:underline">
+              Create Account
             </Link>
           </div>
         </motion.div>

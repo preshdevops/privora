@@ -6,7 +6,8 @@ import DataJourney from '../components/DataJourney';
 import ComplianceBadge from '../components/ComplianceBadge';
 import SecurityActionBtn from '../components/SecurityActionBtn';
 import EmptyState from '../components/EmptyState';
-import { ShieldCheck, HardDrive, AlertTriangle, Download, Activity, Lock } from 'lucide-react';
+import { ShieldCheck, HardDrive, AlertTriangle, Download, Activity, Lock, ArrowUpRight, Sparkles } from 'lucide-react';
+import cyberShieldImg from '../assets/cyber-shield.png';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -69,14 +70,14 @@ export default function Dashboard() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.1
+        staggerChildren: 0.12,
+        delayChildren: 0.05
       }
     }
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 15 },
+    hidden: { opacity: 0, y: 18 },
     visible: {
       opacity: 1,
       y: 0,
@@ -91,123 +92,159 @@ export default function Dashboard() {
       animate="visible"
       className="space-y-8"
     >
-      {/* Page Header */}
-      <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <span className="text-xs font-mono text-[var(--accent-brass)] uppercase tracking-widest">
-            Overview
-          </span>
-          <h1 className="text-3xl font-serif font-semibold text-[var(--text-primary)] mt-1">
+      {/* Visual Hero Header Banner */}
+      <motion.div 
+        variants={itemVariants} 
+        className="layered-card-accent p-6 sm:p-8 rounded-sm bg-gradient-to-r from-[var(--bg-card)] via-[var(--bg-card-elevated)] to-[var(--bg-card)] relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6"
+      >
+        <div className="absolute top-0 right-0 w-80 h-80 bg-[var(--accent-brass-glow)] rounded-full blur-3xl -z-10 pointer-events-none" />
+
+        <div className="space-y-2 text-left max-w-xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--badge-success-bg)] border border-[var(--status-success)]/30 text-[var(--badge-success-text)] text-xs font-mono">
+            <Sparkles className="w-3.5 h-3.5 text-[var(--accent-brass)]" />
+            <span>Vault Operational & Secure</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-serif font-semibold text-[var(--text-primary)]">
             Your Privacy, at a Glance
           </h1>
+          <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
+            Your data is protected under client-isolated encryption. Only your password can unseal your files.
+          </p>
         </div>
 
-        <SecurityActionBtn
-          onClick={handleExportLedger}
-          actionLabel="Preparing download…"
-          successLabel="Downloaded"
-          delayMs={800}
-          variant="outline"
-        >
-          <Download className="w-4 h-4 text-[var(--accent-brass)]" />
-          <span>Export Activity Log</span>
-        </SecurityActionBtn>
+        <div className="flex items-center gap-4 shrink-0">
+          <motion.img 
+            src={cyberShieldImg} 
+            alt="Cyber Shield Visual" 
+            animate={{ rotate: [0, 3, 0, -3, 0] }}
+            transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+            className="w-24 h-24 object-contain hidden sm:block drop-shadow-[0_8px_16px_rgba(0,0,0,0.5)]"
+          />
+
+          <SecurityActionBtn
+            onClick={handleExportLedger}
+            actionLabel="Preparing download…"
+            successLabel="Downloaded"
+            delayMs={700}
+            variant="outline"
+          >
+            <Download className="w-4 h-4 text-[var(--accent-brass)]" />
+            <span>Export Activity Log</span>
+          </SecurityActionBtn>
+        </div>
       </motion.div>
 
-      {/* Data Protection Journey Diagram */}
+      {/* Data Protection Flow Visualization */}
       <motion.div variants={itemVariants}>
         <DataJourney />
       </motion.div>
 
-      {/* Core Security Metrics Grid */}
+      {/* Core Security Metrics Cards */}
       <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Compliance Status Badge */}
         <ComplianceBadge score={score ?? 85} unresolvedAlertsCount={unresolvedAlerts.length} />
 
-        {/* Protected Files */}
-        <div className="layered-card p-5 rounded-sm flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-4 pb-3 border-b border-[var(--border-primary)]">
-            <div className="flex items-center gap-2">
-              <HardDrive className="w-4 h-4 text-[var(--accent-brass)]" />
-              <h3 className="text-sm font-serif text-[var(--text-primary)]">
-                Protected Files
-              </h3>
+        {/* Protected Files Card */}
+        <motion.div 
+          whileHover={{ y: -3 }}
+          className="layered-card p-6 rounded-sm flex flex-col justify-between group transition-all"
+        >
+          <div>
+            <div className="flex items-center justify-between mb-4 pb-3 border-b border-[var(--border-primary)]">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded bg-[var(--bg-input)] text-[var(--accent-brass)] group-hover:bg-[var(--accent-brass)] group-hover:text-[#12141C] transition-colors">
+                  <HardDrive className="w-4 h-4" />
+                </div>
+                <h3 className="text-sm font-serif text-[var(--text-primary)]">
+                  Protected Files
+                </h3>
+              </div>
+              <span className="text-xs font-mono text-[var(--status-success)]">
+                Encrypted
+              </span>
             </div>
-            <span className="text-xs font-mono text-[var(--status-success)]">
-              Encrypted
-            </span>
-          </div>
 
-          <div className="my-2">
-            <span className="text-4xl font-serif text-[var(--text-primary)] font-semibold">
-              {loading ? "--" : String(encryptionCount).padStart(2, '0')}
-            </span>
-            <p className="text-xs text-[var(--text-secondary)] mt-1">
-              Files safely stored — only you can read them.
-            </p>
+            <div className="my-3">
+              <span className="text-5xl font-serif text-[var(--text-primary)] font-semibold tracking-tight">
+                {loading ? "--" : String(encryptionCount).padStart(2, '0')}
+              </span>
+              <p className="text-xs text-[var(--text-secondary)] mt-2 leading-relaxed">
+                Files safely stored in private isolation — accessible only with your password key.
+              </p>
+            </div>
           </div>
 
           <button
             onClick={() => navigate('/my-data')}
-            className="w-full mt-4 py-2 rounded-sm bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] border border-[var(--border-primary)] text-xs text-[var(--text-primary)] font-mono transition-colors text-center cursor-pointer"
+            className="w-full mt-4 py-2.5 rounded-sm bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] border border-[var(--border-primary)] text-xs text-[var(--text-primary)] font-mono transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
           >
-            Manage Files →
+            <span>Manage Files</span>
+            <ArrowUpRight className="w-3.5 h-3.5 text-[var(--accent-brass)]" />
           </button>
-        </div>
+        </motion.div>
 
-        {/* Security Alerts */}
-        <div className="layered-card p-5 rounded-sm flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-4 pb-3 border-b border-[var(--border-primary)]">
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-[var(--accent-brass)]" />
-              <h3 className="text-sm font-serif text-[var(--text-primary)]">
-                Security Alerts
-              </h3>
+        {/* Security Alerts Card */}
+        <motion.div 
+          whileHover={{ y: -3 }}
+          className="layered-card p-6 rounded-sm flex flex-col justify-between group transition-all"
+        >
+          <div>
+            <div className="flex items-center justify-between mb-4 pb-3 border-b border-[var(--border-primary)]">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded bg-[var(--bg-input)] text-[var(--accent-brass)] group-hover:bg-[var(--accent-brass)] group-hover:text-[#12141C] transition-colors">
+                  <AlertTriangle className="w-4 h-4" />
+                </div>
+                <h3 className="text-sm font-serif text-[var(--text-primary)]">
+                  Security Alerts
+                </h3>
+              </div>
+              <span className={`text-xs font-mono ${unresolvedAlerts.length > 0 ? 'text-[var(--status-danger)]' : 'text-[var(--status-success)]'}`}>
+                {unresolvedAlerts.length > 0 ? 'ALERT' : 'ALL CLEAR'}
+              </span>
             </div>
-            <span className={`text-xs font-mono ${unresolvedAlerts.length > 0 ? 'text-[var(--status-danger)]' : 'text-[var(--status-success)]'}`}>
-              {unresolvedAlerts.length > 0 ? 'ALERT' : 'ALL CLEAR'}
-            </span>
-          </div>
 
-          <div className="my-2">
-            <span className={`text-4xl font-serif font-semibold ${unresolvedAlerts.length > 0 ? 'text-[var(--status-danger)]' : 'text-[var(--text-primary)]'}`}>
-              {loading ? "--" : String(unresolvedAlerts.length).padStart(2, '0')}
-            </span>
-            <p className="text-xs text-[var(--text-secondary)] mt-1">
-              {unresolvedAlerts.length > 0 ? "Some alerts need your attention." : "Everything looks good — no issues detected."}
-            </p>
+            <div className="my-3">
+              <span className={`text-5xl font-serif font-semibold tracking-tight ${unresolvedAlerts.length > 0 ? 'text-[var(--status-danger)]' : 'text-[var(--text-primary)]'}`}>
+                {loading ? "--" : String(unresolvedAlerts.length).padStart(2, '0')}
+              </span>
+              <p className="text-xs text-[var(--text-secondary)] mt-2 leading-relaxed">
+                {unresolvedAlerts.length > 0 ? "Security alerts detected that require your attention." : "All access metrics are nominal — zero suspicious activity."}
+              </p>
+            </div>
           </div>
 
           <button
             onClick={() => navigate('/access-logs')}
-            className="w-full mt-4 py-2 rounded-sm bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] border border-[var(--border-primary)] text-xs text-[var(--text-primary)] font-mono transition-colors text-center cursor-pointer"
+            className="w-full mt-4 py-2.5 rounded-sm bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] border border-[var(--border-primary)] text-xs text-[var(--text-primary)] font-mono transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
           >
-            View Activity Log →
+            <span>View Activity Log</span>
+            <ArrowUpRight className="w-3.5 h-3.5 text-[var(--accent-brass)]" />
           </button>
-        </div>
+        </motion.div>
       </motion.div>
 
-      {/* Recent Activity Preview */}
+      {/* Audit Trail Section */}
       <motion.div variants={itemVariants} className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-serif text-[var(--text-primary)]">
-              Recent Activity
+              Recent Activity Trail
             </h2>
-            <p className="text-xs text-[var(--text-secondary)]">
-              A record of recent actions on your account.
+            <p className="text-xs text-[var(--text-secondary)] font-mono">
+              Live audit events recorded for user verification.
             </p>
           </div>
           <button
             onClick={() => navigate('/access-logs')}
-            className="text-xs font-mono text-[var(--accent-brass)] hover:underline"
+            className="text-xs font-mono text-[var(--accent-brass)] hover:underline flex items-center gap-1"
           >
-            View All →
+            <span>View All</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
           </button>
         </div>
 
         {loading ? (
-          <div className="layered-card p-6 text-center text-xs font-mono text-[var(--text-tertiary)]">
+          <div className="layered-card p-8 text-center text-xs font-mono text-[var(--text-tertiary)]">
             Loading activity…
           </div>
         ) : recentLogs.length === 0 ? (
@@ -217,15 +254,16 @@ export default function Dashboard() {
             iconType="logs"
           />
         ) : (
-          <div className="layered-card rounded-sm overflow-hidden divide-y divide-[var(--border-primary)]">
+          <div className="layered-card rounded-sm overflow-hidden divide-y divide-[var(--border-primary)] border border-[var(--border-primary)]">
             {recentLogs.map((log, idx) => (
-              <div
+              <motion.div
                 key={log.id || idx}
-                className="p-4 flex items-center justify-between text-xs hover:bg-[var(--bg-hover)] transition-colors"
+                whileHover={{ backgroundColor: 'var(--bg-hover)' }}
+                className="p-4 flex items-center justify-between text-xs transition-colors"
               >
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded bg-[var(--bg-input)] text-[var(--accent-brass)]">
-                    <Activity className="w-3.5 h-3.5" />
+                    <Activity className="w-4 h-4" />
                   </div>
                   <div>
                     <span className="font-mono text-[var(--text-primary)] font-medium block">
@@ -241,7 +279,7 @@ export default function Dashboard() {
                   <span className="font-mono text-[var(--text-secondary)] hidden sm:inline">
                     {log.ip_address || '127.0.0.1'}
                   </span>
-                  <span className={`px-2 py-0.5 font-mono text-[10px] rounded uppercase border ${
+                  <span className={`px-2.5 py-0.5 font-mono text-[10px] rounded uppercase border ${
                     log.status === 'success' || log.status === 'completed'
                       ? 'bg-[var(--badge-success-bg)] text-[var(--badge-success-text)] border-[var(--status-success)]/30'
                       : 'bg-[var(--badge-danger-bg)] text-[var(--badge-danger-text)] border-[var(--status-danger)]/30'
@@ -249,7 +287,7 @@ export default function Dashboard() {
                     {log.status || 'OK'}
                   </span>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         )}
