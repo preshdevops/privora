@@ -2,8 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 export default function EmptyState({
-  title = "No Data Found",
-  description = "Your encrypted vault is currently empty. Upload files to protect them with AES-256.",
+  title = "Nothing here yet",
+  description = "Upload a file to start protecting it.",
   action = null,
   iconType = "vault" // "vault" | "logs" | "alert" | "search"
 }) {

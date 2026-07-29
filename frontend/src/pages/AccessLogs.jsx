@@ -53,7 +53,7 @@ export default function AccessLogs() {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `privora_access_logs_${new Date().toISOString().slice(0,10)}.csv`);
+    link.setAttribute("download", `privora_activity_${new Date().toISOString().slice(0,10)}.csv`);
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -77,26 +77,26 @@ export default function AccessLogs() {
       <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
         <div>
           <span className="text-xs font-mono text-[var(--accent-brass)] uppercase tracking-widest flex items-center gap-1.5">
-            <Terminal className="w-3.5 h-3.5" />
-            Immutable Telemetry Ledger
+            <Activity className="w-3.5 h-3.5" />
+            Activity History
           </span>
           <h1 className="text-3xl font-serif font-semibold text-[var(--text-primary)] mt-1">
             Access & Security Logs
           </h1>
           <p className="text-xs text-[var(--text-secondary)] mt-1">
-            Auditable trail of cryptographic operations, authentication attempts, and settings changes.
+            A complete record of logins, file actions, and settings changes on your account.
           </p>
         </div>
 
         <SecurityActionBtn
           onClick={handleExportCSV}
-          actionLabel="Formatting CSV..."
-          successLabel="CSV Exported"
+          actionLabel="Preparing CSV…"
+          successLabel="Downloaded"
           delayMs={650}
           variant="outline"
         >
           <Download className="w-4 h-4 text-[var(--accent-brass)]" />
-          <span>Export CSV Ledger</span>
+          <span>Export CSV</span>
         </SecurityActionBtn>
       </div>
 
@@ -108,19 +108,19 @@ export default function AccessLogs() {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search IP, action signature, data item..."
-            className="bg-transparent text-xs text-[var(--text-primary)] outline-none font-mono w-full"
+            placeholder="Search by IP, action, or file name…"
+            className="bg-transparent text-xs text-[var(--text-primary)] outline-none w-full"
           />
         </div>
 
         <div className="flex items-center gap-3 w-full md:w-auto justify-end">
-          <label className="text-xs font-mono text-[var(--text-tertiary)] shrink-0">
-            Filter Status:
+          <label className="text-xs text-[var(--text-tertiary)] shrink-0">
+            Status:
           </label>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-1.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-xs font-mono text-[var(--text-primary)] outline-none"
+            className="px-3 py-1.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-xs text-[var(--text-primary)] outline-none"
           >
             <option>Any Status</option>
             <option value="success">Success</option>
@@ -138,19 +138,19 @@ export default function AccessLogs() {
         </div>
       ) : filteredLogs.length === 0 ? (
         <EmptyState
-          title="No Log Telemetry Matches Query"
-          description="There are no access logs matching your current filter criteria."
+          title="No matching logs"
+          description="No activity matches your current filter. Try adjusting your search."
           iconType="logs"
         />
       ) : (
         <div className="layered-card rounded-sm overflow-hidden border border-[var(--border-primary)]">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs font-mono">
+            <table className="w-full text-left text-xs">
               <thead className="bg-[var(--bg-sidebar)] border-b border-[var(--border-primary)] text-[var(--text-tertiary)] uppercase text-[10px] tracking-wider">
                 <tr>
-                  <th className="px-5 py-3.5">Timestamp (UTC)</th>
-                  <th className="px-5 py-3.5">Action Signature</th>
-                  <th className="px-5 py-3.5">Target Resource</th>
+                  <th className="px-5 py-3.5">Time</th>
+                  <th className="px-5 py-3.5">Action</th>
+                  <th className="px-5 py-3.5">File / Resource</th>
                   <th className="px-5 py-3.5">IP Address</th>
                   <th className="px-5 py-3.5 text-right">Status</th>
                 </tr>
@@ -163,10 +163,10 @@ export default function AccessLogs() {
                     </td>
                     <td className="px-5 py-3.5 font-medium text-[var(--text-primary)] flex items-center gap-2">
                       <Activity className="w-3.5 h-3.5 text-[var(--accent-brass)]" />
-                      <span>{log.action || log.event || 'System Activity'}</span>
+                      <span>{log.action || log.event || 'Activity'}</span>
                     </td>
                     <td className="px-5 py-3.5 text-[var(--text-secondary)] truncate max-w-xs">
-                      {log.data_item || log.location || 'N/A'}
+                      {log.data_item || log.location || '—'}
                     </td>
                     <td className="px-5 py-3.5 text-[var(--text-tertiary)]">
                       {log.ip_address || '127.0.0.1'}
@@ -190,8 +190,8 @@ export default function AccessLogs() {
 
       {/* Pagination Controls */}
       {!loading && totalCount > 0 && (
-        <div className="flex items-center justify-between font-mono text-xs text-[var(--text-tertiary)] pt-2">
-          <span>Total Records: {totalCount}</span>
+        <div className="flex items-center justify-between text-xs text-[var(--text-tertiary)] pt-2">
+          <span>Total: {totalCount} entries</span>
           <div className="flex items-center gap-2">
             <button
               disabled={page <= 1}

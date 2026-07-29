@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ShieldCheck, Lock, KeyRound, EyeOff, Activity, ArrowRight } from 'lucide-react';
+import heroImg from '../assets/hero.png';
 
 export default function Landing() {
   const scrollTo = (id) => {
@@ -22,19 +23,16 @@ export default function Landing() {
             </span>
           </div>
 
-          <div className="hidden md:flex items-center gap-8 text-xs font-mono text-[var(--text-secondary)]">
-            <button onClick={() => scrollTo('architecture')} className="hover:text-[var(--accent-brass)] transition-colors">
-              Architecture
+          <div className="hidden md:flex items-center gap-8 text-xs text-[var(--text-secondary)]">
+            <button onClick={() => scrollTo('how-it-works')} className="hover:text-[var(--accent-brass)] transition-colors">
+              How It Works
             </button>
-            <button onClick={() => scrollTo('protocol')} className="hover:text-[var(--accent-brass)] transition-colors">
-              Protocol
-            </button>
-            <button onClick={() => scrollTo('compliance')} className="hover:text-[var(--accent-brass)] transition-colors">
-              Compliance
+            <button onClick={() => scrollTo('why-privora')} className="hover:text-[var(--accent-brass)] transition-colors">
+              Why Privora
             </button>
           </div>
 
-          <div className="flex items-center gap-4 text-xs font-mono">
+          <div className="flex items-center gap-4 text-xs">
             <Link to="/login" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
               Sign In
             </Link>
@@ -42,7 +40,7 @@ export default function Landing() {
               to="/register"
               className="px-4 py-2 bg-[var(--accent-brass)] text-[#12141C] font-medium rounded-sm hover:bg-[var(--accent-brass-bright)] shadow-[var(--shadow-layered)] transition-all"
             >
-              Open Vault
+              Get Started
             </Link>
           </div>
         </div>
@@ -50,89 +48,71 @@ export default function Landing() {
 
       {/* Hero Section */}
       <section className="relative py-20 lg:py-28 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-12 gap-12 items-center">
+        {/* Ambient hero image with slow drift */}
+        <motion.img
+          src={heroImg}
+          alt=""
+          initial={{ opacity: 0, scale: 1.08 }}
+          animate={{ opacity: 0.15, scale: 1 }}
+          transition={{ duration: 2, ease: [0.25, 1, 0.5, 1] }}
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
+          style={{ filter: 'saturate(0.2) blur(1px)' }}
+        />
+        <motion.div
+          animate={{ y: [0, -8, 0] }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute inset-0 pointer-events-none"
+          style={{ backgroundImage: `url(${heroImg})`, backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.06, filter: 'saturate(0) blur(2px)' }}
+        />
+
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
-            className="lg:col-span-7 space-y-6 text-left"
+            className="max-w-2xl space-y-6 text-left"
           >
             <span className="text-xs font-mono text-[var(--accent-brass)] uppercase tracking-widest block">
-              NDPR 2023 / GAID 2025 Standard
+              Personal Data Protection
             </span>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-semibold text-[var(--text-primary)] leading-[1.15]">
-              A Deliberate Vault for <br />
-              <span className="text-[var(--accent-brass)] italic">Personal Data Integrity.</span>
+              Your Files, Protected{" "}
+              <span className="text-[var(--accent-brass)] italic">Beyond Reach.</span>
             </h1>
 
             <p className="text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed max-w-xl">
-              Privora provides cryptographic file isolation, active threat detection, and audit ledger telemetry. Designed to give Nigerian citizens and data controllers absolute sovereignty over sensitive records.
+              Privora encrypts your personal files so that only you can read them — not us, not anyone else. 
+              Built to meet Nigerian and international privacy law.
             </p>
 
-            <div className="flex items-center gap-4 pt-4 font-mono text-xs">
+            <div className="flex items-center gap-4 pt-4 text-xs">
               <Link
                 to="/register"
                 className="px-6 py-3 bg-[var(--accent-brass)] text-[#12141C] font-medium rounded-sm hover:bg-[var(--accent-brass-bright)] shadow-[var(--shadow-layered)] transition-all flex items-center gap-2"
               >
-                <span>Initialize Vault</span>
+                <span>Get Started — Free</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <button
-                onClick={() => scrollTo('architecture')}
+                onClick={() => scrollTo('how-it-works')}
                 className="px-6 py-3 layered-card rounded-sm text-[var(--text-primary)] hover:border-[var(--accent-brass)] transition-colors"
               >
-                Inspect Protocol
+                How It Works
               </button>
-            </div>
-          </motion.div>
-
-          {/* Custom Minimal SVG Illustration */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1], delay: 0.2 }}
-            className="lg:col-span-5"
-          >
-            <div className="layered-card-accent p-8 rounded-sm bg-[var(--bg-card)] flex flex-col justify-between aspect-square relative">
-              <div className="flex items-center justify-between text-xs font-mono">
-                <span className="text-[var(--text-tertiary)] uppercase">Cipher Stream</span>
-                <span className="text-[var(--badge-success-text)] flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-[var(--status-success)] animate-pulse" />
-                  AES-256-CBC
-                </span>
-              </div>
-
-              {/* Minimal Line Vault Illustration */}
-              <div className="my-auto py-6 flex justify-center">
-                <svg className="w-48 h-48 text-[var(--accent-brass)]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="20" y="30" width="60" height="50" rx="3" stroke="currentColor" strokeWidth="1.5" />
-                  <path d="M35 30V22C35 13.716 41.716 7 50 7C58.284 7 65 13.716 65 22V30" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                  <circle cx="50" cy="50" r="7" stroke="currentColor" strokeWidth="1.5" />
-                  <line x1="50" y1="57" x2="50" y2="67" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                  {/* Concentric Security Lines */}
-                  <circle cx="50" cy="50" r="28" stroke="currentColor" strokeWidth="1" strokeDasharray="3 3" opacity="0.6" />
-                  <circle cx="50" cy="50" r="38" stroke="currentColor" strokeWidth="1" strokeDasharray="4 4" opacity="0.3" />
-                </svg>
-              </div>
-
-              <div className="pt-4 border-t border-[var(--border-primary)] flex items-center justify-between text-[11px] font-mono text-[var(--text-tertiary)]">
-                <span>PBKDF2-HMAC-SHA256</span>
-                <span>600,000 ITER</span>
-              </div>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Protocol Metrics Bar */}
+      {/* Trust Metrics Bar */}
       <section className="border-y border-[var(--border-primary)] bg-[var(--bg-secondary)] py-6">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-6 font-mono text-xs">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-xs">
           {[
-            { label: "Encryption Engine", value: "AES-256-CBC" },
-            { label: "Key Derivation", value: "PBKDF2 SHA-256" },
-            { label: "Compliance Standard", value: "NDPR 2023 / GAID" },
-            { label: "Telemetry Ledger", value: "Immutable Audit" }
+            { label: "File Protection", value: "Bank-Grade Encryption" },
+            { label: "Password Security", value: "Private Key from Your Password" },
+            { label: "Legal Compliance", value: "Nigerian & International Law" },
+            { label: "Activity Tracking", value: "Full Audit History" }
           ].map((item, i) => (
             <div key={i} className="space-y-1">
               <span className="text-[10px] text-[var(--text-tertiary)] uppercase block">{item.label}</span>
@@ -142,15 +122,15 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Architecture Highlights */}
-      <section id="architecture" className="py-20">
+      {/* How It Works */}
+      <section id="how-it-works" className="py-20">
         <div className="max-w-7xl mx-auto px-6 space-y-12">
           <div>
             <span className="text-xs font-mono text-[var(--accent-brass)] uppercase tracking-widest">
-              Core Principles
+              How It Works
             </span>
             <h2 className="text-3xl font-serif text-[var(--text-primary)] mt-1">
-              Engineered for Sovereignty
+              Protection You Can Trust
             </h2>
           </div>
 
@@ -158,18 +138,18 @@ export default function Landing() {
             {[
               {
                 icon: ShieldCheck,
-                title: "Zero-Knowledge Encryption",
-                desc: "Payloads are encrypted using AES-256-CBC with keys derived via 600,000 PBKDF2 iterations. Master passwords are never persisted."
+                title: "Only You Hold the Key",
+                desc: "Your password is turned into a unique private key that never leaves your device. Not even Privora can read your files."
               },
               {
                 icon: Activity,
-                title: "Autonomous Threat Detection",
-                desc: "Rule-based audit checks analyze access frequencies and failed logins in real time, automatically invalidating compromised sessions."
+                title: "Always Watching for Threats",
+                desc: "Every login, download, and change is logged. Unusual activity triggers alerts automatically — no setup needed."
               },
               {
                 icon: EyeOff,
-                title: "Privacy Minimization",
-                desc: "Configurable protection controls for ad/tracker blocking, cookie isolation, and fingerprint defense built for NDPR compliance."
+                title: "Built for Privacy Laws",
+                desc: "Configurable privacy controls for tracking, cookies, and fingerprint defense — designed to meet Nigerian and international data protection standards."
               }
             ].map((feature, i) => {
               const Icon = feature.icon;
@@ -192,20 +172,20 @@ export default function Landing() {
       </section>
 
       {/* CTA Footer */}
-      <section className="py-16 border-t border-[var(--border-primary)] bg-[var(--bg-secondary)] text-center">
+      <section id="why-privora" className="py-16 border-t border-[var(--border-primary)] bg-[var(--bg-secondary)] text-center">
         <div className="max-w-3xl mx-auto px-6 space-y-6">
           <h2 className="text-3xl font-serif text-[var(--text-primary)]">
-            Take Control of Your Data Protection.
+            Take Control of Your Data.
           </h2>
-          <p className="text-xs font-mono text-[var(--text-secondary)]">
-            Deploy your secure personal vault today under NDPR standards.
+          <p className="text-xs text-[var(--text-secondary)]">
+            Start protecting your personal files today — it takes less than a minute.
           </p>
           <div className="pt-2">
             <Link
               to="/register"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--accent-brass)] text-[#12141C] text-xs font-mono font-medium rounded-sm hover:bg-[var(--accent-brass-bright)] shadow-[var(--shadow-layered)]"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--accent-brass)] text-[#12141C] text-xs font-medium rounded-sm hover:bg-[var(--accent-brass-bright)] shadow-[var(--shadow-layered)]"
             >
-              <span>Initialize Vault Account</span>
+              <span>Create Your Account</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>

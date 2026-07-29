@@ -92,37 +92,37 @@ export default function Settings() {
     {
       key: 'tracking_protection',
       label: 'Tracking Protection',
-      desc: 'Block third-party tracking vectors and unauthorized cross-site telemetry.',
+      desc: 'Block third-party trackers and cross-site tracking.',
       icon: ShieldCheck
     },
     {
       key: 'data_sharing',
       label: 'Data Sharing',
-      desc: 'Allow anonymized metadata sharing for security threat intelligence.',
+      desc: 'Allow anonymised usage data to improve security.',
       icon: Share2
     },
     {
       key: 'ad_blocking',
-      label: 'Ad & Script Isolation',
-      desc: 'Prevent non-essential dynamic scripts and network trackers from loading.',
+      label: 'Ad & Script Blocking',
+      desc: 'Block ads and unnecessary scripts from loading.',
       icon: EyeOff
     },
     {
       key: 'cookie_control',
-      label: 'Strict Cookie Control',
-      desc: 'Reject non-essential storage cookies and wipe session tokens on close.',
+      label: 'Cookie Control',
+      desc: 'Reject non-essential cookies and clear them on close.',
       icon: Cookie
     },
     {
       key: 'location_masking',
-      label: 'Location Masking',
-      desc: 'Obfuscate client IP and geo-location headers from third-party requests.',
+      label: 'Location Privacy',
+      desc: 'Hide your IP and location from third-party services.',
       icon: MapPin
     },
     {
       key: 'fingerprint_defense',
-      label: 'Fingerprint Defense',
-      desc: 'Disrupt browser canvas and WebGL hardware fingerprinting scripts.',
+      label: 'Fingerprint Protection',
+      desc: 'Prevent websites from identifying your device.',
       icon: Fingerprint
     },
   ];
@@ -133,13 +133,13 @@ export default function Settings() {
       <div>
         <span className="text-xs font-mono text-[var(--accent-brass)] uppercase tracking-widest flex items-center gap-1.5">
           <Sliders className="w-3.5 h-3.5" />
-          Privacy & Security Configuration
+          Settings
         </span>
         <h1 className="text-3xl font-serif font-semibold text-[var(--text-primary)] mt-1">
-          Vault Settings
+          Privacy & Account Settings
         </h1>
         <p className="text-xs text-[var(--text-secondary)] mt-1">
-          Configure NDPR 2023 compliance toggles, session expiration, and identity preferences.
+          Control your privacy preferences, session rules, and account details.
         </p>
       </div>
 
@@ -150,10 +150,10 @@ export default function Settings() {
           <div className="layered-card p-6 rounded-sm space-y-4">
             <div className="pb-3 border-b border-[var(--border-primary)]">
               <h2 className="text-lg font-serif text-[var(--text-primary)]">
-                Privacy Protections (NDPR / GDPR)
+                Privacy Controls
               </h2>
               <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                Toggle data defense mechanisms to enforce personal data minimization.
+                Choose which protections are active on your account.
               </p>
             </div>
 
@@ -204,25 +204,25 @@ export default function Settings() {
             )}
           </div>
 
-          {/* Account & Session Preferences */}
+          {/* Account Preferences */}
           <div className="layered-card p-6 rounded-sm space-y-6">
             <div className="pb-3 border-b border-[var(--border-primary)]">
               <h2 className="text-lg font-serif text-[var(--text-primary)]">
-                Session & Data Lifecycle
+                Session & Data Retention
               </h2>
               <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                Manage automated session timeouts and telemetry retention policies.
+                How long you stay signed in and how long activity logs are kept.
               </p>
             </div>
 
-            <div className="space-y-4 text-xs font-mono">
+            <div className="space-y-4 text-xs">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
                   <label className="text-[var(--text-primary)] font-medium block">
                     Session Timeout
                   </label>
                   <span className="text-[10px] text-[var(--text-tertiary)] block">
-                    Inactivity threshold before automatic session revocation.
+                    How long before you're automatically signed out.
                   </span>
                 </div>
                 <select
@@ -240,10 +240,10 @@ export default function Settings() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-3 border-t border-[var(--border-primary)]">
                 <div>
                   <label className="text-[var(--text-primary)] font-medium block">
-                    Telemetry Retention
+                    Log Retention
                   </label>
                   <span className="text-[10px] text-[var(--text-tertiary)] block">
-                    Automatic deletion cycle for audit logs.
+                    How long activity logs are kept before automatic deletion.
                   </span>
                 </div>
                 <select
@@ -262,23 +262,23 @@ export default function Settings() {
             <div className="pt-4 border-t border-[var(--border-primary)] flex justify-end">
               <SecurityActionBtn
                 onClick={handleSaveAccount}
-                actionLabel="Persisting Config..."
+                actionLabel="Saving…"
                 successLabel="Saved"
                 delayMs={700}
               >
                 <Save className="w-3.5 h-3.5" />
-                <span>Save Account Settings</span>
+                <span>Save Changes</span>
               </SecurityActionBtn>
             </div>
           </div>
         </div>
 
-        {/* Identity & Score Side Column */}
+        {/* Side Column */}
         <div className="lg:col-span-4 space-y-6">
-          {/* Dynamic Protection Score */}
+          {/* Protection Score */}
           <div className="layered-card p-6 rounded-sm text-center">
             <span className="text-[10px] font-mono uppercase text-[var(--text-tertiary)] tracking-widest block mb-3">
-              Computed Protection Index
+              Protection Score
             </span>
             <div className="w-28 h-28 mx-auto rounded-full bg-[var(--bg-input)] border border-[var(--border-accent)] flex flex-col items-center justify-center my-4 shadow-[var(--shadow-layered)]">
               <span className="text-3xl font-serif font-semibold text-[var(--accent-brass)]">
@@ -287,23 +287,23 @@ export default function Settings() {
               <span className="text-[10px] font-mono text-[var(--text-muted)]">/ 100</span>
             </div>
             <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-              Score dynamically updates as you adjust privacy controls and encrypt data assets.
+              Your score updates as you adjust privacy settings and protect files.
             </p>
           </div>
 
-          {/* User Identity */}
+          {/* User Info */}
           <div className="layered-card p-5 rounded-sm space-y-3">
             <div className="flex items-center gap-2 pb-2 border-b border-[var(--border-primary)] text-xs font-serif text-[var(--text-primary)]">
               <User className="w-4 h-4 text-[var(--accent-brass)]" />
-              <span>Data Subject Identity</span>
+              <span>Your Account</span>
             </div>
-            <div className="space-y-2 text-xs font-mono">
+            <div className="space-y-2 text-xs">
               <div>
                 <span className="text-[10px] text-[var(--text-tertiary)] uppercase block">Full Name</span>
                 <span className="text-[var(--text-primary)]">{user?.full_name || 'N/A'}</span>
               </div>
               <div>
-                <span className="text-[10px] text-[var(--text-tertiary)] uppercase block">Email Address</span>
+                <span className="text-[10px] text-[var(--text-tertiary)] uppercase block">Email</span>
                 <span className="text-[var(--text-primary)] truncate block">{user?.email || 'N/A'}</span>
               </div>
             </div>
@@ -319,14 +319,14 @@ export default function Settings() {
               )}
               <div>
                 <span className="text-xs font-medium text-[var(--text-primary)] block">
-                  {theme === 'dark' ? 'Ink-Navy Mode' : 'Parchment Mode'}
+                  {theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
                 </span>
-                <span className="text-[10px] font-mono text-[var(--text-tertiary)]">Visual System Theme</span>
+                <span className="text-[10px] text-[var(--text-tertiary)]">Appearance</span>
               </div>
             </div>
             <button
               onClick={toggleTheme}
-              className="px-3 py-1 text-xs font-mono bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] border border-[var(--border-primary)] text-[var(--text-primary)] rounded-sm"
+              className="px-3 py-1 text-xs bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] border border-[var(--border-primary)] text-[var(--text-primary)] rounded-sm"
             >
               Toggle
             </button>

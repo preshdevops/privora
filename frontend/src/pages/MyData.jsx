@@ -17,7 +17,8 @@ import {
   Plus,
   ShieldCheck,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  Sparkles
 } from 'lucide-react';
 
 export default function MyData() {
@@ -30,6 +31,7 @@ export default function MyData() {
   const [downloadModal, setDownloadModal] = useState(null);
   const [downloadPassword, setDownloadPassword] = useState('');
   const [toast, setToast] = useState(null);
+  const [firstProtection, setFirstProtection] = useState(false);
 
   const fileInputRef = useRef(null);
 
@@ -63,13 +65,22 @@ export default function MyData() {
       await axiosInstance.post('/api/encryption/upload/', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      showToast('Payload sealed and encrypted with AES-256');
+
+      // Celebratory moment for first file protection
+      const wasEmpty = assets.length === 0;
       setShowModal(false);
       setSelectedFile(null);
       setPassword('');
       fetchAssets();
+
+      if (wasEmpty) {
+        setFirstProtection(true);
+        setTimeout(() => setFirstProtection(false), 3000);
+      } else {
+        showToast('File protected and stored safely');
+      }
     } catch (err) {
-      const msg = err.response?.data?.detail || 'Encryption upload failed';
+      const msg = err.response?.data?.detail || 'Upload failed — please try again';
       showToast(typeof msg === 'string' ? msg : 'Upload failed', 'error');
       throw err;
     }
@@ -78,10 +89,10 @@ export default function MyData() {
   const handleDelete = async (id) => {
     try {
       await axiosInstance.delete(`/api/encryption/assets/${id}/`);
-      showToast('Asset purged from vault');
+      showToast('File permanently deleted');
       fetchAssets();
     } catch {
-      showToast('Failed to delete asset', 'error');
+      showToast('Failed to delete file', 'error');
     }
   };
 
@@ -104,11 +115,11 @@ export default function MyData() {
       window.URL.revokeObjectURL(url);
       setDownloadModal(null);
       setDownloadPassword('');
-      showToast('Decryption verified & downloaded');
+      showToast('File unlocked and downloaded');
     } catch (err) {
       const msg = err.response?.status === 403
-        ? 'Invalid master password / decryption key'
-        : err.response?.data?.detail || 'Decryption failed';
+        ? 'Wrong password — please try again'
+        : err.response?.data?.detail || 'Could not unlock this file';
       showToast(typeof msg === 'string' ? msg : 'Download failed', 'error');
       throw err;
     }
@@ -156,7 +167,7 @@ export default function MyData() {
             exit={{ opacity: 0, y: -20, scale: 0.95 }}
             className="fixed top-6 right-6 z-[60]"
           >
-            <div className={`flex items-center gap-3 px-5 py-3.5 rounded-sm text-xs font-mono border shadow-[var(--shadow-layered)] ${
+            <div className={`flex items-center gap-3 px-5 py-3.5 rounded-sm text-xs border shadow-[var(--shadow-layered)] ${
               toast.type === 'error'
                 ? 'bg-[var(--badge-danger-bg)] text-[var(--badge-danger-text)] border-[var(--status-danger)]/40'
                 : 'bg-[var(--badge-success-bg)] text-[var(--badge-success-text)] border-[var(--status-success)]/40'
@@ -168,28 +179,63 @@ export default function MyData() {
         )}
       </AnimatePresence>
 
+      {/* First Protection Celebration */}
+      <AnimatePresence>
+        {firstProtection && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] flex items-center justify-center bg-[var(--bg-modal-overlay)]"
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+              className="layered-card-accent p-8 rounded-sm bg-[var(--bg-card)] text-center max-w-sm"
+            >
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.15, type: 'spring', stiffness: 200, damping: 12 }}
+                className="w-16 h-16 mx-auto rounded-full bg-[var(--accent-brass)] flex items-center justify-center text-[#12141C] mb-4"
+              >
+                <Sparkles className="w-8 h-8" />
+              </motion.div>
+              <h3 className="text-xl font-serif text-[var(--text-primary)] mb-2">
+                Your first file is protected!
+              </h3>
+              <p className="text-sm text-[var(--text-secondary)]">
+                Only you can access it. That's the Privora promise.
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
         <div>
           <span className="text-xs font-mono text-[var(--accent-brass)] uppercase tracking-widest flex items-center gap-1.5">
             <Lock className="w-3.5 h-3.5" />
-            AES-256-CBC Isolated Vault
+            My Files
           </span>
           <h1 className="text-3xl font-serif font-semibold text-[var(--text-primary)] mt-1">
-            Encrypted Assets
+            Protected Files
           </h1>
           <p className="text-xs text-[var(--text-secondary)] mt-1">
-            Zero-knowledge encrypted files protected under NDPR/GDPR guidelines.
+            Your encrypted files — only you can read them.
           </p>
         </div>
 
         <SecurityActionBtn
           onClick={() => setShowModal(true)}
-          actionLabel="Preparing Vault..."
+          actionLabel="Opening…"
           delayMs={300}
         >
           <Plus className="w-4 h-4" />
-          <span>Encrypt New File</span>
+          <span>Protect a File</span>
         </SecurityActionBtn>
       </div>
 
@@ -206,16 +252,16 @@ export default function MyData() {
         </div>
       ) : assets.length === 0 ? (
         <EmptyState
-          title="Vault Currently Empty"
-          description="You haven't uploaded any encrypted assets yet. Protect your first document or backup file using AES-256 encryption."
+          title="No files yet"
+          description="Upload your first file to protect it. Once encrypted, only you can read it."
           action={
             <SecurityActionBtn
               onClick={() => setShowModal(true)}
-              actionLabel="Preparing..."
+              actionLabel="Opening…"
               delayMs={300}
             >
               <Upload className="w-4 h-4" />
-              <span>Encrypt First File</span>
+              <span>Protect Your First File</span>
             </SecurityActionBtn>
           }
           iconType="vault"
@@ -240,7 +286,7 @@ export default function MyData() {
                     </div>
                     <div className="min-w-0">
                       <h3 className="text-sm font-medium text-[var(--text-primary)] truncate">
-                        {asset.name || 'Untitled Asset'}
+                        {asset.name || 'Untitled'}
                       </h3>
                       <span className="text-[11px] font-mono text-[var(--text-tertiary)] block mt-0.5">
                         {formatFileSize(asset.file_size)}
@@ -251,11 +297,11 @@ export default function MyData() {
 
                 <div className="p-2.5 rounded bg-[var(--bg-input)] border border-[var(--border-primary)] space-y-1 my-3 font-mono text-[10px] text-[var(--text-secondary)]">
                   <div className="flex justify-between">
-                    <span className="text-[var(--text-tertiary)]">ENCRYPTION:</span>
-                    <span className="text-[var(--accent-brass-bright)]">AES-256-CBC</span>
+                    <span className="text-[var(--text-tertiary)]">STATUS:</span>
+                    <span className="text-[var(--accent-brass-bright)]">Protected</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-[var(--text-tertiary)]">STORED:</span>
+                    <span className="text-[var(--text-tertiary)]">ADDED:</span>
                     <span>{asset.created_at ? new Date(asset.created_at).toLocaleDateString() : '--'}</span>
                   </div>
                 </div>
@@ -264,26 +310,26 @@ export default function MyData() {
               <div className="flex items-center justify-between pt-3 border-t border-[var(--border-primary)] mt-2">
                 <span className="text-[10px] font-mono text-[var(--badge-success-text)] flex items-center gap-1">
                   <ShieldCheck className="w-3.5 h-3.5" />
-                  SEALED
+                  SECURE
                 </span>
 
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => { setDownloadModal(asset); setDownloadPassword(''); }}
                     className="p-1.5 rounded bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] border border-[var(--border-primary)] text-[var(--text-primary)] hover:text-[var(--accent-brass)] transition-colors cursor-pointer"
-                    title="Retrieve & Decrypt"
+                    title="Unlock & Download"
                   >
                     <Unlock className="w-3.5 h-3.5" />
                   </button>
 
                   <SecurityActionBtn
                     onClick={() => handleDelete(asset.id)}
-                    actionLabel="Purging..."
-                    successLabel="Purged"
+                    actionLabel="Deleting…"
+                    successLabel="Deleted"
                     delayMs={600}
                     variant="danger"
                     className="!p-1.5 !text-xs"
-                    title="Purge Asset"
+                    title="Delete"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </SecurityActionBtn>
@@ -308,10 +354,10 @@ export default function MyData() {
               <div className="flex items-center justify-between mb-6 pb-4 border-b border-[var(--border-primary)]">
                 <div>
                   <span className="text-[10px] font-mono text-[var(--accent-brass)] uppercase tracking-wider">
-                    AES-256 Ingestion
+                    File Protection
                   </span>
                   <h2 className="text-xl font-serif text-[var(--text-primary)] mt-0.5">
-                    Encrypt File into Vault
+                    Protect a File
                   </h2>
                 </div>
                 <button
@@ -354,29 +400,29 @@ export default function MyData() {
                 ) : (
                   <div>
                     <p className="text-xs font-medium text-[var(--text-primary)]">
-                      Click to select or drag file here
+                      Click to select or drag a file here
                     </p>
-                    <p className="text-[10px] font-mono text-[var(--text-tertiary)] mt-1">
-                      Payload will be encrypted client-side using PBKDF2
+                    <p className="text-[10px] text-[var(--text-tertiary)] mt-1">
+                      Your file will be encrypted before storage
                     </p>
                   </div>
                 )}
               </div>
 
-              {/* Master Password Input */}
+              {/* Password Input */}
               <div className="mb-6 space-y-2">
-                <label className="block text-xs font-mono text-[var(--text-secondary)]">
-                  Encryption Master Password
+                <label className="block text-xs text-[var(--text-secondary)]">
+                  Choose a password for this file
                 </label>
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter secret passphrase..."
-                  className="w-full px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-xs text-[var(--text-primary)] font-mono outline-none"
+                  placeholder="Enter a strong password…"
+                  className="w-full px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-xs text-[var(--text-primary)] outline-none"
                 />
-                <p className="text-[10px] font-mono text-[var(--text-tertiary)] leading-normal">
-                  Privora never persists your password. Losing this passphrase means the payload cannot be decrypted.
+                <p className="text-[10px] text-[var(--text-tertiary)] leading-normal">
+                  Remember this password — it's the only way to unlock this file. We don't store it.
                 </p>
               </div>
 
@@ -393,12 +439,12 @@ export default function MyData() {
                 <SecurityActionBtn
                   onClick={handleUpload}
                   disabled={!selectedFile || !password.trim()}
-                  actionLabel="Encrypting & Deriving Key..."
-                  successLabel="Sealed"
+                  actionLabel="Protecting your file…"
+                  successLabel="Protected"
                   delayMs={850}
                 >
                   <Lock className="w-3.5 h-3.5" />
-                  <span>Encrypt & Upload</span>
+                  <span>Protect & Upload</span>
                 </SecurityActionBtn>
               </div>
             </motion.div>
@@ -406,7 +452,7 @@ export default function MyData() {
         )}
       </AnimatePresence>
 
-      {/* ─── Decrypt Retrieve Modal ─── */}
+      {/* ─── Unlock/Download Modal ─── */}
       <AnimatePresence>
         {downloadModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--bg-modal-overlay)]">
@@ -420,10 +466,10 @@ export default function MyData() {
               <div className="flex items-center justify-between mb-6 pb-4 border-b border-[var(--border-primary)]">
                 <div>
                   <span className="text-[10px] font-mono text-[var(--accent-brass)] uppercase tracking-wider">
-                    Decryption Verification
+                    Unlock File
                   </span>
                   <h2 className="text-xl font-serif text-[var(--text-primary)] mt-0.5">
-                    Retrieve Encrypted Asset
+                    Download Your File
                   </h2>
                 </div>
                 <button
@@ -447,16 +493,16 @@ export default function MyData() {
               </div>
 
               <div className="mb-6 space-y-2">
-                <label className="block text-xs font-mono text-[var(--text-secondary)]">
-                  Master Decryption Passphrase
+                <label className="block text-xs text-[var(--text-secondary)]">
+                  Enter the password you used to protect this file
                 </label>
                 <input
                   type="password"
                   value={downloadPassword}
                   onChange={(e) => setDownloadPassword(e.target.value)}
                   onKeyDown={(e) => { if (e.key === 'Enter' && downloadPassword.trim()) handleDownload(); }}
-                  placeholder="Enter passphrase to unseal..."
-                  className="w-full px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-xs text-[var(--text-primary)] font-mono outline-none"
+                  placeholder="File password…"
+                  className="w-full px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-xs text-[var(--text-primary)] outline-none"
                   autoFocus
                 />
               </div>
@@ -473,12 +519,12 @@ export default function MyData() {
                 <SecurityActionBtn
                   onClick={handleDownload}
                   disabled={!downloadPassword.trim()}
-                  actionLabel="Verifying PBKDF2 & CBC..."
-                  successLabel="Unsealed"
+                  actionLabel="Unlocking…"
+                  successLabel="Unlocked"
                   delayMs={750}
                 >
                   <Unlock className="w-3.5 h-3.5" />
-                  <span>Decrypt & Download</span>
+                  <span>Unlock & Download</span>
                 </SecurityActionBtn>
               </div>
             </motion.div>

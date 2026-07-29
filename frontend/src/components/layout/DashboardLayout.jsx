@@ -102,7 +102,7 @@ export default function DashboardLayout({ children }) {
               </span>
               <p className="text-[10px] text-[var(--accent-brass)] font-mono font-medium tracking-wider flex items-center gap-1.5 mt-0.5 uppercase">
                 <span className="w-1.5 h-1.5 rounded-full bg-[var(--status-success)] inline-block animate-pulse" />
-                Vault Secured
+                Protected
               </p>
             </div>
           </div>
@@ -146,20 +146,20 @@ export default function DashboardLayout({ children }) {
 
         {/* Bottom Section */}
         <div className="px-4 pb-6 mt-auto space-y-3">
-          {/* Security Status Motif Card */}
+          {/* Status Card */}
           <div className="layered-card p-3.5 rounded-sm bg-[var(--bg-card)]">
             <p className="text-[10px] font-mono tracking-widest text-[var(--text-muted)] uppercase mb-2">
-              Cryptographic Integrity
+              Security Status
             </p>
             <p className="text-xs flex items-center gap-2 text-[var(--badge-success-text)] font-mono">
               <span className="w-1.5 h-1.5 rounded-full bg-[var(--status-success)]" />
-              AES-256-CBC Active
+              Your data is protected
             </p>
             <button
               onClick={() => setShowOnboarding(true)}
               className="mt-3 w-full py-1.5 rounded-sm bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] border border-[var(--border-primary)] text-[var(--text-secondary)] hover:text-[var(--accent-brass)] text-[11px] font-mono transition-colors text-center cursor-pointer"
             >
-              Review Protection Flow
+              How Privora Works
             </button>
           </div>
 
@@ -172,7 +172,7 @@ export default function DashboardLayout({ children }) {
             id="sidebar-logout-btn"
           >
             <LogOut className="w-4 h-4 text-current" />
-            <span>{loggingOut ? 'Signing out...' : 'Sign Out'}</span>
+            <span>{loggingOut ? 'Signing out…' : 'Sign Out'}</span>
           </div>
         </div>
       </aside>
@@ -205,7 +205,7 @@ export default function DashboardLayout({ children }) {
               <Search className="w-3.5 h-3.5 text-[var(--text-tertiary)]" />
               <input
                 type="text"
-                placeholder="Search encrypted vault or logs..."
+                placeholder="Search files or activity…"
                 className="flex-1 bg-transparent text-xs text-[var(--text-primary)] outline-none placeholder:[var(--text-muted)]"
                 id="global-search"
               />
@@ -236,7 +236,7 @@ export default function DashboardLayout({ children }) {
                   {user?.full_name || user?.email?.split('@')[0] || 'User'}
                 </p>
                 <p className="text-[10px] font-mono text-[var(--text-tertiary)] uppercase">
-                  Data Subject
+                  Member
                 </p>
               </div>
               <div className="w-8 h-8 rounded-sm bg-[var(--bg-card-elevated)] border border-[var(--border-accent)] flex items-center justify-center text-[var(--accent-brass)] font-serif font-semibold text-xs shadow-[var(--shadow-layered)]">
@@ -253,13 +253,13 @@ export default function DashboardLayout({ children }) {
 
         {/* Footer */}
         <footer className="border-t border-[var(--border-primary)] px-4 sm:px-6 lg:px-8 py-4 bg-[var(--bg-primary)]">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-[var(--text-tertiary)]">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--text-tertiary)]">
             <div className="flex items-center gap-2">
-              <span className="font-serif font-medium text-[var(--text-primary)]">Privora Vault</span>
-              <span>— NDPR 2023 / GAID 2025 Standard</span>
+              <span className="font-serif font-medium text-[var(--text-primary)]">Privora</span>
+              <span>— Built to Nigerian and international privacy law</span>
             </div>
             <div>
-              AES-256-CBC • PBKDF2-HMAC-SHA256 • 600,000 Iterations
+              © {new Date().getFullYear()} Privora. All rights reserved.
             </div>
           </div>
         </footer>

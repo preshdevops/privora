@@ -59,7 +59,7 @@ export default function Dashboard() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `privora_audit_ledger_${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = `privora_activity_log_${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -95,22 +95,22 @@ export default function Dashboard() {
       <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <span className="text-xs font-mono text-[var(--accent-brass)] uppercase tracking-widest">
-            Cryptographic Vault Overview
+            Overview
           </span>
           <h1 className="text-3xl font-serif font-semibold text-[var(--text-primary)] mt-1">
-            Data Protection Command
+            Your Privacy, at a Glance
           </h1>
         </div>
 
         <SecurityActionBtn
           onClick={handleExportLedger}
-          actionLabel="Compiling Ledger..."
-          successLabel="Ledger Exported"
+          actionLabel="Preparing download…"
+          successLabel="Downloaded"
           delayMs={800}
           variant="outline"
         >
           <Download className="w-4 h-4 text-[var(--accent-brass)]" />
-          <span>Export Audit Ledger</span>
+          <span>Export Activity Log</span>
         </SecurityActionBtn>
       </motion.div>
 
@@ -124,17 +124,17 @@ export default function Dashboard() {
         {/* Compliance Status Badge */}
         <ComplianceBadge score={score ?? 85} unresolvedAlertsCount={unresolvedAlerts.length} />
 
-        {/* Encrypted Vault Assets */}
+        {/* Protected Files */}
         <div className="layered-card p-5 rounded-sm flex flex-col justify-between">
           <div className="flex items-center justify-between mb-4 pb-3 border-b border-[var(--border-primary)]">
             <div className="flex items-center gap-2">
               <HardDrive className="w-4 h-4 text-[var(--accent-brass)]" />
               <h3 className="text-sm font-serif text-[var(--text-primary)]">
-                Protected Vault Assets
+                Protected Files
               </h3>
             </div>
             <span className="text-xs font-mono text-[var(--status-success)]">
-              AES-256
+              Encrypted
             </span>
           </div>
 
@@ -143,7 +143,7 @@ export default function Dashboard() {
               {loading ? "--" : String(encryptionCount).padStart(2, '0')}
             </span>
             <p className="text-xs text-[var(--text-secondary)] mt-1">
-              Encrypted files stored under zero-knowledge isolation.
+              Files safely stored — only you can read them.
             </p>
           </div>
 
@@ -151,11 +151,11 @@ export default function Dashboard() {
             onClick={() => navigate('/my-data')}
             className="w-full mt-4 py-2 rounded-sm bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] border border-[var(--border-primary)] text-xs text-[var(--text-primary)] font-mono transition-colors text-center cursor-pointer"
           >
-            Manage Data Vault →
+            Manage Files →
           </button>
         </div>
 
-        {/* Anomaly & Breach Status */}
+        {/* Security Alerts */}
         <div className="layered-card p-5 rounded-sm flex flex-col justify-between">
           <div className="flex items-center justify-between mb-4 pb-3 border-b border-[var(--border-primary)]">
             <div className="flex items-center gap-2">
@@ -165,7 +165,7 @@ export default function Dashboard() {
               </h3>
             </div>
             <span className={`text-xs font-mono ${unresolvedAlerts.length > 0 ? 'text-[var(--status-danger)]' : 'text-[var(--status-success)]'}`}>
-              {unresolvedAlerts.length > 0 ? 'ALERT' : 'NO THREATS'}
+              {unresolvedAlerts.length > 0 ? 'ALERT' : 'ALL CLEAR'}
             </span>
           </div>
 
@@ -174,7 +174,7 @@ export default function Dashboard() {
               {loading ? "--" : String(unresolvedAlerts.length).padStart(2, '0')}
             </span>
             <p className="text-xs text-[var(--text-secondary)] mt-1">
-              {unresolvedAlerts.length > 0 ? "Unresolved security alerts require attention." : "All security thresholds within normal parameters."}
+              {unresolvedAlerts.length > 0 ? "Some alerts need your attention." : "Everything looks good — no issues detected."}
             </p>
           </div>
 
@@ -182,38 +182,38 @@ export default function Dashboard() {
             onClick={() => navigate('/access-logs')}
             className="w-full mt-4 py-2 rounded-sm bg-[var(--bg-input)] hover:bg-[var(--bg-hover)] border border-[var(--border-primary)] text-xs text-[var(--text-primary)] font-mono transition-colors text-center cursor-pointer"
           >
-            Review Security Audit Logs →
+            View Activity Log →
           </button>
         </div>
       </motion.div>
 
-      {/* Immutable Access Log Preview */}
+      {/* Recent Activity Preview */}
       <motion.div variants={itemVariants} className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-serif text-[var(--text-primary)]">
-              Audit Trail (Recent Events)
+              Recent Activity
             </h2>
-            <p className="text-xs text-[var(--text-secondary)] font-mono">
-              Real-time access log recorded for regulatory verification.
+            <p className="text-xs text-[var(--text-secondary)]">
+              A record of recent actions on your account.
             </p>
           </div>
           <button
             onClick={() => navigate('/access-logs')}
             className="text-xs font-mono text-[var(--accent-brass)] hover:underline"
           >
-            View Complete Log →
+            View All →
           </button>
         </div>
 
         {loading ? (
           <div className="layered-card p-6 text-center text-xs font-mono text-[var(--text-tertiary)]">
-            Loading immutable audit logs...
+            Loading activity…
           </div>
         ) : recentLogs.length === 0 ? (
           <EmptyState
-            title="Audit Ledger Empty"
-            description="No system access logs recorded yet. Upload a file or log in to generate security telemetry."
+            title="No activity yet"
+            description="Once you upload a file or sign in again, your activity will appear here."
             iconType="logs"
           />
         ) : (
@@ -229,7 +229,7 @@ export default function Dashboard() {
                   </div>
                   <div>
                     <span className="font-mono text-[var(--text-primary)] font-medium block">
-                      {log.action || log.event || 'System Activity'}
+                      {log.action || log.event || 'Activity'}
                     </span>
                     <span className="text-[11px] text-[var(--text-tertiary)] font-mono">
                       {log.timestamp ? new Date(log.timestamp).toUTCString() : 'Just now'}
