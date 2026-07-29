@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import axiosInstance from '../api/axiosInstance';
 import SecurityActionBtn from '../components/SecurityActionBtn';
 import EmptyState from '../components/EmptyState';
-import { Activity, Search, Download, ShieldCheck, AlertOctagon, Terminal } from 'lucide-react';
+import { Activity, Search, Download, Terminal } from 'lucide-react';
 
 export default function AccessLogs() {
   const [logs, setLogs] = useState([]);
@@ -53,7 +53,7 @@ export default function AccessLogs() {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `privora_activity_${new Date().toISOString().slice(0,10)}.csv`);
+    link.setAttribute("download", `privora_audit_ledger_${new Date().toISOString().slice(0,10)}.csv`);
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -77,45 +77,45 @@ export default function AccessLogs() {
       <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
         <div>
           <span className="text-xs font-mono text-[var(--accent-brass)] uppercase tracking-widest flex items-center gap-1.5">
-            <Activity className="w-3.5 h-3.5" />
-            Activity History
+            <Terminal className="w-3.5 h-3.5" />
+            Audit Ledger Telemetry
           </span>
           <h1 className="text-3xl font-serif font-semibold text-[var(--text-primary)] mt-1">
-            Access & Security Logs
+            Access & Security Audit Logs
           </h1>
           <p className="text-xs text-[var(--text-secondary)] mt-1">
-            A complete record of logins, file actions, and settings changes on your account.
+            Immutable ledger trail recording all authentication events, file protection actions, and privacy changes.
           </p>
         </div>
 
         <SecurityActionBtn
           onClick={handleExportCSV}
-          actionLabel="Preparing CSV…"
-          successLabel="Downloaded"
+          actionLabel="Formatting CSV…"
+          successLabel="CSV Exported"
           delayMs={650}
           variant="outline"
         >
           <Download className="w-4 h-4 text-[var(--accent-brass)]" />
-          <span>Export CSV</span>
+          <span>Export Audit CSV</span>
         </SecurityActionBtn>
       </div>
 
       {/* Filter Bar */}
-      <div className="layered-card p-5 rounded-sm flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-2 px-3 py-2 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] w-full md:w-80">
+      <div className="ledger-sheet p-5 rounded-sm flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] w-full md:w-80">
           <Search className="w-4 h-4 text-[var(--text-tertiary)] shrink-0" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by IP, action, or file name…"
-            className="bg-transparent text-xs text-[var(--text-primary)] outline-none w-full"
+            placeholder="Search IP, action signature, or resource…"
+            className="bg-transparent text-xs font-mono text-[var(--text-primary)] outline-none w-full"
           />
         </div>
 
-        <div className="flex items-center gap-3 w-full md:w-auto justify-end">
-          <label className="text-xs text-[var(--text-tertiary)] shrink-0">
-            Status:
+        <div className="flex items-center gap-3 w-full md:w-auto justify-end font-mono text-xs">
+          <label className="text-[var(--text-tertiary)] shrink-0">
+            Status Filter:
           </label>
           <select
             value={statusFilter}
@@ -129,28 +129,29 @@ export default function AccessLogs() {
         </div>
       </div>
 
-      {/* Logs Table */}
+      {/* Ledger Table */}
       {loading ? (
-        <div className="layered-card p-8 rounded-sm space-y-4">
+        <div className="ledger-sheet p-8 rounded-sm space-y-4">
           {[1, 2, 3, 4, 5].map((i) => (
             <div key={i} className="skeleton h-10 w-full" />
           ))}
         </div>
       ) : filteredLogs.length === 0 ? (
         <EmptyState
-          title="No matching logs"
-          description="No activity matches your current filter. Try adjusting your search."
+          title="No matching ledger entries"
+          description="No security events match your current filter criteria."
           iconType="logs"
         />
       ) : (
-        <div className="layered-card rounded-sm overflow-hidden border border-[var(--border-primary)]">
+        <div className="ledger-sheet rounded-sm overflow-hidden border border-[var(--border-primary)]">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full text-left text-xs font-mono">
               <thead className="bg-[var(--bg-sidebar)] border-b border-[var(--border-primary)] text-[var(--text-tertiary)] uppercase text-[10px] tracking-wider">
                 <tr>
-                  <th className="px-5 py-3.5">Time</th>
-                  <th className="px-5 py-3.5">Action</th>
-                  <th className="px-5 py-3.5">File / Resource</th>
+                  <th className="px-5 py-3.5">ENTRY #</th>
+                  <th className="px-5 py-3.5">Timestamp (UTC)</th>
+                  <th className="px-5 py-3.5">Action Signature</th>
+                  <th className="px-5 py-3.5">Target Resource</th>
                   <th className="px-5 py-3.5">IP Address</th>
                   <th className="px-5 py-3.5 text-right">Status</th>
                 </tr>
@@ -158,12 +159,15 @@ export default function AccessLogs() {
               <tbody className="divide-y divide-[var(--border-primary)] text-[var(--text-secondary)]">
                 {filteredLogs.map((log, idx) => (
                   <tr key={log.id || idx} className="hover:bg-[var(--bg-hover)] transition-colors">
+                    <td className="px-5 py-3.5 text-[var(--accent-brass)] font-semibold">
+                      #{String((page - 1) * pageSize + idx + 1).padStart(4, '0')}
+                    </td>
                     <td className="px-5 py-3.5 text-[var(--text-primary)]">
                       {log.timestamp ? new Date(log.timestamp).toISOString().replace('T', ' ').slice(0, 19) : '--'}
                     </td>
                     <td className="px-5 py-3.5 font-medium text-[var(--text-primary)] flex items-center gap-2">
                       <Activity className="w-3.5 h-3.5 text-[var(--accent-brass)]" />
-                      <span>{log.action || log.event || 'Activity'}</span>
+                      <span>{log.action || log.event || 'System Activity'}</span>
                     </td>
                     <td className="px-5 py-3.5 text-[var(--text-secondary)] truncate max-w-xs">
                       {log.data_item || log.location || '—'}
@@ -172,7 +176,7 @@ export default function AccessLogs() {
                       {log.ip_address || '127.0.0.1'}
                     </td>
                     <td className="px-5 py-3.5 text-right">
-                      <span className={`px-2 py-0.5 rounded text-[10px] border uppercase ${
+                      <span className={`px-2.5 py-0.5 rounded text-[10px] border uppercase ${
                         log.status === 'success' || log.status === 'completed'
                           ? 'bg-[var(--badge-success-bg)] text-[var(--badge-success-text)] border-[var(--status-success)]/30'
                           : 'bg-[var(--badge-danger-bg)] text-[var(--badge-danger-text)] border-[var(--status-danger)]/30'
@@ -190,8 +194,8 @@ export default function AccessLogs() {
 
       {/* Pagination Controls */}
       {!loading && totalCount > 0 && (
-        <div className="flex items-center justify-between text-xs text-[var(--text-tertiary)] pt-2">
-          <span>Total: {totalCount} entries</span>
+        <div className="flex items-center justify-between font-mono text-xs text-[var(--text-tertiary)] pt-2">
+          <span>Total Ledger Records: {totalCount}</span>
           <div className="flex items-center gap-2">
             <button
               disabled={page <= 1}

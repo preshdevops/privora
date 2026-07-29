@@ -185,8 +185,9 @@ export default function Login() {
               <SecurityActionBtn
                 onClick={handleLogin}
                 actionLabel="Authenticating Key…"
-                successLabel="Access Granted"
+                successLabel="SEALED & GRANTED"
                 delayMs={650}
+                showSealOnSuccess={true}
                 className="w-full justify-center !py-3.5"
               >
                 <span>Sign In to Vault</span>

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldCheck, KeyRound, EyeOff, Lock, ArrowRight, Check, Sparkles } from 'lucide-react';
+import { ShieldCheck, KeyRound, EyeOff, ArrowRight, Check } from 'lucide-react';
 import SecurityActionBtn from './SecurityActionBtn';
+import SealStamp from './SealStamp';
 
 export default function OnboardingFlow({ onComplete }) {
   const [currentStep, setCurrentStep] = useState(0);
@@ -9,25 +10,25 @@ export default function OnboardingFlow({ onComplete }) {
 
   const steps = [
     {
-      title: "Welcome to Privora",
-      subtitle: "Your private vault",
+      title: "Welcome to Privora Ledger Vault",
+      subtitle: "Entry #001: System Principles",
       icon: ShieldCheck,
-      description: "Privora protects your personal data under Nigerian and international privacy law. Every file you upload is encrypted so that only you can read it.",
-      badge: "Step 1 of 3"
+      description: "Privora is built as a vault and an immutable ledger. Every file you protect is encrypted with keys derived directly from your password, and every action is recorded.",
+      badge: "Principle 1 of 3"
     },
     {
       title: "Your Password Is Your Key",
-      subtitle: "Only you can unlock your files",
+      subtitle: "Entry #002: Key Derivation",
       icon: KeyRound,
-      description: "We turn your password into a unique private key. Your password is never stored or sent anywhere — if you know it, you can access your files. If you don't, no one can.",
-      badge: "Step 2 of 3"
+      description: "We turn your password into a unique private key in client memory. We never store or transmit your password — if you know it, you can unseal your data. If not, no one can.",
+      badge: "Principle 2 of 3"
     },
     {
-      title: "We Watch for Threats",
-      subtitle: "Automatic protection",
+      title: "Automated Threat Monitoring",
+      subtitle: "Entry #003: Audit Telemetry",
       icon: EyeOff,
-      description: "Privora monitors every login, access attempt, and download. Suspicious activity triggers alerts automatically — you'll always know what's happening with your data.",
-      badge: "Step 3 of 3"
+      description: "Privora continuously logs access attempts and security alerts. Any unusual activity is recorded in your ledger automatically.",
+      badge: "Principle 3 of 3"
     }
   ];
 
@@ -37,10 +38,9 @@ export default function OnboardingFlow({ onComplete }) {
     } else {
       setCompleted(true);
       localStorage.setItem('privora_onboarded', 'true');
-      // Celebratory moment before closing
       setTimeout(() => {
         if (onComplete) onComplete();
-      }, 1800);
+      }, 2200);
     }
   };
 
@@ -53,42 +53,33 @@ export default function OnboardingFlow({ onComplete }) {
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.96 }}
         transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
-        className="layered-card-accent p-8 rounded-sm max-w-xl w-full relative bg-[var(--bg-card)] overflow-hidden"
+        className="ledger-sheet p-8 sm:p-10 rounded-sm max-w-xl w-full relative bg-[var(--bg-card)] overflow-hidden"
       >
         <AnimatePresence mode="wait">
           {completed ? (
-            /* Celebratory completion moment */
+            /* Signature Moment: The Ledger Seal Pressing Down */
             <motion.div
-              key="celebration"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
-              className="text-center py-8 space-y-4"
+              key="celebration-seal"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4 }}
+              className="text-center py-10 space-y-6 flex flex-col items-center justify-center"
             >
+              <SealStamp label="INITIALIZED" subtitle="LEDGER VAULT READY" size="lg" />
+
               <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.15, type: 'spring', stiffness: 200, damping: 15 }}
-                className="w-16 h-16 mx-auto rounded-full bg-[var(--accent-brass)] flex items-center justify-center text-[#12141C]"
-              >
-                <Sparkles className="w-8 h-8" />
-              </motion.div>
-              <motion.h2
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="text-2xl font-serif text-[var(--text-primary)]"
+                transition={{ delay: 0.4 }}
+                className="space-y-2"
               >
-                You're all set
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                className="text-sm text-[var(--text-secondary)]"
-              >
-                Your vault is ready. Upload your first file to start protecting it.
-              </motion.p>
+                <h2 className="text-2xl font-serif text-[var(--text-primary)]">
+                  Vault Initialized & Sealed
+                </h2>
+                <p className="text-xs text-[var(--text-secondary)] font-mono">
+                  Your private ledger is ready for file protection.
+                </p>
+              </motion.div>
             </motion.div>
           ) : (
             /* Step content */
@@ -124,7 +115,7 @@ export default function OnboardingFlow({ onComplete }) {
                   transition={{ duration: 0.3 }}
                   className="space-y-4 my-6"
                 >
-                  <div className="w-12 h-12 rounded bg-[var(--bg-input)] border border-[var(--border-accent)] flex items-center justify-center text-[var(--accent-brass)]">
+                  <div className="w-12 h-12 rounded bg-[var(--bg-input)] border border-[var(--border-primary)] flex items-center justify-center text-[var(--accent-brass)]">
                     <StepIcon className="w-6 h-6" />
                   </div>
 
@@ -150,7 +141,7 @@ export default function OnboardingFlow({ onComplete }) {
                     localStorage.setItem('privora_onboarded', 'true');
                     if (onComplete) onComplete();
                   }}
-                  className="text-xs text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors"
+                  className="text-xs font-mono text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors"
                 >
                   Skip
                 </button>
@@ -162,12 +153,12 @@ export default function OnboardingFlow({ onComplete }) {
                 >
                   {currentStep < steps.length - 1 ? (
                     <>
-                      Next
+                      <span>Next Principle</span>
                       <ArrowRight className="w-4 h-4" />
                     </>
                   ) : (
                     <>
-                      Get Started
+                      <span>Seal & Enter Vault</span>
                       <Check className="w-4 h-4" />
                     </>
                   )}

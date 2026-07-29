@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lock, Check, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
+import SealStamp from './SealStamp';
 
 /**
  * SecurityActionBtn provides a deliberate 600-900ms confirmation animation
- * before performing critical security actions (encrypt, decrypt, delete, save settings).
- * This intentional feedback loop builds trust rather than feeling instant/superficial.
+ * before performing critical security actions.
+ * Upon success, it displays Privora's signature "Ledger Seal" emblem.
  */
 export default function SecurityActionBtn({
   children,
   onClick,
-  actionLabel = "Securing...",
-  successLabel = "Confirmed",
+  actionLabel = "Securing…",
+  successLabel = "SEALED",
   delayMs = 750,
   className = "",
   variant = "primary", // "primary" | "danger" | "outline"
   disabled = false,
   type = "button",
+  showSealOnSuccess = false,
   ...props
 }) {
   const [status, setStatus] = useState('idle'); // 'idle' | 'working' | 'success'
@@ -34,7 +36,7 @@ export default function SecurityActionBtn({
         await onClick(e);
       }
       setStatus('success');
-      setTimeout(() => setStatus('idle'), 1200);
+      setTimeout(() => setStatus('idle'), showSealOnSuccess ? 1800 : 1300);
     } catch (err) {
       setStatus('idle');
       throw err;
@@ -49,7 +51,7 @@ export default function SecurityActionBtn({
         return 'bg-transparent text-[var(--text-primary)] border border-[var(--border-primary)] hover:border-[var(--accent-brass)] hover:text-[var(--accent-brass)]';
       case 'primary':
       default:
-        return 'bg-[var(--accent-brass)] text-[#12141C] font-medium border border-transparent hover:bg-[var(--accent-brass-bright)]';
+        return 'bg-[var(--accent-brass)] text-[#12141C] font-semibold border border-transparent hover:bg-[var(--accent-brass-bright)] shadow-[var(--shadow-layered)]';
     }
   };
 
@@ -58,7 +60,7 @@ export default function SecurityActionBtn({
       type={type}
       disabled={disabled || status !== 'idle'}
       onClick={handleClick}
-      className={`relative inline-flex items-center justify-center px-4 py-2.5 rounded-sm text-sm transition-all duration-200 cursor-pointer shadow-[var(--shadow-layered)] disabled:opacity-50 disabled:cursor-not-allowed ${getVariantStyles()} ${className}`}
+      className={`relative inline-flex items-center justify-center px-5 py-3 rounded-sm text-xs font-mono transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${getVariantStyles()} ${className}`}
       {...props}
     >
       <AnimatePresence mode="wait">
@@ -83,10 +85,13 @@ export default function SecurityActionBtn({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="flex items-center gap-1.5 font-medium"
+            className="flex items-center gap-1.5 font-bold tracking-wider uppercase"
           >
-            <Check className="w-4 h-4 stroke-[3]" />
-            <span>{successLabel}</span>
+            {showSealOnSuccess ? (
+              <SealStamp label={successLabel} size="sm" />
+            ) : (
+              <span>✓ {successLabel}</span>
+            )}
           </motion.span>
         )}
 

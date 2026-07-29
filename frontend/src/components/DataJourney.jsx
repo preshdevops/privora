@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { ShieldCheck, KeyRound, Cpu, HardDriveDownload, ArrowRight, ChevronDown, ChevronUp } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ShieldCheck, KeyRound, Cpu, HardDriveDownload, ChevronDown, ChevronUp, Stamp } from 'lucide-react';
+import SealStamp from './SealStamp';
 
 export default function DataJourney() {
   const [activeStage, setActiveStage] = useState(0);
@@ -9,60 +10,62 @@ export default function DataJourney() {
   const stages = [
     {
       id: "ingest",
-      title: "1. Upload",
+      entryNum: "ENTRY #001",
+      title: "File Upload & Ingestion",
       icon: HardDriveDownload,
-      subtitle: "Your file is received",
-      detail: "Your file is loaded securely into memory — nothing is saved unprotected at any point.",
-      tag: "Ready to Protect"
+      subtitle: "Memory Buffer",
+      detail: "Your raw file is received directly in memory — no unencrypted data is ever written to disk.",
+      sealText: "RECEIVED"
     },
     {
       id: "key",
-      title: "2. Key Creation",
+      entryNum: "ENTRY #002",
+      title: "Master Key Generation",
       icon: KeyRound,
-      subtitle: "Your password becomes a private key",
-      detail: "We turn your password into a unique private key that only you can use. Your password is never saved.",
-      tag: "Private Key Generated"
+      subtitle: "Password Derivation",
+      detail: "We derive a unique private key from your passphrase. Your password is never stored or sent anywhere.",
+      sealText: "DERIVED"
     },
     {
       id: "encrypt",
-      title: "3. Encryption",
+      entryNum: "ENTRY #003",
+      title: "Data Scrambling",
       icon: Cpu,
-      subtitle: "Your data is scrambled",
-      detail: "Your file is transformed into unreadable data. Without your password, it's impossible to recover.",
-      tag: "Protected"
+      subtitle: "Payload Protection",
+      detail: "Your content is transformed into unreadable data blocks. Without your key, recovery is mathematically impossible.",
+      sealText: "SEALED"
     },
     {
       id: "store",
-      title: "4. Safe Storage",
+      entryNum: "ENTRY #004",
+      title: "Ledger Vault Storage",
       icon: ShieldCheck,
-      subtitle: "Not even we can read it",
-      detail: "The protected file is stored securely. Only someone with your exact password can ever open it again.",
-      tag: "Stored Safely"
+      subtitle: "Zero-Knowledge Record",
+      detail: "The protected record is logged in the vault ledger. Only you holding your password key can unlock it.",
+      sealText: "RECORDED"
     }
   ];
 
   return (
-    <div className="layered-card p-6 rounded-sm mb-8 relative overflow-hidden">
-      {/* Background Accent Lines */}
-      <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--accent-brass-glow)] rounded-full blur-3xl -z-10 pointer-events-none" />
-
+    <div className="ledger-sheet p-6 sm:p-8 rounded-sm mb-8 relative overflow-hidden">
+      {/* Ledger Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-[var(--border-primary)]">
         <div>
           <span className="text-xs uppercase tracking-widest text-[var(--accent-brass)] font-mono font-semibold">
-            How Your Data Is Protected
+            Sequential Protection Ledger
           </span>
-          <h2 className="text-xl font-serif text-[var(--text-primary)] mt-1">
-            Your Privacy, at a Glance
+          <h2 className="text-2xl font-serif text-[var(--text-primary)] mt-1">
+            Data Journey & Verification Trail
           </h2>
         </div>
-        <div className="flex items-center gap-2 text-xs font-mono text-[var(--text-tertiary)] bg-[var(--bg-input)] px-3 py-1.5 rounded border border-[var(--border-primary)]">
+        <div className="flex items-center gap-2 text-xs font-mono text-[var(--text-tertiary)] bg-[var(--bg-input)] px-3.5 py-1.5 rounded border border-[var(--border-primary)]">
           <span className="w-2 h-2 rounded-full bg-[var(--status-success)] animate-pulse" />
-          Your data is protected
+          <span>Ledger Protection Active</span>
         </div>
       </div>
 
-      {/* Stage Stepper Diagram */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative">
+      {/* Ledger Entry List — Sequential Ledger Lines, Not Generic Cards */}
+      <div className="divide-y divide-[var(--border-primary)] border border-[var(--border-primary)] rounded-sm bg-[var(--bg-primary)]/40 overflow-hidden">
         {stages.map((stage, idx) => {
           const Icon = stage.icon;
           const isActive = idx === activeStage;
@@ -70,75 +73,79 @@ export default function DataJourney() {
             <motion.div
               key={stage.id}
               onClick={() => setActiveStage(idx)}
-              whileHover={{ y: -2 }}
-              className={`p-4 rounded-sm border transition-all duration-300 cursor-pointer relative ${
-                isActive
-                  ? 'bg-[var(--bg-card-elevated)] border-[var(--accent-brass)] shadow-[var(--shadow-layered)]'
-                  : 'bg-[var(--bg-secondary)] border-[var(--border-primary)] hover:border-[var(--border-secondary)]'
+              whileHover={{ backgroundColor: 'var(--bg-hover)' }}
+              className={`p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer transition-colors relative ${
+                isActive ? 'bg-[var(--bg-card-elevated)]/90 border-l-2 border-l-[var(--accent-brass)]' : ''
               }`}
             >
-              <div className="flex items-center justify-between mb-3">
-                <div
-                  className={`p-2 rounded ${
-                    isActive
-                      ? 'bg-[var(--accent-brass)] text-[#12141C]'
-                      : 'bg-[var(--bg-input)] text-[var(--text-secondary)]'
-                  }`}
-                >
+              <div className="flex items-start md:items-center gap-4">
+                <span className="font-mono text-xs font-semibold text-[var(--accent-brass)] w-20 shrink-0">
+                  {stage.entryNum}
+                </span>
+
+                <div className={`p-2.5 rounded shrink-0 ${isActive ? 'bg-[var(--accent-brass)] text-[#12141C]' : 'bg-[var(--bg-input)] text-[var(--text-secondary)]'}`}>
                   <Icon className="w-4 h-4" />
                 </div>
-                <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-wider">
-                  {stage.tag}
-                </span>
+
+                <div className="space-y-0.5">
+                  <h3 className="text-sm font-medium text-[var(--text-primary)]">
+                    {stage.title}
+                  </h3>
+                  <p className="text-xs text-[var(--text-secondary)] leading-relaxed max-w-xl">
+                    {stage.detail}
+                  </p>
+                </div>
               </div>
 
-              <h3 className="text-sm font-medium text-[var(--text-primary)] mb-0.5">
-                {stage.title}
-              </h3>
-              <p className="text-xs text-[var(--accent-brass)] font-mono mb-2">
-                {stage.subtitle}
-              </p>
-              <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-                {stage.detail}
-              </p>
+              <div className="flex items-center gap-3 shrink-0 self-end md:self-center">
+                <span className="font-mono text-[10px] text-[var(--text-tertiary)] uppercase">
+                  {stage.subtitle}
+                </span>
 
-              {idx < stages.length - 1 && (
-                <div className="hidden lg:block absolute -right-3 top-1/2 -translate-y-1/2 z-10 text-[var(--border-secondary)]">
-                  <ArrowRight className="w-4 h-4" />
-                </div>
-              )}
+                <span className={`px-2.5 py-1 text-[10px] font-mono rounded uppercase border ${
+                  isActive 
+                    ? 'bg-[var(--badge-success-bg)] text-[var(--badge-success-text)] border-[var(--status-success)]/40' 
+                    : 'bg-[var(--bg-input)] text-[var(--text-muted)] border-[var(--border-primary)]'
+                }`}>
+                  {stage.sealText}
+                </span>
+              </div>
             </motion.div>
           );
         })}
       </div>
 
-      {/* Bottom assurance banner */}
-      <div className="mt-6 p-4 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] flex items-start gap-3">
-        <ShieldCheck className="w-5 h-5 text-[var(--accent-brass)] shrink-0 mt-0.5" />
-        <div className="text-xs text-[var(--text-secondary)] leading-relaxed flex-1">
-          <strong className="text-[var(--text-primary)] font-medium">Your data stays private:</strong>{" "}
-          Every file is encrypted with a key derived from your password. We never store your password and can never read your files.
+      {/* Reassuring Assurance Banner */}
+      <div className="mt-6 p-4 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] flex items-center justify-between text-xs text-[var(--text-secondary)]">
+        <div className="flex items-center gap-2.5">
+          <ShieldCheck className="w-4 h-4 text-[var(--accent-brass)] shrink-0" />
+          <span>Every ledger entry is signed in memory using keys derived strictly from your master password.</span>
         </div>
+
+        <button
+          onClick={() => setShowTechnical(!showTechnical)}
+          className="flex items-center gap-1 text-[11px] font-mono text-[var(--accent-brass)] hover:underline shrink-0 ml-4 cursor-pointer"
+        >
+          <span>{showTechnical ? 'Hide Technical Spec' : 'Technical Spec'}</span>
+          {showTechnical ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+        </button>
       </div>
 
-      {/* Optional technical detail — expandable */}
-      <button
-        onClick={() => setShowTechnical(!showTechnical)}
-        className="mt-3 flex items-center gap-1.5 text-[11px] text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] transition-colors font-mono cursor-pointer"
-      >
-        {showTechnical ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-        How this works (technical detail)
-      </button>
-      {showTechnical && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          className="mt-2 p-3 rounded bg-[var(--bg-secondary)] border border-[var(--border-primary)] text-[11px] font-mono text-[var(--text-tertiary)] leading-relaxed"
-        >
-          Encryption: AES-256-CBC &middot; Key derivation: PBKDF2-HMAC-SHA256 with 600,000 iterations &middot; 
-          Unique 16-byte random salt per file &middot; PKCS#7 padding &middot; Compliant with NDPR 2023 Section 2.4 and GDPR Article 32.
-        </motion.div>
-      )}
+      {/* Expandable Technical Specification Drawer */}
+      <AnimatePresence>
+        {showTechnical && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="mt-3 p-4 rounded bg-[var(--bg-secondary)] border border-[var(--border-primary)] text-[11px] font-mono text-[var(--text-tertiary)] leading-relaxed space-y-1"
+          >
+            <p>• Cryptographic Algorithm: AES-256-CBC with PKCS#7 padding</p>
+            <p>• Key Derivation Engine: PBKDF2-HMAC-SHA256 (600,000 iterations + 16-byte random salt)</p>
+            <p>• Compliance Framework: Nigerian Data Protection Act (NDPR 2023 §2.4) & GDPR Article 32</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

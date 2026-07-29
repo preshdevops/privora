@@ -261,8 +261,9 @@ export default function Register() {
               <SecurityActionBtn
                 onClick={handleRegister}
                 actionLabel="Creating Account…"
-                successLabel="Vault Created"
+                successLabel="VAULT SEALED"
                 delayMs={750}
+                showSealOnSuccess={true}
                 className="w-full justify-center !py-3.5"
               >
                 <span>Create Vault Account</span>
