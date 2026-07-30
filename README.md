@@ -235,5 +235,5 @@ python manage.py test privacy
 This project is open-source software licensed under the **[MIT License](LICENSE)**.
 
 ```text
-Copyright (c) 2026 Samuel Tuoyo & Privora Contributors
+Copyright (c) 2026 Aremu Olaseeni & Privora Contributors
 ```
