@@ -110,7 +110,7 @@ export default function Register() {
               <input
                 id="register-fullname"
                 type="text"
-                placeholder="Aremu Olaseeni"
+                placeholder="Precious Olonade"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 className="w-full px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-sm text-[var(--text-primary)] outline-none"
