@@ -1,296 +1,239 @@
-# Privora
+# Privora — Personal Data Protection Vault & Audit Ledger
 
-**An end‑user data protection platform** providing file encryption, access logging, rule‑based threat detection, and a dynamic privacy score. Targeted at individual Nigerian users subject to the **Nigeria Data Protection Act 2023** and the upcoming **GAID 2025** framework.
+Privora is an end-to-end personal data protection platform providing zero-knowledge client-isolated file encryption, an authentic security audit ledger, rule-based anomaly detection, and a dynamic privacy hygiene index. Built for compliance under the **Nigeria Data Protection Act (NDPA) 2023** and international data protection standards (GDPR).
+
+Designed around **"The Ledger Vault"** identity — an editorial aesthetic using Newsreader serif typography, Work Sans, warm paper & ink-navy tones, and the canonical **Privora Seal** mark.
 
 ---
 
 ## Table of Contents
 
 - [Project Overview](#project-overview)
-- [Architecture](#architecture)
-- [Features](#features)
+- [Architecture & Tech Stack](#architecture--tech-stack)
+- [Visual System & Brand Mark](#visual-system--brand-mark)
+- [Key Features](#key-features)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
-  - [Backend Setup](#backend-setup)
-  - [Frontend Setup](#frontend-setup)
+  - [Backend Setup (Django)](#backend-setup-django)
+  - [Frontend Setup (React + Vite)](#frontend-setup-react--vite)
+- [Deployment (Render & Vercel)](#deployment-render--vercel)
 - [Environment Variables](#environment-variables)
 - [API Reference](#api-reference)
-- [Data Model](#data-model)
-- [Security Notes](#security-notes)
+- [Security Model & Cryptography](#security-model--cryptography)
 - [Testing](#testing)
-- [Known Limitations / Out of Scope](#known-limitations--out-of-scope)
-- [Project Structure](#project-structure)
+- [License](#license)
 
 ---
 
 ## Project Overview
 
-Privora lets users securely store files in an encrypted vault, monitors all interactions, and calculates a **Data Protection Score** that reflects the user's privacy hygiene. The platform consists of a **Django REST Framework** backend and a **React + Vite** frontend that communicate over a JWT‑protected REST API.
+Privora lets users securely store files in an encrypted vault, monitors all access interactions in an immutable audit ledger, and calculates a real-time **Data Protection Score** reflecting privacy hygiene.
+
+The platform consists of:
+- **Backend**: Django REST Framework API with PostgreSQL, SimpleJWT authentication, PyCryptodome AES-256 encryption, and WhiteNoise static asset serving.
+- **Frontend**: React (Vite) Single Page Application styled with Tailwind CSS, Framer Motion animations, and the Privora Seal vector identity system.
 
 ---
 
-## Architecture
+## Architecture & Tech Stack
 
 ```
-+-------------------+        +-------------------+
-|   React/Vite UI   | <----> |   Django REST API |
-+-------------------+        +-------------------+
-        ^                           ^
-        | JWT (access/refresh)      |
-        +---------------------------+
++--------------------------+        +--------------------------+
+|  React (Vite) Frontend   | <----> |   Django 6 REST API      |
+|  Hosted on Vercel        |  JWT   |   Hosted on Render/Railway|
++--------------------------+        +--------------------------+
+             |                                    |
+     Axios Auto-Refresh                   PostgreSQL / SQLite
+     Token Interceptor                    WhiteNoise Static
 ```
 
-| Django App | Responsibility |
-|------------|-----------------|
-| `users` | Registration, login/logout, JWT issuance, user settings, email login notifications |
-| `encryption` | AES‑256‑CBC file vault (upload, list, retrieve, delete) |
-| `audit` | Access logging (`AuditLog`) and rule‑based alerting (`AuditAlert`) |
-| `privacy` | User privacy‑toggle settings and dynamic Data Protection Score |
-| `core` | Scaffold app (currently unused) |
+### Stack & Dependencies
 
-### Dependency Versions
-
-| Component | Version |
-|-----------|---------|
-| Django | 6.0.7 |
-| djangorestframework | 3.17.1 |
-| djangorestframework‑simplejwt | 5.5.1 |
-| django‑cors‑headers | 4.9.0 |
-| asgiref | 3.12.1 |
-| pycryptodome | 3.23.0 |
-| python‑dotenv | 1.2.2 |
-| tzdata | 2026.3 |
-| Frontend (npm) | |
-| react | ^19.2.4 |
-| react‑dom | ^19.2.4 |
-| axios | ^1.15.0 |
-| react‑router‑dom | ^7.14.1 |
-| tailwindcss | ^4.2.2 |
+| Component | Technology / Library | Version / Details |
+|-----------|----------------------|-------------------|
+| **Backend Framework** | Django | `6.0.7` |
+| **REST API** | Django REST Framework | `3.17.1` |
+| **Authentication** | DRF SimpleJWT | `5.5.1` (Token rotation + Blacklist) |
+| **Database** | PostgreSQL / SQLite | `dj-database-url`, `psycopg2-binary` |
+| **WSGI / Static** | Gunicorn + WhiteNoise | `gunicorn`, `whitenoise` |
+| **Cryptography** | PyCryptodome | `3.23.0` (AES-256-CBC + PBKDF2) |
+| **Frontend Framework** | React + Vite | `^19.2.4`, Vite `8.0.8` |
+| **Routing** | React Router DOM | `^7.14.1` |
+| **Styling & Fonts** | Tailwind CSS, Newsreader, Work Sans | Newsreader Serif, Work Sans |
+| **Animations** | Framer Motion | Spring physics & SealStamp motion |
 
 ---
 
-## Features
+## Visual System & Brand Mark
 
-- **JWT‑based authentication** – access + refresh tokens, rotation on refresh, blacklist on logout.
-- **AES‑256‑CBC file encryption** with PBKDF2‑HMAC‑SHA256 (600 000 iterations); per‑file random `salt` and `iv` are stored, the password is never persisted.
-- **Real‑time access logging** – every login, logout, file upload/download/delete, and settings change creates an `AuditLog` entry.
-- **Rule‑based anomaly & breach alerting** – thresholds are defined in `backend/audit/rules.py` (e.g., >5 failed logins in 15 min → high severity). Alerts are stored in `AuditAlert` and high‑severity alerts automatically blacklist existing JWT refresh tokens.
-- **Dynamic Data Protection Score** – calculated in `backend/privacy/scoring.py` from privacy toggles, 2FA flag, encrypted‑asset presence, and unresolved alerts.
-- **Email login notifications** – dispatched by `backend/users/notifications.py` when a new successful login occurs (respecting the user’s `login_notifications` preference).
-- **Full React UI** – Landing, Register, Login, Dashboard (shows score & key stats), My Data (vault UI), Access Logs, Settings.
+Privora follows **"The Ledger Vault"** concept — conveying calm authority, deliberate protection, and paper-like editorial clarity:
+
+- **Canonical Mark (`PrivoraSeal.jsx`)**: Built from an outer solid ring + dashed inner ring (wax seal impression) + interior P-ascender keyhole glyph.
+  - **Full Variant**: Used in hero banners and authentication panels.
+  - **Glyph Variant**: Used as tab favicon (`public/favicon.svg`) and sidebar brand icon.
+  - **Outline Variant**: Used as quiet low-opacity background watermarks and empty state anchors.
+- **Color System**: Ink-Navy (`#14171F`) base, warm paper (`#F6F1E7`), and a single restrained brass accent (`#C9A15A`) reserved for primary CTAs and official completion beats.
+- **Zero Raster Assets**: 100% vector SVG line-art system — zero photorealistic PNG/JPEG renders.
+
+---
+
+## Key Features
+
+- **Client-Isolated AES-256 File Vault**: PBKDF2-HMAC-SHA256 key derivation (600,000 iterations). Master passphrases are never stored; only per-file random `salt` and `iv` are persisted.
+- **Signature Seal Stamp Motion (`SealStamp.jsx`)**: An unhurried spring impact animation for significant completion beats (file protected, login granted, onboarding complete).
+- **In-Place Ledger Accordion Expansion**: Ledger rows across Dashboard, Protected Files, and Access Logs expand directly in-place to show technical metadata without popping modals or navigating away.
+- **Automatic JWT Refresh Interceptor**: `axiosInstance.js` automatically catches `401 Unauthorized` responses and refreshes access tokens via `/api/users/token/refresh/` seamlessly without disrupting active user sessions.
+- **Non-Blocking Asynchronous Email Alerts**: SendLib email notifications run on background threads (`threading.Thread`), preventing login delays when external email services are slow.
+- **Rule-Based Threat Detection**: Automatic anomaly scoring and alert creation (e.g. >5 failed logins in 15 mins). High-severity alerts auto-blacklist active refresh tokens.
+- **Dynamic Privacy Hygiene Index**: Calculated score reflecting active security toggles, 2FA status, encrypted asset presence, and unresolved alerts.
 
 ---
 
 ## Getting Started
 
 ### Prerequisites
-- Python 3.12 (project generated with Django 6.0.4)
-- Node 20 (compatible with Vite 8)
-- SQLite 3 (default dev database)
+- **Python 3.12+**
+- **Node.js 20+** (npm 10+)
+- **Git**
 
-### Backend Setup
+---
+
+### Backend Setup (Django)
+
 ```bash
-# Clone the repository
-git clone https://github.com/your-org/privora.git
-cd privora/backend
+# Navigate to backend directory
+cd backend
 
-# Create a virtual environment
+# Create and activate virtual environment
 python -m venv .venv
-# On Windows
-.venv\\Scripts\\activate
+# On Windows PowerShell:
+.venv\Scripts\activate
 
-# Install Python dependencies
+# Install dependencies
 pip install -r requirements.txt
 
-# Copy the example env file and adjust values as needed
+# Copy environment variables template
 cp .env.example .env
-# Edit .env to set a strong SECRET_KEY and any email configuration you need
 
-# Apply database migrations
+# Apply migrations
 python manage.py migrate
 
-# Create a superuser for admin access
+# Create superuser (optional)
 python manage.py createsuperuser
 
-# Run the development server
+# Run local development server
 python manage.py runserver
 ```
-The API will be reachable at `http://127.0.0.1:8000/`.
+The Django REST API will run at `http://127.0.0.1:8000/`.
 
-### Frontend Setup
+---
+
+### Frontend Setup (React + Vite)
+
 ```bash
-cd ../../frontend
+# Navigate to frontend directory
+cd frontend
+
+# Install dependencies
 npm install
+
+# Start Vite dev server
 npm run dev
 ```
-The Vite dev server runs on `http://localhost:5173`. The Axios instance (`frontend/src/api/axiosInstance.js`) is currently hard‑coded to `http://127.0.0.1:8000` as the backend URL.
+The frontend dev server runs at `http://localhost:5173`.
+
+---
+
+## Deployment (Render & Vercel)
+
+### Backend Deployment (Render / Railway)
+1. Set build command: `./build.sh` (or `pip install -r requirements.txt && python manage.py collectstatic --no-input && python manage.py migrate`)
+2. Set start command: `gunicorn privora_project.wsgi:application`
+3. Configure Environment Variables:
+   - `DATABASE_URL` (injected automatically by PostgreSQL add-on)
+   - `ALLOWED_HOSTS` = `your-render-backend-url.onrender.com`
+   - `CORS_ALLOWED_ORIGINS` = `https://your-vercel-app-url.vercel.app`
+   - `SECRET_KEY` = `your-production-secret-key`
+
+### Frontend Deployment (Vercel)
+1. Root directory: `./frontend` (or repository root)
+2. Build command: `npm run build`
+3. Output directory: `dist`
+4. Configure Environment Variable:
+   - `VITE_API_URL` = `https://your-render-backend-url.onrender.com`
+5. `vercel.json` provides client-side SPA routing rewrites to `/index.html`.
 
 ---
 
 ## Environment Variables
-| Variable | Purpose | Default | Required? |
-|----------|---------|---------|-----------|
-| `SECRET_KEY` | Django secret key (used for signing cookies & JWT) | `unsafe-default-key` (dev only) | **Yes** for production |
-| `DEBUG` | Enable Django debug mode | `True` | No |
-| `EMAIL_BACKEND` | Email backend class | `django.core.mail.backends.console.EmailBackend` | No |
-| `EMAIL_HOST` | SMTP host | `` (empty) | No |
-| `EMAIL_PORT` | SMTP port | `587` | No |
-| `EMAIL_HOST_USER` | SMTP username | `` | No |
-| `EMAIL_HOST_PASSWORD` | SMTP password | `` | No |
-| `EMAIL_USE_TLS` | Use TLS for SMTP | `True` | No |
-| `DEFAULT_FROM_EMAIL` | Default “From” address for outgoing mail | `Privora <no-reply@privora.local>` | No |
+
+| Variable | Purpose | Default / Production |
+|----------|---------|----------------------|
+| `SECRET_KEY` | Django cryptographic signing key | Set strong secret in production |
+| `DEBUG` | Django debug mode | `False` in production |
+| `DATABASE_URL` | PostgreSQL connection string | Injected by host |
+| `ALLOWED_HOSTS` | Allowed host headers | Host domain |
+| `CORS_ALLOWED_ORIGINS` | Allowed frontend origins | Vercel domain |
+| `VITE_API_URL` | Frontend API endpoint | Render backend URL |
 
 ---
 
 ## API Reference
-All endpoints are prefixed with `/api/` as defined in `privora_project/urls.py`.
+
+All endpoints are prefixed with `/api/`.
 
 ### Users (`/api/users/`)
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| POST | `register/` | No | Register a new user and return JWT pair |
-| POST | `login/` | No | Authenticate and return JWT pair; creates an `AuditAlert` for each login |
-| POST | `logout/` | Yes | Blacklist the refresh token and log the logout |
-| GET | `me/` | Yes | Retrieve current user details |
-| GET/PATCH | `settings/` | Yes | View or update `UserSettings` |
-| POST | `token/refresh/` | No | Refresh an access token |
+- `POST /register/` — Register user & return initial JWT pair
+- `POST /login/` — Authenticate user & return JWT pair
+- `POST /logout/` — Blacklist refresh token & log exit
+- `GET /me/` — Retrieve user profile
+- `POST /token/refresh/` — Obtain new access token using refresh token
 
 ### Encryption (`/api/encryption/`)
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| GET | `assets/` | Yes | List the authenticated user’s encrypted assets |
-| POST | `upload/` | Yes | Upload a file, encrypt it with the supplied password |
-| DELETE | `assets/<uuid:pk>/` | Yes | Delete the specified encrypted asset |
-| POST | `assets/<uuid:pk>/retrieve/` | Yes | Decrypt and download the specified asset |
+- `GET /assets/` — List user's encrypted file entries
+- `POST /upload/` — Encrypt and store file entry
+- `POST /assets/<id>/retrieve/` — Decrypt and download file entry
+- `DELETE /assets/<id>/` — Purge file entry from ledger
 
 ### Audit (`/api/audit/`)
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| GET | `logs/` | Yes | Paginated list of `AuditLog` entries for the user |
-| GET | `alerts/` | Yes | List all `AuditAlert` objects for the user |
-| PATCH | `alerts/<int:pk>/resolve/` | Yes | Mark the specified alert as resolved |
+- `GET /logs/` — Paginated list of audit ledger entries
+- `GET /alerts/` — List security alerts
+- `PATCH /alerts/<id>/resolve/` — Mark alert resolved
 
 ### Privacy (`/api/privacy/`)
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| GET | `settings/` | Yes | Retrieve the user’s `PrivacySettings` |
-| GET | `score/` | Yes | Compute and return the current Data Protection Score |
+- `GET /settings/` — Retrieve privacy toggles
+- `GET /score/` — Compute current Data Protection Score
 
 ---
 
-## Data Model
-### `users`
-| Model | Fields |
-|-------|--------|
-| **User** | `email` (unique), `full_name`, `encryption_salt`, `is_2fa_enabled`, `is_active`, `is_staff`, `date_joined` |
-| **UserSettings** | `user` (OneToOne), `login_notifications`, `third_party_access`, `session_timeout_mins`, `data_retention_days`, `created_at`, `updated_at` |
+## Security Model & Cryptography
 
-### `encryption`
-| Model | Fields |
-|-------|--------|
-| **EncryptedAsset** | `id` (UUID), `user` (FK), `name`, `file_size`, `storage_path`, `salt`, `iv`, `created_at` |
-
-### `audit`
-| Model | Fields |
-|-------|--------|
-| **AuditLog** | `user` (FK), `action`, `ip_address`, `data_item`, `status`, `timestamp`, `metadata` (JSON) |
-| **AuditAlert** | `user` (FK), `title`, `description`, `severity` (`low`/`medium`/`high`), `resolved`, `created_at` |
-
-### `privacy`
-| Model | Fields |
-|-------|--------|
-| **PrivacySettings** | `user` (OneToOne), `tracking_protection`, `data_sharing`, `ad_blocking`, `cookie_control`, `location_masking`, `fingerprint_defense`, `updated_at` |
-
----
-
-## Security Notes
-- **Password handling** – Encryption password is never stored. Only per‑file `salt` and `iv` are persisted.
-- **SECRET_KEY fallback** – `unsafe-default-key` is used for development. Production must set a secure key.
-- **Alert thresholds** – Configurable in `backend/audit/rules.py`.
-- **Token blacklisting** – High‑severity alerts auto‑blacklist refresh tokens.
+- **Zero-Knowledge Passphrase Architecture**: File encryption keys are generated client-side/in-memory using PBKDF2-HMAC-SHA256 with 600,000 iterations and random per-file salts. User passphrases are never stored on the server.
+- **JWT Token Rotation & Blacklisting**: Refresh tokens rotate upon refresh and are blacklisted upon logout or high-severity anomaly detection.
+- **Background Async Threading**: Email notifications run asynchronously on daemon threads, isolating authentication performance from third-party network latency.
 
 ---
 
 ## Testing
+
 ```bash
-# Run the full Django test suite
+# Run Django test suite
+cd backend
 python manage.py test
 
-# Run tests for a specific app, e.g.:
+# Test specific applications
 python manage.py test users
 python manage.py test encryption
 python manage.py test audit
 python manage.py test privacy
 ```
-The frontend currently has no configured test suite.
 
 ---
 
-## Known Limitations / Out of Scope
-- **Two‑factor authentication** – Models exist but logic is not implemented.
-- **`core` app** – Scaffolded but unused.
-- **Frontend tests** – None configured.
-- **API URL** – Hard‑coded in frontend.
+## License
 
----
+This project is open-source software licensed under the **[MIT License](LICENSE)**.
 
-## Project Structure
+```text
+Copyright (c) 2026 Samuel Tuoyo & Privora Contributors
 ```
-privora/
-├─ backend/
-│  ├─ .env.example
-│  ├─ .gitignore
-│  ├─ manage.py
-│  ├─ db.sqlite3
-│  ├─ requirements.txt
-│  ├─ audit/
-│  │  ├─ models.py
-│  │  ├─ views.py
-│  │  ├─ urls.py
-│  │  └─ rules.py
-│  ├─ core/
-│  │  └─ models.py
-│  ├─ encryption/
-│  │  ├─ models.py
-│  │  ├─ views.py
-│  │  ├─ urls.py
-│  │  └─ crypto.py
-│  ├─ privacy/
-│  │  ├─ models.py
-│  │  ├─ views.py
-│  │  ├─ urls.py
-│  │  └─ scoring.py
-│  ├─ privora_project/
-│  │  ├─ settings.py
-│  │  └─ urls.py
-│  └─ users/
-│     ├─ models.py
-│     ├─ views.py
-│     ├─ urls.py
-│     ├─ serializers.py
-│     ├─ notifications.py
-│     └─ tests.py
-└─ frontend/
-   ├─ package.json
-   ├─ vite.config.js
-   └─ src/
-       ├─ App.jsx
-       ├─ index.css
-       ├─ main.jsx
-       ├─ api/
-       │   └─ axiosInstance.js
-       ├─ components/
-       ├─ context/
-       └─ pages/
-           ├─ AccessLogs.jsx
-           ├─ Dashboard.jsx
-           ├─ Landing.jsx
-           ├─ Login.jsx
-           ├─ MyData.jsx
-           ├─ Register.jsx
-           └─ Settings.jsx
-```
-
----
-
-*Generated on 2026‑07‑29.*
