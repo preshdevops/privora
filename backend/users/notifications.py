@@ -13,7 +13,7 @@ def _send_email(user_email, api_key, ip_address, timestamp):
     Runs in a background daemon thread — never blocks the caller.
     """
     try:
-        url = getattr(settings, 'SENDLIB_API_URL', 'https://api.sendlib.io/api/send')
+        url = "https://sendlib.samueltuoyo.com/api/send"
         headers = {
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
