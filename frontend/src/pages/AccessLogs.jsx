@@ -135,7 +135,6 @@ export default function AccessLogs() {
         <EmptyState
           title="No matching logs"
           description="No security events match your current filter."
-          iconType="logs"
         />
       ) : (
         <div className="ledger-list">

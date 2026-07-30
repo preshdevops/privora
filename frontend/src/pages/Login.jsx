@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import SecurityActionBtn from '../components/SecurityActionBtn';
-import loginGlobeImg from '../assets/login-globe.png';
+import PrivoraSeal from '../components/PrivoraSeal';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -47,14 +47,15 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex bg-[var(--bg-primary)] text-[var(--text-primary)] font-sans antialiased">
-      {/* Left Column: Asymmetric Visual Panel */}
-      <div className="hidden lg:flex lg:w-1/2 items-center justify-center p-12 bg-[var(--bg-sidebar)] border-r border-[var(--border-primary)] relative">
-        <img
-          src={loginGlobeImg}
-          alt="Vault Authentication"
-          className="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none"
-        />
-        <div className="relative z-10 max-w-md text-center space-y-4">
+      {/* Left Column: Seal Mark Panel */}
+      <div className="hidden lg:flex lg:w-1/2 items-center justify-center p-12 bg-[var(--bg-sidebar)] border-r border-[var(--border-primary)] relative overflow-hidden">
+        {/* Large watermark seal bleeding off bottom edge */}
+        <div className="absolute -bottom-20 -left-20 pointer-events-none" aria-hidden="true">
+          <PrivoraSeal variant="full" size={400} opacity={0.06} />
+        </div>
+
+        <div className="relative z-10 max-w-md text-center space-y-6">
+          <PrivoraSeal variant="full" size={120} className="mx-auto" />
           <span className="text-xs font-mono text-[var(--accent-brass)] tracking-widest uppercase block">
             VAULT AUTHENTICATION
           </span>

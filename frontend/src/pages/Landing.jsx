@@ -1,8 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { ArrowRight, ShieldCheck, KeyRound, EyeOff, Activity } from 'lucide-react';
-import vaultHeroImg from '../assets/vault-hero.png';
+import { ArrowRight } from 'lucide-react';
+import PrivoraSeal from '../components/PrivoraSeal';
 
 export default function Landing() {
   const scrollTo = (id) => {
@@ -14,7 +13,8 @@ export default function Landing() {
       {/* Navigation Bar */}
       <nav className="border-b border-[var(--border-primary)] bg-[var(--bg-primary)]">
         <div className="max-w-[1080px] mx-auto px-6 py-5 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2.5">
+            <PrivoraSeal variant="glyph" size={24} />
             <span className="font-serif text-xl font-semibold text-[var(--text-primary)] tracking-tight">
               Privora
             </span>
@@ -43,9 +43,14 @@ export default function Landing() {
         </div>
       </nav>
 
-      {/* Asymmetric Hero Section */}
-      <section className="py-16 sm:py-24 border-b border-[var(--border-primary)]">
-        <div className="max-w-[1080px] mx-auto px-6 grid lg:grid-cols-12 gap-12 items-center">
+      {/* Asymmetric Hero Section — Seal integrated into layout, not boxed image */}
+      <section className="py-16 sm:py-24 border-b border-[var(--border-primary)] relative overflow-hidden">
+        {/* Background watermark — seal bleeding off canvas edge */}
+        <div className="absolute -right-24 top-1/2 -translate-y-1/2 pointer-events-none hidden lg:block" aria-hidden="true">
+          <PrivoraSeal variant="full" size={480} opacity={0.04} />
+        </div>
+
+        <div className="max-w-[1080px] mx-auto px-6 grid lg:grid-cols-12 gap-12 items-center relative z-10">
           {/* Left Column: Headline & Copy */}
           <div className="lg:col-span-7 space-y-6 text-left">
             <span className="text-xs font-mono text-[var(--accent-brass)] tracking-widest uppercase block">
@@ -78,13 +83,11 @@ export default function Landing() {
             </div>
           </div>
 
-          {/* Right Column: Proportional Integrated Hero Illustration */}
-          <div className="lg:col-span-5 border border-[var(--border-primary)] p-2 rounded-sm bg-[var(--bg-secondary)]">
-            <img
-              src={vaultHeroImg}
-              alt="Privora Vault Illustration"
-              className="w-full h-auto object-cover rounded-sm border border-[var(--border-primary)]"
-            />
+          {/* Right Column: The Seal Mark — confident, integrated, not boxed */}
+          <div className="lg:col-span-5 flex items-center justify-center">
+            <div className="relative">
+              <PrivoraSeal variant="full" size={280} className="block" />
+            </div>
           </div>
         </div>
       </section>
@@ -104,23 +107,20 @@ export default function Landing() {
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
-                icon: ShieldCheck,
                 title: "Zero-knowledge storage",
                 desc: "Your files are encrypted on your device before storage. Not even our servers can read your content."
               },
               {
-                icon: KeyRound,
                 title: "Password-derived key",
                 desc: "Your key is computed from your passphrase in memory and immediately discarded. Your password is never stored."
               },
               {
-                icon: Activity,
                 title: "Active audit ledger",
                 desc: "Every login, file action, and settings change is logged automatically to give you complete visibility."
               }
             ].map((item, i) => (
               <div key={i} className="space-y-3 p-6 border border-[var(--border-primary)] bg-[var(--bg-primary)] rounded-sm">
-                <item.icon className="w-5 h-5 text-[var(--accent-brass)]" />
+                <PrivoraSeal variant="glyph" size={20} />
                 <h3 className="text-lg font-serif text-[var(--text-primary)]">
                   {item.title}
                 </h3>
@@ -136,6 +136,7 @@ export default function Landing() {
       {/* CTA Footer */}
       <section id="why-privora" className="py-20 text-center">
         <div className="max-w-[760px] mx-auto px-6 space-y-6">
+          <PrivoraSeal variant="outline" size={48} opacity={0.3} className="mx-auto" />
           <h2 className="text-3xl font-serif text-[var(--text-primary)]">
             Ready to protect your data?
           </h2>

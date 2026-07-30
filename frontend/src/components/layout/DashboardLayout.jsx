@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import axiosInstance from '../../api/axiosInstance';
 import OnboardingFlow from '../OnboardingFlow';
+import PrivoraSeal from '../PrivoraSeal';
 
 const navItems = [
   { to: '/dashboard', label: 'Dashboard' },
@@ -60,15 +61,18 @@ export default function DashboardLayout({ children }) {
           mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        {/* Brand Title */}
+        {/* Brand Title with Seal Glyph */}
         <div className="px-6 pt-8 pb-6 border-b border-[var(--border-primary)]">
-          <NavLink to="/dashboard" className="block">
-            <span className="font-serif text-xl font-semibold text-[var(--text-primary)] tracking-tight block">
-              Privora
-            </span>
-            <span className="text-[11px] font-mono text-[var(--text-tertiary)] block mt-0.5">
-              Personal vault ledger
-            </span>
+          <NavLink to="/dashboard" className="flex items-center gap-2.5">
+            <PrivoraSeal variant="glyph" size={20} />
+            <div>
+              <span className="font-serif text-xl font-semibold text-[var(--text-primary)] tracking-tight block">
+                Privora
+              </span>
+              <span className="text-[11px] font-mono text-[var(--text-tertiary)] block mt-0.5">
+                Personal vault ledger
+              </span>
+            </div>
           </NavLink>
         </div>
 
@@ -123,7 +127,8 @@ export default function DashboardLayout({ children }) {
       <div className="flex-1 lg:ml-[220px] flex flex-col min-h-screen">
         {/* Mobile Header Bar */}
         <header className="lg:hidden sticky top-0 z-30 bg-[var(--bg-primary)] border-b border-[var(--border-primary)] px-6 py-4 flex items-center justify-between">
-          <span className="font-serif text-lg font-semibold text-[var(--text-primary)]">
+          <span className="font-serif text-lg font-semibold text-[var(--text-primary)] flex items-center gap-2">
+            <PrivoraSeal variant="glyph" size={18} />
             Privora
           </span>
           <button

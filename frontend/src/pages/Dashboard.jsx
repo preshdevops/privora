@@ -191,7 +191,6 @@ export default function Dashboard() {
           <EmptyState
             title="No activity yet"
             description="Once you upload a file or sign in, activity entries will appear here."
-            iconType="logs"
           />
         ) : (
           <div className="ledger-list">

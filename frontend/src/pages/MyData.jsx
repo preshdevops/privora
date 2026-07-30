@@ -222,7 +222,6 @@ export default function MyData() {
               <span>Protect first file</span>
             </SecurityActionBtn>
           }
-          iconType="vault"
         />
       ) : (
         <div className="ledger-list">
