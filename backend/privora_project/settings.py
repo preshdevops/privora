@@ -102,11 +102,15 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
 }
 
-CORS_ALLOWED_ORIGINS = [
-    origin.strip()
-    for origin in os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:5173').split(',')
-    if origin.strip()
-]
+cors_origins_env = os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:5173')
+if cors_origins_env.strip() == '*' or os.getenv('CORS_ALLOW_ALL_ORIGINS', 'False') == 'True':
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    CORS_ALLOWED_ORIGINS = [
+        origin.strip()
+        for origin in cors_origins_env.split(',')
+        if origin.strip() and origin.strip() != '*'
+    ]
 
 CORS_ALLOW_CREDENTIALS = True
 
