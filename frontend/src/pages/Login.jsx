@@ -82,10 +82,10 @@ export default function Login() {
             </p>
           </header>
 
-          {/* General Error */}
-          {(errors.general || errors.detail || errors.non_field_errors) && (
+          {/* General Error Alert */}
+          {(errors.general || errors.detail || errors.non_field_errors || errors.error) && (
             <div className="p-3.5 rounded bg-[var(--badge-danger-bg)] border border-[var(--status-danger)]/40 text-[var(--badge-danger-text)] text-xs font-mono">
-              {errors.general || errors.detail || errors.non_field_errors}
+              {errors.general || errors.detail || errors.non_field_errors || errors.error}
             </div>
           )}
 
