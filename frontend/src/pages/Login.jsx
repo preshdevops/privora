@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import SecurityActionBtn from '../components/SecurityActionBtn';
+import PrivoraSeal from '../components/PrivoraSeal';
 import PasswordInput from '../components/PasswordInput';
 
 export default function Login() {
