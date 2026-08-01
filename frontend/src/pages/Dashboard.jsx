@@ -6,6 +6,7 @@ import DataJourney from '../components/DataJourney';
 import ComplianceBadge from '../components/ComplianceBadge';
 import SecurityActionBtn from '../components/SecurityActionBtn';
 import EmptyState from '../components/EmptyState';
+import RisingScoreDial from '../components/RisingScoreDial';
 
 export default function Dashboard() {
   const navigate = useNavigate();
