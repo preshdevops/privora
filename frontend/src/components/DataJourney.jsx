@@ -10,39 +10,39 @@ export default function DataJourney() {
   const stages = [
     {
       id: "ingest",
-      entryNum: "ENTRY #001",
-      title: "File Upload & Ingestion",
+      entryNum: "STEP 1",
+      title: "File Uploaded",
       icon: HardDriveDownload,
-      subtitle: "Memory Buffer",
-      detail: "Your raw file is received directly in memory — no unencrypted data is ever written to disk.",
+      subtitle: "Safe Receive",
+      detail: "Your file is brought safely into Privora without leaving unencrypted copies anywhere.",
       sealText: "RECEIVED"
     },
     {
       id: "key",
-      entryNum: "ENTRY #002",
-      title: "Master Key Generation",
+      entryNum: "STEP 2",
+      title: "Lock Key Created",
       icon: KeyRound,
-      subtitle: "Password Derivation",
-      detail: "We derive a unique private key from your passphrase. Your password is never stored or sent anywhere.",
-      sealText: "DERIVED"
+      subtitle: "Private Password",
+      detail: "A unique security key is generated from your password. Your password is never saved on any server.",
+      sealText: "PROTECTED"
     },
     {
       id: "encrypt",
-      entryNum: "ENTRY #003",
-      title: "Data Scrambling",
+      entryNum: "STEP 3",
+      title: "File Encrypted",
       icon: Cpu,
-      subtitle: "Payload Protection",
-      detail: "Your content is transformed into unreadable data blocks. Without your key, recovery is mathematically impossible.",
-      sealText: "SEALED"
+      subtitle: "Total Privacy",
+      detail: "Your file is scrambled into unreadable data. Without your secret password, no one can read it.",
+      sealText: "ENCRYPTED"
     },
     {
       id: "store",
-      entryNum: "ENTRY #004",
-      title: "Ledger Vault Storage",
+      entryNum: "STEP 4",
+      title: "Stored in Vault",
       icon: ShieldCheck,
-      subtitle: "Zero-Knowledge Record",
-      detail: "The protected record is logged in the vault ledger. Only you holding your password key can unlock it.",
-      sealText: "RECORDED"
+      subtitle: "Locked & Saved",
+      detail: "Your encrypted file is stored safely in your vault. You can unlock and download it whenever you need.",
+      sealText: "STORED"
     }
   ];
 
@@ -52,15 +52,15 @@ export default function DataJourney() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-[var(--border-primary)]">
         <div>
           <span className="text-[10px] sm:text-xs uppercase tracking-widest text-[var(--accent-brass)] font-mono font-semibold block">
-            Sequential Protection Ledger
+            YOUR FILE PROTECTION PIPELINE
           </span>
           <h2 className="text-xl sm:text-2xl font-serif text-[var(--text-primary)] mt-0.5">
-            Data Journey & Verification Trail
+            How your files get locked step-by-step
           </h2>
         </div>
         <div className="flex items-center gap-2 text-xs font-mono text-[var(--text-tertiary)] bg-[var(--bg-input)] px-3 py-1.5 rounded border border-[var(--border-primary)] self-start sm:self-auto">
           <span className="w-2 h-2 rounded-full bg-[var(--status-success)] animate-pulse" />
-          <span>Ledger Active</span>
+          <span>Protection Active</span>
         </div>
       </div>
 
@@ -128,14 +128,14 @@ export default function DataJourney() {
       <div className="mt-4 sm:mt-6 p-3.5 sm:p-4 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-[var(--text-secondary)]">
         <div className="flex items-start sm:items-center gap-2.5">
           <ShieldCheck className="w-4 h-4 text-[var(--accent-brass)] shrink-0 mt-0.5 sm:mt-0" />
-          <span>Every ledger entry is signed in memory using keys derived strictly from your master password.</span>
+          <span>All steps are locked with your secret password. Your data is always under your control.</span>
         </div>
 
         <button
           onClick={() => setShowTechnical(!showTechnical)}
           className="flex items-center gap-1 text-[11px] font-mono text-[var(--accent-brass)] hover:underline shrink-0 self-end sm:self-auto touch-target cursor-pointer"
         >
-          <span>{showTechnical ? 'Hide Tech Spec' : 'Technical Spec'}</span>
+          <span>{showTechnical ? 'Hide Security Details' : 'Security Details'}</span>
           {showTechnical ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
         </button>
       </div>

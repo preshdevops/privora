@@ -73,7 +73,7 @@ export default function DashboardLayout({ children }) {
                 Privora
               </span>
               <span className="text-[11px] font-mono text-[var(--text-tertiary)] block mt-1">
-                Personal vault ledger
+                Your private data vault
               </span>
             </div>
           </NavLink>
@@ -114,7 +114,7 @@ export default function DashboardLayout({ children }) {
             <span className="text-[var(--text-primary)] font-medium block truncate">
               {user?.full_name || user?.email || 'Member'}
             </span>
-            <span className="text-[11px]">Member account</span>
+            <span className="text-[11px]">Your Account</span>
           </div>
 
           <div className="flex flex-col lg:flex-row items-center justify-between gap-2">

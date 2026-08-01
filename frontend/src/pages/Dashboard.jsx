@@ -74,10 +74,10 @@ export default function Dashboard() {
           OVERVIEW
         </span>
         <h1 className="text-2xl sm:text-4xl font-serif text-[var(--text-primary)]">
-          Your privacy, at a glance
+          Your Vault Dashboard
         </h1>
         <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed max-w-xl">
-          Privora protects your personal data under client-isolated encryption. Only your password can unseal your files.
+          Your files are encrypted and locked. Only you hold the secret password to open them.
         </p>
       </header>
 
@@ -85,25 +85,25 @@ export default function Dashboard() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-3.5 sm:p-0 rounded-sm bg-[var(--bg-input)] sm:bg-transparent border sm:border-0 border-[var(--border-primary)]">
         <div className="text-xs text-[var(--text-secondary)] flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-[var(--status-success)] animate-pulse shrink-0" />
-          <span>System status: <strong className="text-[var(--status-success)] font-medium">Active & protected</strong></span>
+          <span>Vault Status: <strong className="text-[var(--status-success)] font-medium">Fully Protected</strong></span>
         </div>
 
         <SecurityActionBtn
           onClick={handleExportLedger}
-          actionLabel="Preparing export…"
-          successLabel="Exported"
+          actionLabel="Preparing report…"
+          successLabel="Downloaded"
           delayMs={600}
           variant="outline"
           className="w-full sm:w-auto"
         >
-          <span>Export activity log</span>
+          <span>Download Activity Report</span>
         </SecurityActionBtn>
       </div>
 
       {/* Sequential Data Journey Ledger */}
       <section className="space-y-3">
         <h2 className="text-lg sm:text-xl font-serif text-[var(--text-primary)]">
-          Protection pipeline
+          How your files stay safe
         </h2>
         <DataJourney />
       </section>
@@ -111,14 +111,14 @@ export default function Dashboard() {
       {/* Metrics Summary — 2-Line Stacked Layout on Mobile */}
       <section className="space-y-4">
         <h2 className="text-lg sm:text-xl font-serif text-[var(--text-primary)]">
-          Vault status summary
+          Vault Summary
         </h2>
 
         <div className="ledger-list divide-y divide-[var(--border-primary)] border border-[var(--border-primary)] rounded-sm bg-[var(--bg-card)]">
           {/* Entry 1: Protection Index */}
           <div className="ledger-entry p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
             <div className="flex items-center justify-between sm:block w-full sm:w-auto">
-              <span className="text-sm font-medium text-[var(--text-primary)] block">Data protection score</span>
+              <span className="text-sm font-medium text-[var(--text-primary)] block">Safety Score</span>
               <div className="sm:hidden text-right">
                 <span className="font-serif text-xl font-semibold text-[var(--accent-brass)]">
                   {score ?? 85}
@@ -126,7 +126,7 @@ export default function Dashboard() {
                 <span className="text-[10px] text-[var(--text-tertiary)]"> / 100</span>
               </div>
             </div>
-            <span className="text-xs text-[var(--text-secondary)] hidden sm:block">Calculated compliance index</span>
+            <span className="text-xs text-[var(--text-secondary)] hidden sm:block">Your overall protection rating</span>
 
             <div className="hidden sm:flex items-center gap-1 text-right shrink-0">
               <span className="font-serif text-2xl font-semibold text-[var(--accent-brass)]">
@@ -140,8 +140,8 @@ export default function Dashboard() {
           <div className="ledger-entry p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
             <div className="flex items-center justify-between sm:block w-full sm:w-auto">
               <div>
-                <span className="text-sm font-medium text-[var(--text-primary)] block">Protected files</span>
-                <span className="text-xs text-[var(--text-secondary)] block sm:hidden">Encrypted records stored safely</span>
+                <span className="text-sm font-medium text-[var(--text-primary)] block">Locked Files</span>
+                <span className="text-xs text-[var(--text-secondary)] block sm:hidden">Files safely stored in your vault</span>
               </div>
               <div className="sm:hidden text-right">
                 <span className="font-serif text-xl font-semibold text-[var(--text-primary)]">
@@ -149,7 +149,7 @@ export default function Dashboard() {
                 </span>
               </div>
             </div>
-            <span className="text-xs text-[var(--text-secondary)] hidden sm:block">Encrypted records stored safely</span>
+            <span className="text-xs text-[var(--text-secondary)] hidden sm:block">Files safely stored in your vault</span>
 
             <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0 pt-1 sm:pt-0 border-t sm:border-0 border-[var(--border-primary)]/50">
               <span className="font-serif text-2xl font-semibold text-[var(--text-primary)] hidden sm:inline">
@@ -168,9 +168,9 @@ export default function Dashboard() {
           <div className="ledger-entry p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
             <div className="flex items-center justify-between sm:block w-full sm:w-auto">
               <div>
-                <span className="text-sm font-medium text-[var(--text-primary)] block">Security alerts</span>
+                <span className="text-sm font-medium text-[var(--text-primary)] block">Security Notices</span>
                 <span className="text-xs text-[var(--text-secondary)] block sm:hidden">
-                  {unresolvedAlerts.length > 0 ? "Alerts requiring attention" : "All metrics nominal"}
+                  {unresolvedAlerts.length > 0 ? "Unusual activity warnings" : "No security issues detected"}
                 </span>
               </div>
               <div className="sm:hidden text-right">
@@ -180,7 +180,7 @@ export default function Dashboard() {
               </div>
             </div>
             <span className="text-xs text-[var(--text-secondary)] hidden sm:block">
-              {unresolvedAlerts.length > 0 ? "Alerts requiring attention" : "All access metrics nominal"}
+              {unresolvedAlerts.length > 0 ? "Unusual activity warnings" : "No security issues detected"}
             </span>
 
             <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0 pt-1 sm:pt-0 border-t sm:border-0 border-[var(--border-primary)]/50">
@@ -269,7 +269,7 @@ export default function Dashboard() {
                       >
                         <p>• Data item: {log.data_item || log.location || 'N/A'}</p>
                         <p>• IP address: {log.ip_address || '127.0.0.1'}</p>
-                        <p>• Telemetry status: {log.status || 'Verified'}</p>
+                        <p>• Status: Verified Safe</p>
                       </motion.div>
                     )}
                   </AnimatePresence>

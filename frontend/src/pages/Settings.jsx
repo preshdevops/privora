@@ -76,33 +76,33 @@ export default function Settings() {
   const privacyToggles = [
     {
       key: 'tracking_protection',
-      label: 'Tracking protection',
-      desc: 'Block third-party trackers and cross-site telemetry.',
+      label: 'Block Online Tracking',
+      desc: 'Stop third-party websites and advertisers from tracking you.',
     },
     {
       key: 'data_sharing',
-      label: 'Data sharing',
-      desc: 'Allow anonymised usage data to improve security.',
+      label: 'Anonymous Reports',
+      desc: 'Share anonymous data to help improve app security.',
     },
     {
       key: 'ad_blocking',
-      label: 'Ad and script blocking',
-      desc: 'Block ads and unverified external scripts from loading.',
+      label: 'Block Ads & Scripts',
+      desc: 'Block popups, unwanted ads, and suspicious code.',
     },
     {
       key: 'cookie_control',
-      label: 'Cookie control',
-      desc: 'Reject non-essential cookies and clear them on close.',
+      label: 'Cookie Protection',
+      desc: 'Block non-essential cookies and clear tracking data when closing.',
     },
     {
       key: 'location_masking',
-      label: 'Location privacy',
-      desc: 'Hide IP and location from third-party services.',
+      label: 'Hide Location & IP',
+      desc: 'Keep your IP address and physical location private.',
     },
     {
       key: 'fingerprint_defense',
-      label: 'Fingerprint protection',
-      desc: 'Prevent websites from identifying your device.',
+      label: 'Device Shield',
+      desc: 'Stop websites from identifying your specific phone or computer.',
     },
   ];
 
@@ -114,17 +114,17 @@ export default function Settings() {
           SETTINGS
         </span>
         <h1 className="text-2xl sm:text-4xl font-serif text-[var(--text-primary)] mt-1">
-          Privacy & account preferences
+          Settings & Privacy
         </h1>
         <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed max-w-xl">
-          Control your privacy toggles, session rules, and log retention schedule.
+          Manage your security options, sign-out timers, and history settings.
         </p>
       </header>
 
       {/* Account Info Summary */}
       <section className="space-y-3 pb-6 border-b border-[var(--border-primary)] text-sm">
         <h2 className="text-lg sm:text-xl font-serif text-[var(--text-primary)]">
-          Member account
+          Your Account
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-[var(--text-secondary)] bg-[var(--bg-card)] p-4 rounded-sm border border-[var(--border-primary)]">
           <div>
@@ -141,7 +141,7 @@ export default function Settings() {
       {/* Privacy Toggles — Ledger Rule List */}
       <section className="space-y-4">
         <h2 className="text-lg sm:text-xl font-serif text-[var(--text-primary)]">
-          Privacy controls
+          Privacy Controls
         </h2>
 
         {loading ? (
@@ -183,14 +183,14 @@ export default function Settings() {
       {/* Session Rules & Data Retention */}
       <section className="space-y-6 pt-2">
         <h2 className="text-lg sm:text-xl font-serif text-[var(--text-primary)]">
-          Session & log retention
+          Sign-out & History Timers
         </h2>
 
         <div className="ledger-list divide-y divide-[var(--border-primary)] border border-[var(--border-primary)] rounded-sm bg-[var(--bg-card)] text-sm">
           <div className="ledger-entry flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 sm:p-4">
             <div>
-              <span className="font-medium text-[var(--text-primary)] block">Session timeout</span>
-              <span className="text-xs text-[var(--text-secondary)]">Automatic sign-out after inactivity</span>
+              <span className="font-medium text-[var(--text-primary)] block">Auto Sign-Out</span>
+              <span className="text-xs text-[var(--text-secondary)]">Sign out automatically if you leave your screen</span>
             </div>
             <select
               value={sessionTimeout}
@@ -206,8 +206,8 @@ export default function Settings() {
 
           <div className="ledger-entry flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 sm:p-4">
             <div>
-              <span className="font-medium text-[var(--text-primary)] block">Log retention</span>
-              <span className="text-xs text-[var(--text-secondary)] font-sans">Automatic purge schedule for audit entries</span>
+              <span className="font-medium text-[var(--text-primary)] block">Keep Activity History For</span>
+              <span className="text-xs text-[var(--text-secondary)] font-sans">Choose how long to save your login and file access records</span>
             </div>
             <select
               value={dataRetention}

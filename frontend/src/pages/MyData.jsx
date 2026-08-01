@@ -183,13 +183,13 @@ export default function MyData() {
       <header className="space-y-2 border-b border-[var(--border-primary)] pb-6 sm:pb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           <span className="text-xs font-mono text-[var(--accent-brass)] tracking-widest uppercase block">
-            FILE LEDGER
+            MY VAULT
           </span>
           <h1 className="text-2xl sm:text-4xl font-serif text-[var(--text-primary)] mt-1">
-            Protected files
+            Your Protected Files
           </h1>
           <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed max-w-xl">
-            Sealed file records protected under zero-knowledge key isolation.
+            All your locked files, stored safely and accessible only by you.
           </p>
         </div>
 
@@ -200,7 +200,7 @@ export default function MyData() {
           className="w-full sm:w-auto"
         >
           <Plus className="w-4 h-4" />
-          <span>Protect file</span>
+          <span>+ Upload & Lock File</span>
         </SecurityActionBtn>
       </header>
 
@@ -211,8 +211,8 @@ export default function MyData() {
         </div>
       ) : assets.length === 0 ? (
         <EmptyState
-          title="No file records logged"
-          description="Upload your first file to seal and log it in the vault ledger."
+          title="No files in your vault yet"
+          description="Upload a document to lock it safely inside your vault."
           action={
             <SecurityActionBtn
               onClick={() => setShowModal(true)}
@@ -221,7 +221,7 @@ export default function MyData() {
               className="w-full sm:w-auto"
             >
               <Upload className="w-4 h-4" />
-              <span>Protect first file</span>
+              <span>+ Upload & Lock File</span>
             </SecurityActionBtn>
           }
         />
@@ -247,7 +247,7 @@ export default function MyData() {
                     </div>
 
                     <span className="px-2 py-0.5 text-[10px] font-mono rounded uppercase shrink-0 border bg-[var(--vault-green-bg)] text-[var(--vault-green-bright)] border-[var(--vault-green)]">
-                      Sealed
+                      Locked & Safe
                     </span>
                   </div>
 
@@ -274,8 +274,8 @@ export default function MyData() {
                       className="pt-3 pb-1 border-t border-[var(--border-primary)] mt-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono"
                     >
                       <div className="space-y-1 text-[var(--text-tertiary)]">
-                        <p>• Encryption engine: Client-derived key</p>
-                        <p>• Protection status: Sealed & isolated</p>
+                        <p>• Lock key: Device-protected key</p>
+                        <p>• Status: Encrypted & safe</p>
                       </div>
 
                       <div className="flex items-center gap-2.5 pt-1 sm:pt-0">
@@ -284,19 +284,19 @@ export default function MyData() {
                           className="flex-1 sm:flex-initial px-3 py-2 border border-[var(--border-primary)] rounded-sm text-[var(--text-primary)] hover:border-[var(--text-primary)] transition-colors cursor-pointer flex items-center justify-center gap-1.5 touch-target"
                         >
                           <Unlock className="w-3.5 h-3.5" />
-                          <span>Unseal & download</span>
+                          <span>Unlock & download</span>
                         </button>
 
                         <SecurityActionBtn
                           onClick={() => handleDelete(asset.id)}
-                          actionLabel="Purging…"
-                          successLabel="Purged"
+                          actionLabel="Deleting…"
+                          successLabel="Deleted"
                           delayMs={500}
                           variant="danger"
                           className="!px-3 !py-2 shrink-0 touch-target"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
-                          <span>Purge</span>
+                          <span>Delete File</span>
                         </SecurityActionBtn>
                       </div>
                     </motion.div>
@@ -321,10 +321,10 @@ export default function MyData() {
               <div className="flex items-center justify-between pb-4 border-b border-[var(--border-primary)]">
                 <div>
                   <span className="text-xs font-mono text-[var(--accent-brass)] uppercase tracking-wider block">
-                    LEDGER INGESTION
+                    LOCK A NEW FILE
                   </span>
                   <h2 className="text-xl font-serif text-[var(--text-primary)] mt-0.5">
-                    Seal & record file
+                    Add file to vault
                   </h2>
                 </div>
                 <button
@@ -370,7 +370,7 @@ export default function MyData() {
                       Click to select or drag a file here
                     </p>
                     <p className="text-xs text-[var(--text-tertiary)] mt-1">
-                      File will be encrypted in memory before entry
+                      Your file will be encrypted on your device before saving
                     </p>
                   </div>
                 )}
@@ -379,13 +379,13 @@ export default function MyData() {
               {/* Password Input */}
               <div className="space-y-1.5">
                 <label className="block text-xs text-[var(--text-secondary)]">
-                  Master passphrase
+                  Secret Password
                 </label>
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter secret passphrase…"
+                  placeholder="Enter secret password…"
                   className="w-full px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-sm text-[var(--text-primary)] outline-none"
                 />
               </div>
@@ -403,12 +403,12 @@ export default function MyData() {
                 <SecurityActionBtn
                   onClick={handleUpload}
                   disabled={!selectedFile || !password.trim()}
-                  actionLabel="Sealing file…"
-                  successLabel="SEALED"
+                  actionLabel="Locking file…"
+                  successLabel="LOCKED"
                   delayMs={750}
                 >
                   <Lock className="w-4 h-4" />
-                  <span>Seal & record</span>
+                  <span>Lock File</span>
                 </SecurityActionBtn>
               </div>
             </motion.div>
@@ -429,10 +429,10 @@ export default function MyData() {
               <div className="flex items-center justify-between pb-4 border-b border-[var(--border-primary)]">
                 <div>
                   <span className="text-xs font-mono text-[var(--accent-brass)] uppercase tracking-wider block">
-                    UNSEAL VERIFICATION
+                    UNLOCK FILE
                   </span>
                   <h2 className="text-xl font-serif text-[var(--text-primary)] mt-0.5">
-                    Unseal file entry
+                    Download your file
                   </h2>
                 </div>
                 <button
@@ -450,14 +450,14 @@ export default function MyData() {
 
               <div className="space-y-1.5">
                 <label className="block text-xs text-[var(--text-secondary)]">
-                  Master passphrase
+                  Secret Password
                 </label>
                 <input
                   type="password"
                   value={downloadPassword}
                   onChange={(e) => setDownloadPassword(e.target.value)}
                   onKeyDown={(e) => { if (e.key === 'Enter' && downloadPassword.trim()) handleDownload(); }}
-                  placeholder="Enter passphrase…"
+                  placeholder="Enter secret password…"
                   className="w-full px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-sm text-[var(--text-primary)] outline-none"
                   autoFocus
                 />
@@ -475,12 +475,12 @@ export default function MyData() {
                 <SecurityActionBtn
                   onClick={handleDownload}
                   disabled={!downloadPassword.trim()}
-                  actionLabel="Unsealing…"
-                  successLabel="UNSEALED"
+                  actionLabel="Unlocking…"
+                  successLabel="UNLOCKED"
                   delayMs={650}
                 >
                   <Unlock className="w-4 h-4" />
-                  <span>Unseal & download</span>
+                  <span>Unlock & Download</span>
                 </SecurityActionBtn>
               </div>
             </motion.div>

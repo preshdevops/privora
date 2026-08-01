@@ -81,13 +81,13 @@ export default function AccessLogs() {
       <header className="space-y-2 border-b border-[var(--border-primary)] pb-6 sm:pb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           <span className="text-xs font-mono text-[var(--accent-brass)] tracking-widest uppercase block">
-            AUDIT LEDGER
+            ACTIVITY HISTORY
           </span>
           <h1 className="text-2xl sm:text-4xl font-serif text-[var(--text-primary)] mt-1">
-            Access logs
+            Access Logs
           </h1>
           <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed max-w-xl">
-            A complete record of logins, file actions, and security settings changes on your account.
+            A clear list of every login, file view, and security change on your account.
           </p>
         </div>
 
@@ -99,7 +99,7 @@ export default function AccessLogs() {
           variant="outline"
           className="w-full sm:w-auto"
         >
-          <span>Export CSV</span>
+          <span>Download Report (CSV)</span>
         </SecurityActionBtn>
       </header>
 
@@ -109,7 +109,7 @@ export default function AccessLogs() {
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search by IP, action, or file name…"
+          placeholder="Search activity logs…"
           className="w-full sm:w-80 px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-[var(--text-primary)] outline-none min-h-[44px]"
         />
 

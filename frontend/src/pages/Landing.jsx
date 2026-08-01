@@ -90,17 +90,17 @@ export default function Landing() {
           {/* Left Column: Plain Sellable Copy (No Jargon) */}
           <div className="w-full lg:col-span-6 space-y-4 sm:space-y-6 text-left">
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#1C1C16] border border-[var(--border-primary)] text-[11px] sm:text-xs font-mono-ledger text-[var(--accent-brass)]">
-              <span>LIVE VAULT PROOF</span>
+              <span>REAL-TIME PROTECTION</span>
             </div>
 
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-headline font-bold text-[#F2EFE6] leading-[1.12] tracking-tight">
-              Lock it. <br />
-              Watch it. <br />
-              <span className="text-[var(--accent-brass)]">Prove it.</span>
+              Lock your files. <br />
+              Track access. <br />
+              <span className="text-[var(--accent-brass)]">Stay 100% safe.</span>
             </h1>
 
             <p className="text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed max-w-xl">
-              Privora keeps your files locked away, keeps an eye on every move, and shows you — live — exactly how safe you are.
+              Privora locks your sensitive files, tracks every time someone opens them, and shows your real-time safety score.
             </p>
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-2 w-full">
@@ -135,7 +135,7 @@ export default function Landing() {
                 <div className="flex items-center justify-between border-b border-[#282820] pb-3 sm:pb-4 gap-2">
                   <div>
                     <span className="font-mono-ledger text-[10px] sm:text-[11px] text-[var(--text-tertiary)] uppercase tracking-wider block">
-                      LIVE VAULT DEMO
+                      TRY IT NOW
                     </span>
                     <span className="font-headline text-sm sm:text-base font-semibold text-[#F2EFE6]">
                       Your Personal Vault
@@ -145,7 +145,7 @@ export default function Landing() {
                     onClick={handleLockSampleFile}
                     className="btn-primary-brass text-xs py-1.5 px-3 min-h-[36px] shrink-0"
                   >
-                    <span>+ Lock a file</span>
+                    <span>+ Lock a test file</span>
                   </button>
                 </div>
 
@@ -155,7 +155,7 @@ export default function Landing() {
 
                   <div className="sm:col-span-5 flex justify-center py-2">
                     {/* Signature Moment #4: Rising Liquid Score Dial */}
-                    <RisingScoreDial score={score} size={130} label="DATA PROTECTION SCORE" />
+                    <RisingScoreDial score={score} size={130} label="SAFETY SCORE" />
                   </div>
 
                   <div className="sm:col-span-7 space-y-2.5">
@@ -164,8 +164,8 @@ export default function Landing() {
                     </span>
 
                     {[
-                      { name: 'house_contract.pdf', label: 'LOCKED INSTANTLY' },
-                      { name: 'family_passport.pdf', label: 'LOCKED INSTANTLY' },
+                      { name: 'house_contract.pdf', label: 'LOCKED SAFE' },
+                      { name: 'family_passport.pdf', label: 'LOCKED SAFE' },
                     ].map((item, idx) => (
                       <div key={idx} className="flex items-center justify-between p-2 sm:p-2.5 bg-[#14140F] border border-[#282820] text-xs font-mono-ledger">
                         <span className="text-[#F2EFE6] truncate max-w-[150px] sm:max-w-none">{item.name}</span>
@@ -178,7 +178,7 @@ export default function Landing() {
                 </div>
 
                 {/* Signature Moment #3: Heartbeat Ledger Pulse */}
-                <HeartbeatLedger entries={ledgerEntries} title="LIVE ACTIVITY HEARTBEAT" compact={true} />
+                <HeartbeatLedger entries={ledgerEntries} title="LIVE ACTIVITY STREAM" compact={true} />
 
               </div>
             </div>
@@ -196,13 +196,13 @@ export default function Landing() {
             
             <div className="md:col-span-6 space-y-4 text-left">
               <span className="font-mono-ledger text-xs text-[var(--accent-brass)] tracking-widest uppercase block">
-                FEATURE 1 — THE VAULT
+                FEATURE 1 — INSTANT VAULT
               </span>
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-headline font-bold text-[#F2EFE6]">
-                Instant lock on every file
+                Instant protection for every document
               </h2>
               <p className="text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed">
-                Every file you upload gets locked instantly. Nobody opens it without leaving a trace.
+                Every file you upload is encrypted instantly. Nobody can open it without leaving a clear record.
               </p>
             </div>
 
@@ -211,13 +211,13 @@ export default function Landing() {
                 <div className="die-cut-border"></div>
                 
                 <span className="font-mono-ledger text-xs text-[var(--text-tertiary)] uppercase tracking-wider block">
-                  ANIMATED PREVIEW — THE STAMP
+                  LIVE DEMO — THE SEAL
                 </span>
 
                 <div className="py-4 sm:py-6 flex flex-col items-center justify-center space-y-3">
                   <StampEffect trigger={true} inline={true} label="INSTANTLY LOCKED" />
                   <p className="font-mono-ledger text-xs text-[var(--text-secondary)]">
-                    The Privora Seal stamps every item the moment it enters your vault.
+                    Privora seals every item the moment it enters your vault.
                   </p>
                 </div>
               </div>
@@ -232,20 +232,20 @@ export default function Landing() {
             
             <div className="md:col-span-6 md:order-2 space-y-4 text-left">
               <span className="font-mono-ledger text-xs text-[var(--accent-brass)] tracking-widest uppercase block">
-                FEATURE 2 — THE LEDGER
+                FEATURE 2 — ACCESS TRACKER
               </span>
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-headline font-bold text-[#F2EFE6]">
-                Nothing happens in the dark
+                Know every time your files are opened
               </h2>
               <p className="text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed">
-                See every single time your files were touched, opened, or shared — nothing happens in the dark.
+                See every single time your files were opened, downloaded, or updated — completely transparent.
               </p>
             </div>
 
             <div className="md:col-span-6 md:order-1">
               <div className="die-cut-card p-1 bg-[#1C1C16] relative border border-[var(--border-primary)]">
                 <div className="die-cut-border"></div>
-                <HeartbeatLedger entries={ledgerEntries} title="HEARTBEAT AUDIT TRAIL" />
+                <HeartbeatLedger entries={ledgerEntries} title="LIVE ACCESS HISTORY" />
               </div>
             </div>
 
@@ -258,20 +258,20 @@ export default function Landing() {
             
             <div className="md:col-span-6 space-y-4 text-left">
               <span className="font-mono-ledger text-xs text-[var(--accent-brass)] tracking-widest uppercase block">
-                FEATURE 3 — THE SCORE
+                FEATURE 3 — SAFETY RATING
               </span>
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-headline font-bold text-[#F2EFE6]">
-                A protection score that never lies
+                Know your exact security score at a glance
               </h2>
               <p className="text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed">
-                Watch your protection score in real time. It goes up when you're safer. It never lies to you.
+                Watch your protection score in real time. It goes up when you add protection steps, giving you total certainty.
               </p>
             </div>
 
             <div className="md:col-span-6 flex justify-center">
               <div className="die-cut-card p-6 sm:p-8 bg-[#1C1C16] relative border border-[var(--border-primary)] text-center w-full max-w-xs sm:max-w-none">
                 <div className="die-cut-border"></div>
-                <RisingScoreDial score={score} size={160} label="LIVE PROTECTION SCORE" />
+                <RisingScoreDial score={score} size={160} label="YOUR SAFETY RATING" />
               </div>
             </div>
 
@@ -280,38 +280,38 @@ export default function Landing() {
 
       </div>
 
-      {/* ─── Under the Hood Appendix Section (Small section at the very bottom) ─── */}
+      {/* ─── Under the Hood Appendix Section ─── */}
       <section id="under-the-hood" className="py-12 sm:py-16 border-b border-[var(--border-primary)] bg-[#0F0F0B]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-6">
           
           <div className="border-b border-[var(--border-primary)] pb-4 text-left">
             <span className="font-mono-ledger text-xs text-[var(--accent-brass)] tracking-widest uppercase block">
-              UNDER THE HOOD (TECHNICAL APPENDIX)
+              HOW PRIVORA PROTECTS YOU
             </span>
             <h3 className="text-lg sm:text-xl font-headline font-bold text-[#F2EFE6] mt-1">
-              For security engineers and technical reviewers
+              Bank-grade privacy built for complete peace of mind
             </h3>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 font-mono-ledger text-xs text-left">
             <div className="p-4 bg-[#14140F] border border-[#282820] space-y-1">
-              <span className="text-[var(--accent-brass)] font-semibold block">ENCRYPTION</span>
-              <span className="text-[#F2EFE6]">AES-256-GCM client-side</span>
+              <span className="text-[var(--accent-brass)] font-semibold block">BANK-GRADE ENCRYPTION</span>
+              <span className="text-[#F2EFE6]">Locked on your device before saving</span>
             </div>
 
             <div className="p-4 bg-[#14140F] border border-[#282820] space-y-1">
-              <span className="text-[var(--accent-brass)] font-semibold block">KEY DERIVATION</span>
-              <span className="text-[#F2EFE6]">Argon2id & PBKDF2</span>
+              <span className="text-[var(--accent-brass)] font-semibold block">SECRET PASSWORD LOCK</span>
+              <span className="text-[#F2EFE6]">Only your password can open files</span>
             </div>
 
             <div className="p-4 bg-[#14140F] border border-[#282820] space-y-1">
-              <span className="text-[var(--accent-brass)] font-semibold block">AUTHENTICATION</span>
-              <span className="text-[#F2EFE6]">JWT / SimpleJWT</span>
+              <span className="text-[var(--accent-brass)] font-semibold block">SECURE SIGN-IN</span>
+              <span className="text-[#F2EFE6]">Protected account sessions</span>
             </div>
 
             <div className="p-4 bg-[#14140F] border border-[#282820] space-y-1">
-              <span className="text-[var(--accent-brass)] font-semibold block">CRYPTOGRAPHIC ENGINE</span>
-              <span className="text-[#F2EFE6]">PyCryptodome backend</span>
+              <span className="text-[var(--accent-brass)] font-semibold block">ZERO LEAK GUARANTEE</span>
+              <span className="text-[#F2EFE6]">No unencrypted copies on server</span>
             </div>
           </div>
 

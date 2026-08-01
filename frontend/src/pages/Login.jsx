@@ -79,13 +79,13 @@ export default function Login() {
 
           <header className="space-y-1.5 sm:space-y-2">
             <span className="text-xs font-mono text-[var(--accent-brass)] tracking-widest uppercase block">
-              SIGN IN
+              WELCOME BACK
             </span>
             <h1 className="text-2xl sm:text-3xl font-serif text-[var(--text-primary)]">
-              Access your vault
+              Sign in to Privora
             </h1>
             <p className="text-xs sm:text-sm text-[var(--text-secondary)]">
-              Enter your account credentials to unseal your vault.
+              Enter your account details to access your private vault.
             </p>
           </header>
 
@@ -118,7 +118,7 @@ export default function Login() {
 
             <PasswordInput
               id="login-password"
-              label="Master password"
+              label="Secret Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               error={errors.password}
@@ -127,13 +127,13 @@ export default function Login() {
             <div className="pt-2">
               <SecurityActionBtn
                 onClick={handleLogin}
-                actionLabel="Authenticating…"
-                successLabel="SEALED & GRANTED"
+                actionLabel="Signing in…"
+                successLabel="GRANTED"
                 delayMs={600}
                 showSealOnSuccess={true}
                 className="w-full justify-center min-h-[44px]"
               >
-                <span>Sign in to vault</span>
+                <span>Sign in</span>
               </SecurityActionBtn>
             </div>
           </form>

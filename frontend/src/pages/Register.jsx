@@ -95,10 +95,10 @@ export default function Register() {
               CREATE ACCOUNT
             </span>
             <h1 className="text-2xl sm:text-3xl font-serif text-[var(--text-primary)]">
-              Initialize your vault
+              Create Your Vault
             </h1>
             <p className="text-xs sm:text-sm text-[var(--text-secondary)]">
-              Set up your account details and master password key.
+              Set up your account and secret password to get started.
             </p>
           </header>
 
@@ -151,7 +151,7 @@ export default function Register() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <PasswordInput
                 id="register-password"
-                label="Master password"
+                label="Secret Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 error={errors.password}
@@ -189,8 +189,8 @@ export default function Register() {
             <div className="pt-3">
               <SecurityActionBtn
                 onClick={handleRegister}
-                actionLabel="Creating account…"
-                successLabel="VAULT SEALED"
+                actionLabel="Creating vault…"
+                successLabel="VAULT CREATED"
                 delayMs={750}
                 showSealOnSuccess={true}
                 className="w-full justify-center min-h-[44px]"
