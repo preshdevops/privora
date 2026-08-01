@@ -110,37 +110,37 @@ export default function Settings() {
     <div className="space-y-8 sm:space-y-12">
       {/* Header */}
       <header className="space-y-2 border-b border-[var(--border-primary)] pb-6 sm:pb-8">
-        <span className="text-xs font-mono text-[var(--accent-brass)] tracking-widest uppercase block">
-          SETTINGS
+        <span className="text-xs font-mono text-[var(--accent-gold)] tracking-widest uppercase block">
+          SETTINGS & PREFERENCES
         </span>
-        <h1 className="text-2xl sm:text-4xl font-serif text-[var(--text-primary)] mt-1">
+        <h1 className="text-2xl sm:text-4xl font-display font-bold text-[var(--text-primary)] mt-1">
           Settings & Privacy
         </h1>
-        <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed max-w-xl">
-          Manage your security options, sign-out timers, and history settings.
+        <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-sans leading-relaxed max-w-xl">
+          Manage your security options, sign-out timers, and account privacy settings.
         </p>
       </header>
 
       {/* Account Info Summary */}
       <section className="space-y-3 pb-6 border-b border-[var(--border-primary)] text-sm">
-        <h2 className="text-lg sm:text-xl font-serif text-[var(--text-primary)]">
+        <h2 className="text-lg sm:text-xl font-display font-bold text-[var(--text-primary)]">
           Your Account
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-[var(--text-secondary)] bg-[var(--bg-card)] p-4 rounded-sm border border-[var(--border-primary)]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-[var(--text-secondary)] bg-[var(--bg-card)] p-4 rounded-xl border border-[var(--border-primary)]">
           <div>
             <span className="text-[var(--text-tertiary)] block font-mono text-[10px] uppercase">Full name</span>
-            <span className="text-[var(--text-primary)] font-medium text-sm sm:text-base">{user?.full_name || 'N/A'}</span>
+            <span className="text-[var(--text-primary)] font-medium text-sm sm:text-base font-sans">{user?.full_name || 'N/A'}</span>
           </div>
           <div>
             <span className="text-[var(--text-tertiary)] block font-mono text-[10px] uppercase">Email address</span>
-            <span className="text-[var(--text-primary)] font-medium text-sm sm:text-base truncate block">{user?.email || 'N/A'}</span>
+            <span className="text-[var(--text-primary)] font-medium text-sm sm:text-base truncate block font-sans">{user?.email || 'N/A'}</span>
           </div>
         </div>
       </section>
 
       {/* Privacy Toggles — Ledger Rule List */}
       <section className="space-y-4">
-        <h2 className="text-lg sm:text-xl font-serif text-[var(--text-primary)]">
+        <h2 className="text-lg sm:text-xl font-display font-bold text-[var(--text-primary)]">
           Privacy Controls
         </h2>
 
@@ -149,16 +149,16 @@ export default function Settings() {
             Loading settings…
           </div>
         ) : (
-          <div className="ledger-list divide-y divide-[var(--border-primary)] border border-[var(--border-primary)] rounded-sm bg-[var(--bg-card)]">
+          <div className="ledger-list divide-y divide-[var(--border-primary)] border border-[var(--border-primary)] rounded-xl overflow-hidden bg-[var(--bg-card)]">
             {privacyToggles.map((item) => {
               const active = settings[item.key];
               return (
                 <div key={item.key} className="ledger-entry flex items-center justify-between p-3.5 sm:p-4 gap-3">
                   <div className="space-y-0.5 min-w-0 flex-1 pr-2">
-                    <span className="text-sm font-medium text-[var(--text-primary)] block">
+                    <span className="text-sm font-medium text-[var(--text-primary)] font-sans block">
                       {item.label}
                     </span>
-                    <span className="text-xs text-[var(--text-secondary)] block">
+                    <span className="text-xs text-[var(--text-secondary)] font-sans block">
                       {item.desc}
                     </span>
                   </div>

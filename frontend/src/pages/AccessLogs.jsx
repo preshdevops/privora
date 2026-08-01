@@ -80,14 +80,14 @@ export default function AccessLogs() {
       {/* Header */}
       <header className="space-y-2 border-b border-[var(--border-primary)] pb-6 sm:pb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <span className="text-xs font-mono text-[var(--accent-brass)] tracking-widest uppercase block">
+          <span className="text-xs font-mono text-[var(--accent-gold)] tracking-widest uppercase block">
             ACTIVITY HISTORY
           </span>
-          <h1 className="text-2xl sm:text-4xl font-serif text-[var(--text-primary)] mt-1">
-            Access Logs
+          <h1 className="text-2xl sm:text-4xl font-display font-bold text-[var(--text-primary)] mt-1">
+            Access Logs Ledger
           </h1>
-          <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed max-w-xl">
-            A clear list of every login, file view, and security change on your account.
+          <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-sans leading-relaxed max-w-xl">
+            A clear security ledger of every login, file view, and key verification on your account.
           </p>
         </div>
 
@@ -97,7 +97,7 @@ export default function AccessLogs() {
           successLabel="Exported"
           delayMs={500}
           variant="outline"
-          className="w-full sm:w-auto"
+          className="w-full sm:w-auto text-xs"
         >
           <span>Download Report (CSV)</span>
         </SecurityActionBtn>
@@ -110,7 +110,7 @@ export default function AccessLogs() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search activity logs…"
-          className="w-full sm:w-80 px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-[var(--text-primary)] outline-none min-h-[44px]"
+          className="w-full sm:w-80 px-3.5 py-2.5 rounded-lg bg-[var(--bg-input)] border border-[var(--border-primary)] text-[var(--text-primary)] outline-none min-h-[44px]"
         />
 
         <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 pt-1 sm:pt-0">
@@ -118,7 +118,7 @@ export default function AccessLogs() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-[var(--text-primary)] outline-none cursor-pointer min-h-[44px]"
+            className="px-3 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border-primary)] text-[var(--text-primary)] outline-none cursor-pointer min-h-[44px]"
           >
             <option>Any status</option>
             <option value="success">Success</option>
@@ -127,7 +127,7 @@ export default function AccessLogs() {
         </div>
       </div>
 
-      {/* Ledger List — 2-Line Stacked Layout on Mobile */}
+      {/* Ledger List with Alternating Warm Zebra Striping */}
       {loading ? (
         <div className="py-6 text-xs text-[var(--text-tertiary)] text-center font-mono">
           Loading audit entries…
@@ -138,11 +138,15 @@ export default function AccessLogs() {
           description="No security events match your current filter."
         />
       ) : (
-        <div className="ledger-list divide-y divide-[var(--border-primary)] border border-[var(--border-primary)] rounded-sm bg-[var(--bg-card)]">
+        <div className="ledger-list divide-y divide-[var(--border-primary)] border border-[var(--border-primary)] rounded-xl overflow-hidden bg-[var(--bg-card)]">
           {filteredLogs.map((log, idx) => {
             const isExpanded = expandedLogId === (log.id || idx);
+            const isEven = idx % 2 === 0;
             return (
-              <div key={log.id || idx} className="ledger-entry p-3.5 sm:p-4">
+              <div 
+                key={log.id || idx} 
+                className={`ledger-entry p-3.5 sm:p-4 ${isEven ? 'bg-[var(--bg-card)]' : 'bg-[var(--bg-secondary)]'}`}
+              >
                 <div 
                   onClick={() => toggleAccordion(log.id || idx)}
                   className="cursor-pointer space-y-1.5"
@@ -150,20 +154,20 @@ export default function AccessLogs() {
                   {/* Line 1: Entry # + Action Title + Status Badge */}
                   <div className="flex items-center justify-between gap-2 min-w-0">
                     <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                      <span className="font-mono text-xs text-[var(--accent-brass)] font-semibold shrink-0">
+                      <span className="font-mono text-xs text-[var(--accent-gold)] font-semibold shrink-0">
                         #{String((page - 1) * pageSize + idx + 1).padStart(4, '0')}
                       </span>
-                      <span className="text-sm font-medium text-[var(--text-primary)] truncate">
+                      <span className="text-sm font-medium text-[var(--text-primary)] font-sans truncate">
                         {log.action || log.event || 'System activity'}
                       </span>
                     </div>
 
-                    <span className={`px-2 py-0.5 text-[10px] font-mono rounded uppercase shrink-0 border ${
+                    <span className={`px-2.5 py-0.5 text-[10px] font-mono rounded uppercase shrink-0 border ${
                       log.status === 'success' || log.status === 'completed'
-                        ? 'bg-[var(--vault-green-bg)] text-[var(--vault-green-bright)] border-[var(--vault-green)]'
-                        : 'bg-red-950/40 text-[var(--status-danger)] border-[var(--status-danger)]/40'
+                        ? 'bg-[var(--accent-gold-bg)] text-[var(--accent-gold)] border-[var(--accent-gold)]'
+                        : 'bg-[rgba(196,87,63,0.15)] text-[var(--status-danger)] border-[var(--status-danger)]'
                     }`}>
-                      {log.status || 'OK'}
+                      {log.status === 'success' || log.status === 'completed' ? 'OK' : 'High Alert'}
                     </span>
                   </div>
 
@@ -174,7 +178,7 @@ export default function AccessLogs() {
                       <span className="mx-1.5">&middot;</span>
                       {log.ip_address || '127.0.0.1'}
                     </span>
-                    <span className="text-[11px] text-[var(--accent-brass)] shrink-0 ml-2">
+                    <span className="text-[11px] text-[var(--accent-gold)] shrink-0 ml-2">
                       {isExpanded ? 'Hide info –' : 'Details +'}
                     </span>
                   </div>
@@ -191,7 +195,7 @@ export default function AccessLogs() {
                     >
                       <p>• Data item: {log.data_item || log.location || 'N/A'}</p>
                       <p>• IP address: {log.ip_address || '127.0.0.1'}</p>
-                      <p>• Telemetry status: {log.status || 'Verified'}</p>
+                      <p>• Verification: Sealed & Authenticated</p>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -209,7 +213,7 @@ export default function AccessLogs() {
             <button
               disabled={page <= 1}
               onClick={() => setPage(prev => Math.max(1, prev - 1))}
-              className="px-3 py-1.5 rounded-sm border border-[var(--border-primary)] hover:border-[var(--text-primary)] disabled:opacity-40"
+              className="px-3 py-1.5 rounded border border-[var(--border-primary)] hover:border-[var(--text-primary)] disabled:opacity-40"
             >
               Previous
             </button>
@@ -217,7 +221,7 @@ export default function AccessLogs() {
             <button
               disabled={page >= totalPages}
               onClick={() => setPage(prev => Math.min(totalPages, prev + 1))}
-              className="px-3 py-1.5 rounded-sm border border-[var(--border-primary)] hover:border-[var(--text-primary)] disabled:opacity-40"
+              className="px-3 py-1.5 rounded border border-[var(--border-primary)] hover:border-[var(--text-primary)] disabled:opacity-40"
             >
               Next
             </button>

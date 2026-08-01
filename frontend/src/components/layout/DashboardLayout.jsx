@@ -69,7 +69,7 @@ export default function DashboardLayout({ children }) {
           <NavLink to="/dashboard" className="flex items-center gap-2.5">
             <PrivoraSeal variant="glyph" size={22} className="shrink-0" />
             <div className="hidden lg:block">
-              <span className="font-serif text-xl font-semibold text-[var(--text-primary)] tracking-tight block leading-none">
+              <span className="font-display text-xl font-bold text-[var(--text-primary)] tracking-tight block leading-none">
                 Privora
               </span>
               <span className="text-[11px] font-mono text-[var(--text-tertiary)] block mt-1">
@@ -80,7 +80,7 @@ export default function DashboardLayout({ children }) {
         </div>
 
         {/* Sidebar Navigation Items */}
-        <nav className="flex-1 px-2 lg:px-4 py-6 space-y-1.5 overflow-y-auto">
+        <nav className="flex-1 px-2 lg:px-4 py-6 space-y-1.5 overflow-y-auto font-sans">
           {navItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -89,18 +89,18 @@ export default function DashboardLayout({ children }) {
                 to={item.to}
                 title={item.label}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2.5 rounded-sm transition-colors min-h-[44px] group relative ${
+                  `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors min-h-[44px] group relative ${
                     isActive
-                      ? 'text-[var(--text-primary)] font-medium bg-[var(--bg-hover)] border-l-2 border-[var(--accent-brass)]'
+                      ? 'text-[var(--text-primary)] font-medium bg-[var(--bg-hover)] border-l-2 border-[var(--accent-gold)]'
                       : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)]'
                   }`
                 }
               >
                 <Icon className="w-5 h-5 shrink-0" />
-                <span className="hidden lg:inline text-sm">{item.label}</span>
+                <span className="hidden lg:inline text-sm font-sans">{item.label}</span>
 
                 {/* Tablet Icon-Only Tooltip Hover Popup */}
-                <span className="hidden md:group-hover:block lg:hidden absolute left-14 z-50 px-2.5 py-1 text-xs font-mono bg-[var(--bg-card-elevated)] border border-[var(--border-primary)] text-[var(--text-primary)] rounded shadow-lg whitespace-nowrap pointer-events-none">
+                <span className="hidden md:group-hover:block lg:hidden absolute left-14 z-50 px-2.5 py-1 text-xs font-mono bg-[var(--bg-card)] border border-[var(--border-primary)] text-[var(--text-primary)] rounded shadow-lg whitespace-nowrap pointer-events-none">
                   {item.label}
                 </span>
               </NavLink>
@@ -109,7 +109,7 @@ export default function DashboardLayout({ children }) {
         </nav>
 
         {/* Sidebar Footer Controls */}
-        <div className="p-3 lg:px-6 lg:py-6 border-t border-[var(--border-primary)] space-y-4 text-xs text-[var(--text-tertiary)]">
+        <div className="p-3 lg:px-6 lg:py-6 border-t border-[var(--border-primary)] space-y-4 text-xs text-[var(--text-tertiary)] font-sans">
           <div className="hidden lg:block">
             <span className="text-[var(--text-primary)] font-medium block truncate">
               {user?.full_name || user?.email || 'Member'}
@@ -117,7 +117,7 @@ export default function DashboardLayout({ children }) {
             <span className="text-[11px]">Your Account</span>
           </div>
 
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-2">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-2 font-sans">
             <button
               onClick={toggleTheme}
               title={theme === 'dark' ? 'Switch to Light mode' : 'Switch to Dark mode'}
@@ -139,10 +139,10 @@ export default function DashboardLayout({ children }) {
         </div>
       </aside>
 
-      {/* ─── Mobile Slide-in Drawer Header (Fallback Menu Panel for Account / Settings) ─── */}
+      {/* ─── Mobile Slide-in Drawer Header ─── */}
       {mobileMenuOpen && (
         <div className="fixed top-14 left-0 right-0 z-50 bg-[var(--bg-sidebar)] border-b border-[var(--border-primary)] p-4 md:hidden space-y-4 shadow-2xl">
-          <div className="flex items-center justify-between pb-3 border-b border-[var(--border-primary)] text-xs">
+          <div className="flex items-center justify-between pb-3 border-b border-[var(--border-primary)] text-xs font-sans">
             <div>
               <span className="text-[var(--text-primary)] font-medium block">
                 {user?.full_name || user?.email || 'Member'}
@@ -170,15 +170,15 @@ export default function DashboardLayout({ children }) {
       {/* ─── Main Content Canvas ─── */}
       <div className="flex-1 md:ml-16 lg:ml-[220px] flex flex-col min-h-screen pb-20 md:pb-0">
         {/* Mobile Header Bar (<640px) */}
-        <header className="md:hidden sticky top-0 z-30 bg-[var(--bg-primary)]/95 backdrop-blur border-b border-[var(--border-primary)] px-4 py-3 flex items-center justify-between">
-          <NavLink to="/dashboard" className="font-serif text-lg font-semibold text-[var(--text-primary)] flex items-center gap-2">
+        <header className="md:hidden sticky top-0 z-30 bg-[var(--bg-sidebar)] border-b border-[var(--border-primary)] px-4 py-3 flex items-center justify-between">
+          <NavLink to="/dashboard" className="font-display text-lg font-bold text-[var(--text-primary)] flex items-center gap-2">
             <PrivoraSeal variant="glyph" size={20} />
             <span>Privora</span>
           </NavLink>
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] px-2.5 py-1.5 border border-[var(--border-primary)] rounded touch-target"
+            className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] px-2.5 py-1.5 border border-[var(--border-primary)] rounded touch-target font-mono"
           >
             {mobileMenuOpen ? 'Close' : 'Account'}
           </button>
@@ -190,17 +190,14 @@ export default function DashboardLayout({ children }) {
         </main>
 
         {/* Quiet Footer */}
-        <footer className="w-full max-w-[760px] mx-auto px-4 sm:px-6 py-6 border-t border-[var(--border-primary)] text-xs text-[var(--text-tertiary)] flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
+        <footer className="w-full max-w-[760px] mx-auto px-4 sm:px-6 py-6 border-t border-[var(--border-primary)] text-xs text-[var(--text-tertiary)] font-mono flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
           <span>Privora — Built to Nigerian and international privacy standards</span>
           <span>© {new Date().getFullYear()}</span>
         </footer>
       </div>
 
-      {/* ─── Mobile Bottom Tab Bar (<640px) ───
-          Fixed bottom bar with 4 main navigation tabs (Dashboard, My Data, Access Logs, Settings).
-          Each tab has min 44x44px touch target.
-      ─── */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 h-16 bg-[#0F0F0B] border-t border-[var(--border-primary)] flex items-center justify-around px-2 shadow-2xl">
+      {/* ─── Mobile Bottom Tab Bar (<640px) ─── */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 h-16 bg-[var(--bg-sidebar)] border-t border-[var(--border-primary)] flex items-center justify-around px-2 shadow-2xl">
         {navItems.map((item) => {
           const Icon = item.icon;
           return (
@@ -210,7 +207,7 @@ export default function DashboardLayout({ children }) {
               className={({ isActive }) =>
                 `flex-1 flex flex-col items-center justify-center py-1 rounded transition-colors touch-target min-h-[44px] ${
                   isActive
-                    ? 'text-[var(--accent-brass)] font-semibold'
+                    ? 'text-[var(--accent-gold)] font-semibold'
                     : 'text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]'
                 }`
               }

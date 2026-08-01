@@ -69,13 +69,13 @@ export default function Register() {
 
         <div className="relative z-10 max-w-md text-center space-y-6">
           <PrivoraSeal variant="full" size={120} className="mx-auto" />
-          <span className="text-xs font-mono text-[var(--accent-brass)] tracking-widest uppercase block">
+          <span className="text-xs font-mono text-[var(--accent-gold)] tracking-widest uppercase block">
             VAULT IDENTITY SETUP
           </span>
-          <h2 className="text-3xl font-serif text-[var(--text-primary)]">
+          <h2 className="text-3xl font-display font-bold text-[var(--text-primary)]">
             Your personal data vault
           </h2>
-          <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+          <p className="text-sm text-[var(--text-secondary)] font-sans leading-relaxed">
             Create your account to start protecting files with client-side zero-knowledge key isolation.
           </p>
         </div>
@@ -83,21 +83,21 @@ export default function Register() {
 
       {/* Right Column: Clean Form Container */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-5 sm:p-12">
-        <div className="w-full max-w-md space-y-6 sm:space-y-8">
+        <div className="w-full max-w-md space-y-6 sm:space-y-8 font-sans">
           {/* Mobile Brand Emblem Header */}
           <div className="lg:hidden flex items-center gap-2.5 pb-2">
             <PrivoraSeal variant="glyph" size={24} />
-            <span className="font-headline text-xl font-bold text-[var(--text-primary)]">Privora</span>
+            <span className="font-display text-xl font-bold text-[var(--text-primary)]">Privora</span>
           </div>
 
           <header className="space-y-1.5 sm:space-y-2">
-            <span className="text-xs font-mono text-[var(--accent-brass)] tracking-widest uppercase block">
+            <span className="text-xs font-mono text-[var(--accent-gold)] tracking-widest uppercase block">
               CREATE ACCOUNT
             </span>
-            <h1 className="text-2xl sm:text-3xl font-serif text-[var(--text-primary)]">
+            <h1 className="text-2xl sm:text-3xl font-display font-bold text-[var(--text-primary)]">
               Create Your Vault
             </h1>
-            <p className="text-xs sm:text-sm text-[var(--text-secondary)]">
+            <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-sans">
               Set up your account and secret password to get started.
             </p>
           </header>

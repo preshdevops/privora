@@ -182,14 +182,14 @@ export default function MyData() {
       {/* Eyebrow Label & Page Header */}
       <header className="space-y-2 border-b border-[var(--border-primary)] pb-6 sm:pb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <span className="text-xs font-mono text-[var(--accent-brass)] tracking-widest uppercase block">
+          <span className="text-xs font-mono text-[var(--accent-gold)] tracking-widest uppercase block">
             MY VAULT
           </span>
-          <h1 className="text-2xl sm:text-4xl font-serif text-[var(--text-primary)] mt-1">
+          <h1 className="text-2xl sm:text-4xl font-display font-bold text-[var(--text-primary)] mt-1">
             Your Protected Files
           </h1>
-          <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed max-w-xl">
-            All your locked files, stored safely and accessible only by you.
+          <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-sans leading-relaxed max-w-xl">
+            All your locked files, stored safely inside your vault and accessible only by you.
           </p>
         </div>
 
@@ -197,14 +197,14 @@ export default function MyData() {
           onClick={() => setShowModal(true)}
           actionLabel="Opening…"
           delayMs={0}
-          className="w-full sm:w-auto"
+          className="w-full sm:w-auto text-xs"
         >
           <Plus className="w-4 h-4" />
           <span>+ Upload & Lock File</span>
         </SecurityActionBtn>
       </header>
 
-      {/* Vault Assets — 2-Line Stacked Layout on Mobile */}
+      {/* Vault Assets — Opaque Card Rows */}
       {loading ? (
         <div className="py-6 text-xs text-[var(--text-tertiary)] text-center font-mono">
           Loading file entries…
@@ -218,7 +218,7 @@ export default function MyData() {
               onClick={() => setShowModal(true)}
               actionLabel="Opening…"
               delayMs={0}
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto text-xs"
             >
               <Upload className="w-4 h-4" />
               <span>+ Upload & Lock File</span>
@@ -226,11 +226,12 @@ export default function MyData() {
           }
         />
       ) : (
-        <div className="ledger-list divide-y divide-[var(--border-primary)] border border-[var(--border-primary)] rounded-sm bg-[var(--bg-card)]">
+        <div className="ledger-list divide-y divide-[var(--border-primary)] border border-[var(--border-primary)] rounded-xl overflow-hidden bg-[var(--bg-card)]">
           {assets.map((asset, idx) => {
             const isExpanded = expandedFileId === asset.id;
+            const isEven = idx % 2 === 0;
             return (
-              <div key={asset.id} className="ledger-entry p-3.5 sm:p-4">
+              <div key={asset.id} className={`ledger-entry p-3.5 sm:p-4 ${isEven ? 'bg-[var(--bg-card)]' : 'bg-[var(--bg-secondary)]'}`}>
                 <div 
                   onClick={() => toggleAccordion(asset.id)}
                   className="cursor-pointer space-y-1.5"
@@ -238,15 +239,15 @@ export default function MyData() {
                   {/* Line 1: Index + Primary File Name + Sealed Badge */}
                   <div className="flex items-center justify-between gap-2 min-w-0">
                     <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                      <span className="font-mono text-xs text-[var(--accent-brass)] font-semibold shrink-0">
+                      <span className="font-mono text-xs text-[var(--accent-gold)] font-semibold shrink-0">
                         #{String(idx + 1).padStart(3, '0')}
                       </span>
-                      <span className="text-sm font-medium text-[var(--text-primary)] truncate">
+                      <span className="text-sm font-medium text-[var(--text-primary)] font-sans truncate">
                         {asset.name || 'Untitled file'}
                       </span>
                     </div>
 
-                    <span className="px-2 py-0.5 text-[10px] font-mono rounded uppercase shrink-0 border bg-[var(--vault-green-bg)] text-[var(--vault-green-bright)] border-[var(--vault-green)]">
+                    <span className="px-2.5 py-0.5 text-[10px] font-mono rounded uppercase shrink-0 border bg-[var(--accent-gold-bg)] text-[var(--accent-gold)] border-[var(--accent-gold)]">
                       Locked & Safe
                     </span>
                   </div>
@@ -258,7 +259,7 @@ export default function MyData() {
                       <span className="mx-1.5">&middot;</span>
                       {asset.created_at ? new Date(asset.created_at).toLocaleDateString() : '--'}
                     </span>
-                    <span className="text-[11px] text-[var(--accent-brass)] shrink-0 ml-2">
+                    <span className="text-[11px] text-[var(--accent-gold)] shrink-0 ml-2">
                       {isExpanded ? 'Actions –' : 'Actions +'}
                     </span>
                   </div>
@@ -281,7 +282,7 @@ export default function MyData() {
                       <div className="flex items-center gap-2.5 pt-1 sm:pt-0">
                         <button
                           onClick={() => { setDownloadModal(asset); setDownloadPassword(''); }}
-                          className="flex-1 sm:flex-initial px-3 py-2 border border-[var(--border-primary)] rounded-sm text-[var(--text-primary)] hover:border-[var(--text-primary)] transition-colors cursor-pointer flex items-center justify-center gap-1.5 touch-target"
+                          className="flex-1 sm:flex-initial px-3 py-2 border border-[var(--border-primary)] rounded-lg text-[var(--text-primary)] hover:border-[var(--accent-gold)] transition-colors cursor-pointer flex items-center justify-center gap-1.5 touch-target"
                         >
                           <Unlock className="w-3.5 h-3.5" />
                           <span>Unlock & download</span>
@@ -293,7 +294,7 @@ export default function MyData() {
                           successLabel="Deleted"
                           delayMs={500}
                           variant="danger"
-                          className="!px-3 !py-2 shrink-0 touch-target"
+                          className="!px-3 !py-2 shrink-0 touch-target text-xs"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                           <span>Delete File</span>
@@ -316,14 +317,14 @@ export default function MyData() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
-              className="p-6 sm:p-8 rounded-sm max-w-lg w-full bg-[var(--bg-card)] border border-[var(--border-primary)] space-y-6"
+              className="p-6 sm:p-8 rounded-xl max-w-lg w-full bg-[var(--bg-card)] border border-[var(--border-primary)] space-y-6"
             >
               <div className="flex items-center justify-between pb-4 border-b border-[var(--border-primary)]">
                 <div>
-                  <span className="text-xs font-mono text-[var(--accent-brass)] uppercase tracking-wider block">
+                  <span className="text-xs font-mono text-[var(--accent-gold)] uppercase tracking-wider block">
                     LOCK A NEW FILE
                   </span>
-                  <h2 className="text-xl font-serif text-[var(--text-primary)] mt-0.5">
+                  <h2 className="text-xl font-display font-bold text-[var(--text-primary)] mt-0.5">
                     Add file to vault
                   </h2>
                 </div>
@@ -337,9 +338,9 @@ export default function MyData() {
 
               {/* Drag & Drop Zone */}
               <div
-                className={`border border-dashed rounded-sm p-6 text-center cursor-pointer transition-colors ${
+                className={`border border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
                   dragActive
-                    ? 'border-[var(--accent-brass)] bg-[var(--bg-hover)]'
+                    ? 'border-[var(--accent-gold)] bg-[var(--bg-hover)]'
                     : 'border-[var(--border-primary)] bg-[var(--bg-input)]'
                 }`}
                 onDragEnter={handleDrag}
@@ -366,10 +367,10 @@ export default function MyData() {
                   </div>
                 ) : (
                   <div>
-                    <p className="text-sm text-[var(--text-primary)]">
+                    <p className="text-sm text-[var(--text-primary)] font-sans">
                       Click to select or drag a file here
                     </p>
-                    <p className="text-xs text-[var(--text-tertiary)] mt-1">
+                    <p className="text-xs text-[var(--text-tertiary)] font-sans mt-1">
                       Your file will be encrypted on your device before saving
                     </p>
                   </div>
@@ -377,7 +378,7 @@ export default function MyData() {
               </div>
 
               {/* Password Input */}
-              <div className="space-y-1.5">
+              <div className="space-y-1.5 font-sans">
                 <label className="block text-xs text-[var(--text-secondary)]">
                   Secret Password
                 </label>
@@ -386,12 +387,12 @@ export default function MyData() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter secret password…"
-                  className="w-full px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-sm text-[var(--text-primary)] outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-lg bg-[var(--bg-input)] border border-[var(--border-primary)] text-sm text-[var(--text-primary)] outline-none"
                 />
               </div>
 
               {/* Action Controls */}
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-[var(--border-primary)]">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-[var(--border-primary)] font-sans">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
@@ -406,6 +407,7 @@ export default function MyData() {
                   actionLabel="Locking file…"
                   successLabel="LOCKED"
                   delayMs={750}
+                  className="text-xs"
                 >
                   <Lock className="w-4 h-4" />
                   <span>Lock File</span>
@@ -424,14 +426,14 @@ export default function MyData() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
-              className="p-6 sm:p-8 rounded-sm max-w-md w-full bg-[var(--bg-card)] border border-[var(--border-primary)] space-y-6"
+              className="p-6 sm:p-8 rounded-xl max-w-md w-full bg-[var(--bg-card)] border border-[var(--border-primary)] space-y-6"
             >
               <div className="flex items-center justify-between pb-4 border-b border-[var(--border-primary)]">
                 <div>
-                  <span className="text-xs font-mono text-[var(--accent-brass)] uppercase tracking-wider block">
+                  <span className="text-xs font-mono text-[var(--accent-gold)] uppercase tracking-wider block">
                     UNLOCK FILE
                   </span>
-                  <h2 className="text-xl font-serif text-[var(--text-primary)] mt-0.5">
+                  <h2 className="text-xl font-display font-bold text-[var(--text-primary)] mt-0.5">
                     Download your file
                   </h2>
                 </div>
@@ -443,12 +445,12 @@ export default function MyData() {
                 </button>
               </div>
 
-              <div className="p-3 rounded bg-[var(--bg-input)] border border-[var(--border-primary)] text-xs font-mono">
+              <div className="p-3 rounded-lg bg-[var(--bg-input)] border border-[var(--border-primary)] text-xs font-mono">
                 <p className="text-[var(--text-primary)] font-medium truncate">{downloadModal.name}</p>
                 <p className="text-[var(--text-tertiary)]">{formatFileSize(downloadModal.file_size)}</p>
               </div>
 
-              <div className="space-y-1.5">
+              <div className="space-y-1.5 font-sans">
                 <label className="block text-xs text-[var(--text-secondary)]">
                   Secret Password
                 </label>
@@ -458,12 +460,12 @@ export default function MyData() {
                   onChange={(e) => setDownloadPassword(e.target.value)}
                   onKeyDown={(e) => { if (e.key === 'Enter' && downloadPassword.trim()) handleDownload(); }}
                   placeholder="Enter secret password…"
-                  className="w-full px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-sm text-[var(--text-primary)] outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-lg bg-[var(--bg-input)] border border-[var(--border-primary)] text-sm text-[var(--text-primary)] outline-none"
                   autoFocus
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-[var(--border-primary)]">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-[var(--border-primary)] font-sans">
                 <button
                   type="button"
                   onClick={() => { setDownloadModal(null); setDownloadPassword(''); }}
@@ -478,6 +480,7 @@ export default function MyData() {
                   actionLabel="Unlocking…"
                   successLabel="UNLOCKED"
                   delayMs={650}
+                  className="text-xs"
                 >
                   <Unlock className="w-4 h-4" />
                   <span>Unlock & Download</span>

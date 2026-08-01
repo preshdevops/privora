@@ -70,20 +70,20 @@ export default function Dashboard() {
     <div className="space-y-8 sm:space-y-12">
       {/* Eyebrow Label & Page Header */}
       <header className="space-y-2 border-b border-[var(--border-primary)] pb-6 sm:pb-8">
-        <span className="text-xs font-mono text-[var(--accent-brass)] tracking-widest uppercase block">
-          OVERVIEW
+        <span className="text-xs font-mono text-[var(--accent-gold)] tracking-widest uppercase block">
+          VAULT OVERVIEW
         </span>
-        <h1 className="text-2xl sm:text-4xl font-serif text-[var(--text-primary)]">
-          Your Vault Dashboard
+        <h1 className="text-2xl sm:text-4xl font-display font-bold text-[var(--text-primary)]">
+          Your Data Vault Dashboard
         </h1>
-        <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed max-w-xl">
+        <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-sans leading-relaxed max-w-xl">
           Your files are encrypted and locked. Only you hold the secret password to open them.
         </p>
       </header>
 
       {/* Primary Action Button Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-3.5 sm:p-0 rounded-sm bg-[var(--bg-input)] sm:bg-transparent border sm:border-0 border-[var(--border-primary)]">
-        <div className="text-xs text-[var(--text-secondary)] flex items-center gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-lg bg-[var(--bg-card)] border border-[var(--border-primary)]">
+        <div className="text-xs text-[var(--text-secondary)] flex items-center gap-2 font-mono">
           <span className="w-2 h-2 rounded-full bg-[var(--status-success)] animate-pulse shrink-0" />
           <span>Vault Status: <strong className="text-[var(--status-success)] font-medium">Fully Protected</strong></span>
         </div>
@@ -94,119 +94,113 @@ export default function Dashboard() {
           successLabel="Downloaded"
           delayMs={600}
           variant="outline"
-          className="w-full sm:w-auto"
+          className="w-full sm:w-auto text-xs"
         >
           <span>Download Activity Report</span>
         </SecurityActionBtn>
       </div>
 
+      {/* DOMINANT TOP ELEMENT: Data Protection Score Card */}
+      <section className="p-6 sm:p-8 bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-xl space-y-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-2 text-left max-w-md">
+            <span className="text-xs font-mono text-[var(--accent-gold)] tracking-widest uppercase block">
+              PRIMARY METRIC
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-display font-bold text-[var(--text-primary)]">
+              Data Protection Score
+            </h2>
+            <p className="text-sm text-[var(--text-secondary)] font-sans leading-relaxed">
+              Your protection score in real time. It goes up when you're safer. It never lies to you.
+            </p>
+          </div>
+
+          {/* Minimalist Score Dial */}
+          <div className="flex items-center justify-center shrink-0">
+            <RisingScoreDial score={loading ? 90 : (score ?? 94)} size={140} label="PROTECTION SCORE" />
+          </div>
+        </div>
+      </section>
+
+      {/* SECONDARY ROW: Visually Quieter Metric Cards */}
+      <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/* Metric 1: Locked Files */}
+        <div className="p-4 sm:p-5 bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-lg space-y-2">
+          <span className="font-mono text-[11px] text-[var(--text-tertiary)] uppercase tracking-wider block">
+            LOCKED FILES
+          </span>
+          <div className="flex items-baseline justify-between">
+            <span className="font-mono text-2xl font-bold text-[var(--text-primary)]">
+              {loading ? '--' : encryptionCount}
+            </span>
+            <button
+              onClick={() => navigate('/my-data')}
+              className="text-xs font-mono text-[var(--accent-gold)] hover:underline"
+            >
+              View files →
+            </button>
+          </div>
+          <span className="text-xs text-[var(--text-secondary)] font-sans block">Encrypted in your vault</span>
+        </div>
+
+        {/* Metric 2: Security Notices */}
+        <div className="p-4 sm:p-5 bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-lg space-y-2">
+          <span className="font-mono text-[11px] text-[var(--text-tertiary)] uppercase tracking-wider block">
+            SECURITY NOTICES
+          </span>
+          <div className="flex items-baseline justify-between">
+            <span className={`font-mono text-2xl font-bold ${unresolvedAlerts.length > 0 ? 'text-[var(--status-danger)]' : 'text-[var(--text-primary)]'}`}>
+              {loading ? '--' : unresolvedAlerts.length}
+            </span>
+            <button
+              onClick={() => navigate('/access-logs')}
+              className="text-xs font-mono text-[var(--accent-gold)] hover:underline"
+            >
+              View alerts →
+            </button>
+          </div>
+          <span className="text-xs text-[var(--text-secondary)] font-sans block">
+            {unresolvedAlerts.length > 0 ? 'Unusual activity warnings' : 'No active security issues'}
+          </span>
+        </div>
+
+        {/* Metric 3: Access Activity */}
+        <div className="p-4 sm:p-5 bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-lg space-y-2">
+          <span className="font-mono text-[11px] text-[var(--text-tertiary)] uppercase tracking-wider block">
+            RECENT LOGS
+          </span>
+          <div className="flex items-baseline justify-between">
+            <span className="font-mono text-2xl font-bold text-[var(--text-primary)]">
+              {loading ? '--' : recentLogs.length}
+            </span>
+            <button
+              onClick={() => navigate('/access-logs')}
+              className="text-xs font-mono text-[var(--accent-gold)] hover:underline"
+            >
+              Inspect ledger →
+            </button>
+          </div>
+          <span className="text-xs text-[var(--text-secondary)] font-sans block">Recorded access events</span>
+        </div>
+      </section>
+
       {/* Sequential Data Journey Ledger */}
       <section className="space-y-3">
-        <h2 className="text-lg sm:text-xl font-serif text-[var(--text-primary)]">
+        <h2 className="text-lg sm:text-xl font-display font-bold text-[var(--text-primary)]">
           How your files stay safe
         </h2>
         <DataJourney />
       </section>
 
-      {/* Metrics Summary — 2-Line Stacked Layout on Mobile */}
-      <section className="space-y-4">
-        <h2 className="text-lg sm:text-xl font-serif text-[var(--text-primary)]">
-          Vault Summary
-        </h2>
-
-        <div className="ledger-list divide-y divide-[var(--border-primary)] border border-[var(--border-primary)] rounded-sm bg-[var(--bg-card)]">
-          {/* Entry 1: Protection Index */}
-          <div className="ledger-entry p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
-            <div className="flex items-center justify-between sm:block w-full sm:w-auto">
-              <span className="text-sm font-medium text-[var(--text-primary)] block">Safety Score</span>
-              <div className="sm:hidden text-right">
-                <span className="font-serif text-xl font-semibold text-[var(--accent-brass)]">
-                  {score ?? 85}
-                </span>
-                <span className="text-[10px] text-[var(--text-tertiary)]"> / 100</span>
-              </div>
-            </div>
-            <span className="text-xs text-[var(--text-secondary)] hidden sm:block">Your overall protection rating</span>
-
-            <div className="hidden sm:flex items-center gap-1 text-right shrink-0">
-              <span className="font-serif text-2xl font-semibold text-[var(--accent-brass)]">
-                {score ?? 85}
-              </span>
-              <span className="text-xs text-[var(--text-tertiary)]">/ 100</span>
-            </div>
-          </div>
-
-          {/* Entry 2: Protected Files */}
-          <div className="ledger-entry p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
-            <div className="flex items-center justify-between sm:block w-full sm:w-auto">
-              <div>
-                <span className="text-sm font-medium text-[var(--text-primary)] block">Locked Files</span>
-                <span className="text-xs text-[var(--text-secondary)] block sm:hidden">Files safely stored in your vault</span>
-              </div>
-              <div className="sm:hidden text-right">
-                <span className="font-serif text-xl font-semibold text-[var(--text-primary)]">
-                  {loading ? "--" : encryptionCount}
-                </span>
-              </div>
-            </div>
-            <span className="text-xs text-[var(--text-secondary)] hidden sm:block">Files safely stored in your vault</span>
-
-            <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0 pt-1 sm:pt-0 border-t sm:border-0 border-[var(--border-primary)]/50">
-              <span className="font-serif text-2xl font-semibold text-[var(--text-primary)] hidden sm:inline">
-                {loading ? "--" : encryptionCount}
-              </span>
-              <button
-                onClick={() => navigate('/my-data')}
-                className="text-xs font-mono text-[var(--accent-brass)] hover:underline touch-target"
-              >
-                View files →
-              </button>
-            </div>
-          </div>
-
-          {/* Entry 3: Security Alerts */}
-          <div className="ledger-entry p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
-            <div className="flex items-center justify-between sm:block w-full sm:w-auto">
-              <div>
-                <span className="text-sm font-medium text-[var(--text-primary)] block">Security Notices</span>
-                <span className="text-xs text-[var(--text-secondary)] block sm:hidden">
-                  {unresolvedAlerts.length > 0 ? "Unusual activity warnings" : "No security issues detected"}
-                </span>
-              </div>
-              <div className="sm:hidden text-right">
-                <span className={`font-serif text-xl font-semibold ${unresolvedAlerts.length > 0 ? 'text-[var(--status-danger)]' : 'text-[var(--text-primary)]'}`}>
-                  {loading ? "--" : unresolvedAlerts.length}
-                </span>
-              </div>
-            </div>
-            <span className="text-xs text-[var(--text-secondary)] hidden sm:block">
-              {unresolvedAlerts.length > 0 ? "Unusual activity warnings" : "No security issues detected"}
-            </span>
-
-            <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0 pt-1 sm:pt-0 border-t sm:border-0 border-[var(--border-primary)]/50">
-              <span className={`font-serif text-2xl font-semibold hidden sm:inline ${unresolvedAlerts.length > 0 ? 'text-[var(--status-danger)]' : 'text-[var(--text-primary)]'}`}>
-                {loading ? "--" : unresolvedAlerts.length}
-              </span>
-              <button
-                onClick={() => navigate('/access-logs')}
-                className="text-xs font-mono text-[var(--accent-brass)] hover:underline touch-target"
-              >
-                View logs →
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Recent Activity Trail — 2-Line Stacked Layout on Mobile */}
+      {/* Recent Activity Trail */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg sm:text-xl font-serif text-[var(--text-primary)]">
+          <h2 className="text-lg sm:text-xl font-display font-bold text-[var(--text-primary)]">
             Recent activity
           </h2>
           <button
             onClick={() => navigate('/access-logs')}
-            className="text-xs font-mono text-[var(--accent-brass)] sm:text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors touch-target"
+            className="text-xs font-mono text-[var(--accent-gold)] hover:text-[var(--text-primary)] transition-colors"
           >
             View all logs →
           </button>
@@ -222,7 +216,7 @@ export default function Dashboard() {
             description="Once you upload a file or sign in, activity entries will appear here."
           />
         ) : (
-          <div className="ledger-list divide-y divide-[var(--border-primary)] border border-[var(--border-primary)] rounded-sm bg-[var(--bg-card)]">
+          <div className="ledger-list divide-y divide-[var(--border-primary)] border border-[var(--border-primary)] rounded-lg bg-[var(--bg-card)]">
             {recentLogs.map((log, idx) => {
               const isExpanded = expandedLogId === (log.id || idx);
               return (
@@ -233,13 +227,13 @@ export default function Dashboard() {
                   >
                     {/* Line 1: Primary Info (Action + Status Badge) */}
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-sm font-medium text-[var(--text-primary)] truncate">
+                      <span className="text-sm font-medium text-[var(--text-primary)] font-sans truncate">
                         {log.action || log.event || 'System activity'}
                       </span>
                       <span className={`px-2 py-0.5 text-[10px] font-mono rounded uppercase shrink-0 border ${
                         log.status === 'success' || log.status === 'completed'
-                          ? 'bg-[var(--vault-green-bg)] text-[var(--vault-green-bright)] border-[var(--vault-green)]'
-                          : 'bg-red-950/40 text-[var(--status-danger)] border-[var(--status-danger)]/40'
+                          ? 'bg-[var(--accent-gold-bg)] text-[var(--accent-gold)] border-[var(--accent-gold)]'
+                          : 'bg-[rgba(196,87,63,0.15)] text-[var(--status-danger)] border-[var(--status-danger)]'
                       }`}>
                         {log.status || 'OK'}
                       </span>
@@ -252,7 +246,7 @@ export default function Dashboard() {
                         <span className="mx-1.5">&middot;</span>
                         {log.ip_address || '127.0.0.1'}
                       </span>
-                      <span className="text-[11px] text-[var(--accent-brass)] shrink-0 ml-2">
+                      <span className="text-[11px] text-[var(--accent-gold)] shrink-0 ml-2">
                         {isExpanded ? 'Hide info –' : 'Details +'}
                       </span>
                     </div>

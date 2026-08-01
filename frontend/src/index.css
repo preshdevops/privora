@@ -2,42 +2,84 @@
 
 @theme {
   --font-headline: 'General Sans', system-ui, -apple-system, sans-serif;
+  --font-display: 'General Sans', system-ui, -apple-system, sans-serif;
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-mono: 'IBM Plex Mono', monospace;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 }
 
-/* ─── Privora "The Vault Ledger" Design System ─── */
+/* ─── Privora Minimalist Vault Design System ─── */
+
 :root,
 [data-theme="dark"] {
-  --bg-primary: #14140F;
-  --bg-secondary: #1C1C16;
-  --bg-card: #1C1C16;
-  --bg-card-elevated: #24241D;
-  --bg-input: #11110C;
-  --bg-sidebar: #0F0F0B;
-  --bg-hover: #26261E;
-  --bg-modal-overlay: rgba(12, 12, 9, 0.88);
+  --bg-primary: #12120E;        /* Quiet deep charcoal */
+  --bg-secondary: #181814;      /* Clean opaque card surface */
+  --bg-card: #181814;
+  --bg-card-solid: #181814;
+  --bg-card-elevated: #1F1F19;
+  --bg-input: #0E0E0B;
+  --bg-sidebar: #0C0C09;
+  --bg-hover: #22221C;
+  --bg-modal: #181814;
+  --bg-modal-overlay: rgba(0, 0, 0, 0.85);
 
-  --border-primary: #282820;
-  --border-secondary: #3A3A2F;
-  --border-brass: #C9A227;
+  --border-primary: #24241F;      /* Fine hairline 1px border */
+  --border-secondary: #303029;
 
-  --text-primary: #F2EFE6;
-  --text-secondary: #9E9B91;
-  --text-tertiary: #6B685F;
-  --text-muted: #48463F;
+  --text-primary: #EFECE6;        /* Soft off-white */
+  --text-secondary: #8E8B82;      /* Quiet secondary label */
+  --text-tertiary: #626058;
+  --text-muted: #44423C;
 
-  --accent-brass: #C9A227;
-  --accent-brass-bright: #E5BB3A;
-  --accent-brass-dim: #5A4812;
-  --accent-brass-glow: rgba(201, 162, 39, 0.12);
+  --accent-brass: #C9A227;        /* Refined Gold Accent */
+  --accent-brass-bright: #DDB432;
+  --accent-brass-dim: #7A6218;
+  --accent-brass-bg: rgba(201, 162, 39, 0.08);
+
+  --accent-gold: #C9A227;
+  --accent-gold-bright: #DDB432;
+
+  --vault-green: #2F5D46;         /* Calm Secure Green */
+  --vault-green-bg: rgba(47, 93, 70, 0.12);
+
+  --status-danger: #C84B31;       /* Strictly for real alert notifications */
+  --status-warning: #C9A227;
+  --status-success: #2F5D46;
+}
+
+[data-theme="light"] {
+  --bg-primary: #F7F5F0;
+  --bg-secondary: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --bg-card-solid: #FFFFFF;
+  --bg-card-elevated: #F0EDE6;
+  --bg-input: #F0EDE6;
+  --bg-sidebar: #ECE9E2;
+  --bg-hover: #E6E2D8;
+  --bg-modal: #FFFFFF;
+  --bg-modal-overlay: rgba(0, 0, 0, 0.4);
+
+  --border-primary: #E2DDD3;
+  --border-secondary: #D4CEBF;
+
+  --text-primary: #1C1B17;
+  --text-secondary: #58544B;
+  --text-tertiary: #7A756A;
+  --text-muted: #9E988C;
+
+  --accent-brass: #A5801E;
+  --accent-brass-bright: #876715;
+  --accent-brass-dim: #D1AE4D;
+  --accent-brass-bg: rgba(165, 128, 30, 0.08);
+
+  --accent-gold: #A5801E;
+  --accent-gold-bright: #876715;
 
   --vault-green: #2F5D46;
-  --vault-green-bright: #3D7A5C;
-  --vault-green-bg: rgba(47, 93, 70, 0.25);
+  --vault-green-bg: rgba(47, 93, 70, 0.1);
 
-  --status-danger: #C84B31;
-  --status-warning: #D9A036;
+  --status-danger: #A6432B;
+  --status-warning: #B8852B;
+  --status-success: #2F5D46;
 }
 
 /* ─── Reset & Base Typography ─── */
@@ -61,16 +103,23 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-headline);
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.02em;
   color: var(--text-primary);
 }
 
-.font-headline {
-  font-family: var(--font-headline);
+.font-headline,
+.font-serif,
+.font-display {
+  font-family: var(--font-display);
 }
 
+.font-sans {
+  font-family: var(--font-sans);
+}
+
+.font-mono,
 .font-mono-ledger {
   font-family: var(--font-mono);
 }
@@ -79,102 +128,30 @@ h1, h2, h3, h4, h5, h6 {
   min-height: 100vh;
 }
 
-/* ─── Die-Cut Container Shape ───
-   Every card/panel gets a die-cut notch on top-right corner.
-   Uses a clean clip-path with a matching inner border wrapper.
-   ─── */
-.die-cut-card {
+/* ─── Clean Modern Card Container Shapes ─── */
+.die-cut-card,
+.die-cut-card-sm,
+.die-cut-card-lg,
+.card-vault {
   position: relative;
   background-color: var(--bg-card);
-  clip-path: polygon(
-    0 0,
-    calc(100% - 16px) 0,
-    100% 16px,
-    100% 100%,
-    0 100%
-  );
-}
-
-.die-cut-card-sm {
-  position: relative;
-  background-color: var(--bg-card);
-  clip-path: polygon(
-    0 0,
-    calc(100% - 10px) 0,
-    100% 10px,
-    100% 100%,
-    0 100%
-  );
-}
-
-.die-cut-card-lg {
-  position: relative;
-  background-color: var(--bg-card);
-  clip-path: polygon(
-    0 0,
-    calc(100% - 22px) 0,
-    100% 22px,
-    100% 100%,
-    0 100%
-  );
-}
-
-/* Stamped document corner border overlay */
-.die-cut-border {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
   border: 1px solid var(--border-primary);
-  clip-path: polygon(
-    0 0,
-    calc(100% - 16px) 0,
-    100% 16px,
-    100% 100%,
-    0 100%
-  );
+  border-radius: 0.5rem;
 }
 
+.die-cut-border,
 .die-cut-border-brass {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  border: 1px solid var(--accent-brass);
-  clip-path: polygon(
-    0 0,
-    calc(100% - 16px) 0,
-    100% 16px,
-    100% 100%,
-    0 100%
-  );
-}
-
-/* Die-cut corner notch mark line decoration */
-.die-cut-corner-mark {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 24px;
-  height: 24px;
-  pointer-events: none;
-}
-
-.die-cut-corner-mark::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 16px;
-  width: 1px;
-  height: 16px;
-  background: var(--border-secondary);
+  display: none;
 }
 
 /* ─── CTA Buttons ─── */
-.btn-primary-brass {
-  background-color: var(--accent-brass);
-  color: #14140F;
+.btn-primary-brass,
+.btn-primary-gold {
+  background-color: var(--accent-gold);
+  color: #14120F;
   font-family: var(--font-sans);
   font-weight: 600;
-  border-radius: 2px;
+  border-radius: 0.375rem;
   padding: 0.75rem 1.5rem;
   min-height: 44px;
   transition: background-color 0.15s ease, transform 0.1s ease;
@@ -182,15 +159,16 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   cursor: pointer;
 }
 
-.btn-primary-brass:hover {
-  background-color: var(--accent-brass-bright);
+.btn-primary-brass:hover,
+.btn-primary-gold:hover {
+  background-color: var(--accent-gold-bright);
 }
 
-.btn-primary-brass:active {
+.btn-primary-brass:active,
+.btn-primary-gold:active {
   transform: translateY(1px);
 }
 
@@ -200,7 +178,7 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-sans);
   font-weight: 500;
   border: 1px solid var(--border-secondary);
-  border-radius: 2px;
+  border-radius: 0.375rem;
   padding: 0.75rem 1.5rem;
   min-height: 44px;
   transition: border-color 0.15s ease, background-color 0.15s ease;
@@ -212,8 +190,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-secondary-vault:hover {
-  border-color: var(--accent-brass);
-  background-color: rgba(201, 162, 39, 0.05);
+  border-color: var(--accent-gold);
+  background-color: var(--accent-gold-bg);
 }
 
 /* ─── Touch Targets & Interaction ─── */
@@ -236,14 +214,13 @@ h1, h2, h3, h4, h5, h6 {
   cursor: pointer;
   transition: background-color 0.2s ease, border-color 0.2s ease;
   padding: 2px;
-  /* Expand tap hit area to 44px minimum */
   margin: -9px 0;
   box-sizing: content-box;
 }
 
 .toggle-track.active {
-  background-color: var(--vault-green);
-  border-color: var(--vault-green-bright);
+  background-color: var(--accent-gold);
+  border-color: var(--accent-gold-bright);
 }
 
 .toggle-track .toggle-thumb {
@@ -262,7 +239,10 @@ h1, h2, h3, h4, h5, h6 {
 input,
 select,
 textarea {
-  font-size: 16px; /* Prevents auto-zoom on iOS Safari on focus */
+  font-size: 16px;
+  background-color: var(--bg-input);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
 }
 
 @media (min-width: 640px) {
@@ -277,21 +257,21 @@ input:focus,
 select:focus,
 textarea:focus {
   outline: none;
-  border-color: var(--accent-brass) !important;
+  border-color: var(--accent-gold) !important;
 }
 
-/* ─── Security Log / Flight Recorder Monospace ─── */
+/* ─── Ledger Table & Monospace Readouts ─── */
 .ledger-log-strip {
   font-family: var(--font-mono);
   font-size: 13px;
   line-height: 1.7;
   color: var(--text-primary);
-  background-color: #11110C;
-  border-left: 2px solid var(--accent-brass);
+  background-color: var(--bg-sidebar);
+  border-left: 2px solid var(--accent-gold);
 }
 
 .ledger-log-timestamp {
-  color: var(--accent-brass);
+  color: var(--accent-gold-bright);
   font-weight: 500;
 }
 
@@ -313,8 +293,22 @@ textarea:focus {
 }
 ::-webkit-scrollbar-thumb {
   background: var(--border-secondary);
-  border-radius: 0;
+  border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-brass);
+  background: var(--accent-gold);
+}
+
+/* ─── Calm Rotating Seal Ring for Loading ─── */
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spinSlow 12s linear infinite;
 }

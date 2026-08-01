@@ -43,37 +43,34 @@ export default function Landing() {
       <VaultDoorEntrance onComplete={() => setDoorOpened(true)} />
 
       {/* ─── Navigation Bar ─── */}
-      <nav className="border-b border-[var(--border-primary)] bg-[#14140F]/90 backdrop-blur-md sticky top-0 z-50">
+      <nav className="border-b border-[var(--border-primary)] bg-[var(--bg-sidebar)] sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
             <PrivoraSeal variant="glyph" size={22} />
-            <span className="font-headline text-lg sm:text-xl font-bold text-[#F2EFE6] tracking-tight">
+            <span className="font-display text-lg sm:text-xl font-bold text-[var(--text-primary)] tracking-tight">
               Privora
             </span>
           </Link>
 
-          <div className="hidden md:flex items-center gap-6 lg:gap-8 text-xs lg:text-sm text-[var(--text-secondary)]">
-            <button onClick={() => scrollTo('vault-feature')} className="hover:text-[#F2EFE6] transition-colors cursor-pointer">
+          <div className="hidden md:flex items-center gap-6 lg:gap-8 text-xs lg:text-sm text-[var(--text-secondary)] font-sans font-medium">
+            <button onClick={() => scrollTo('vault-feature')} className="hover:text-[var(--text-primary)] transition-colors cursor-pointer">
               The Vault
             </button>
-            <button onClick={() => scrollTo('ledger-feature')} className="hover:text-[#F2EFE6] transition-colors cursor-pointer">
+            <button onClick={() => scrollTo('ledger-feature')} className="hover:text-[var(--text-primary)] transition-colors cursor-pointer">
               The Ledger
             </button>
-            <button onClick={() => scrollTo('score-feature')} className="hover:text-[#F2EFE6] transition-colors cursor-pointer">
+            <button onClick={() => scrollTo('score-feature')} className="hover:text-[var(--text-primary)] transition-colors cursor-pointer">
               The Score
-            </button>
-            <button onClick={() => scrollTo('under-the-hood')} className="hover:text-[#F2EFE6] transition-colors cursor-pointer">
-              Under the Hood
             </button>
           </div>
 
           <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm">
-            <Link to="/login" className="text-[var(--text-secondary)] hover:text-[#F2EFE6] transition-colors font-medium touch-target px-1">
+            <Link to="/login" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors font-medium touch-target px-1">
               Sign in
             </Link>
             <Link
               to="/register"
-              className="btn-primary-brass text-xs !py-2 !px-3.5 sm:!px-4"
+              className="btn-primary-gold text-xs !py-2 !px-3.5 sm:!px-4"
             >
               <span className="hidden sm:inline">Secure My First File</span>
               <span className="sm:hidden">Secure File</span>
@@ -83,30 +80,30 @@ export default function Landing() {
         </div>
       </nav>
 
-      {/* ─── Hero Section: Exact Plain Copy & Interactive Alive Vault Panel ─── */}
-      <section className="py-10 sm:py-16 lg:py-24 border-b border-[var(--border-primary)] relative overflow-hidden">
+      {/* ─── Hero Section: Clean Minimalist Asymmetric Layout ─── */}
+      <section className="py-12 sm:py-16 lg:py-24 border-b border-[var(--border-primary)] relative overflow-hidden bg-[var(--bg-primary)]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col lg:grid lg:grid-cols-12 gap-8 lg:gap-12 items-center relative z-10">
           
-          {/* Left Column: Plain Sellable Copy (No Jargon) */}
-          <div className="w-full lg:col-span-6 space-y-4 sm:space-y-6 text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#1C1C16] border border-[var(--border-primary)] text-[11px] sm:text-xs font-mono-ledger text-[var(--accent-brass)]">
+          {/* Left Column: Minimalist Sellable Copy */}
+          <div className="w-full lg:col-span-6 space-y-5 sm:space-y-6 text-left">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[var(--bg-card)] border border-[var(--border-primary)] text-[11px] font-mono text-[var(--accent-gold)] rounded-full">
               <span>REAL-TIME PROTECTION</span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-headline font-bold text-[#F2EFE6] leading-[1.12] tracking-tight">
-              Lock your files. <br />
-              Track access. <br />
-              <span className="text-[var(--accent-brass)]">Stay 100% safe.</span>
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-headline font-bold text-[var(--text-primary)] leading-[1.08] tracking-tight">
+              Lock it. <br />
+              Watch it. <br />
+              <span className="text-[var(--accent-gold)]">Prove it.</span>
             </h1>
 
-            <p className="text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed max-w-xl">
-              Privora locks your sensitive files, tracks every time someone opens them, and shows your real-time safety score.
+            <p className="text-base sm:text-lg text-[var(--text-secondary)] font-sans leading-relaxed max-w-xl">
+              Privora keeps your files locked away, keeps an eye on every move, and shows you — live — exactly how safe you are.
             </p>
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-2 w-full">
               <Link
                 to="/register"
-                className="btn-primary-brass text-sm font-semibold px-6 py-3.5 w-full sm:w-auto"
+                className="btn-primary-gold text-sm font-semibold px-6 py-3.5 w-full sm:w-auto"
               >
                 <span>Secure My First File</span>
                 <ArrowRight className="w-4 h-4" />
@@ -121,55 +118,50 @@ export default function Landing() {
             </div>
           </div>
 
-          {/* Right Column: Live Interactive Vault Demo Panel (Die-Cut Corner Container) */}
+          {/* Right Column: Clean Product Demo Container */}
           <div className="w-full lg:col-span-6">
-            <div className="die-cut-card die-cut-card-lg p-1 bg-[#1C1C16] relative shadow-2xl">
-              <div className="die-cut-border-brass"></div>
-
-              {/* Rubber Stamp Animation Overlay */}
-              <StampEffect trigger={stampActive} onStampComplete={() => setStampActive(false)} label="LOCKED & SEALED" />
-
-              <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 bg-[#14140F]">
+            <div className="bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-xl relative overflow-hidden">
+              <div className="p-4 sm:p-6 space-y-4 sm:space-y-5">
                 
                 {/* Header */}
-                <div className="flex items-center justify-between border-b border-[#282820] pb-3 sm:pb-4 gap-2">
+                <div className="flex items-center justify-between border-b border-[var(--border-primary)] pb-3.5 gap-2">
                   <div>
-                    <span className="font-mono-ledger text-[10px] sm:text-[11px] text-[var(--text-tertiary)] uppercase tracking-wider block">
-                      TRY IT NOW
+                    <span className="font-mono text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider block">
+                      LIVE VAULT DEMO
                     </span>
-                    <span className="font-headline text-sm sm:text-base font-semibold text-[#F2EFE6]">
+                    <span className="font-headline text-sm font-bold text-[var(--text-primary)]">
                       Your Personal Vault
                     </span>
                   </div>
                   <button
                     onClick={handleLockSampleFile}
-                    className="btn-primary-brass text-xs py-1.5 px-3 min-h-[36px] shrink-0"
+                    className="btn-primary-gold text-xs py-1.5 px-3 min-h-[36px] shrink-0"
                   >
                     <span>+ Lock a test file</span>
                   </button>
                 </div>
 
-                {/* Grid: Rising Liquid Score Dial + Stamped File */}
-                <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 sm:gap-6 items-center bg-[#1C1C16] p-3.5 sm:p-4 die-cut-card-sm relative">
-                  <div className="die-cut-border"></div>
-
-                  <div className="sm:col-span-5 flex justify-center py-2">
-                    {/* Signature Moment #4: Rising Liquid Score Dial */}
-                    <RisingScoreDial score={score} size={130} label="SAFETY SCORE" />
+                {/* Grid: Score Gauge + Vault Items */}
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center bg-[var(--bg-primary)] p-4 rounded-lg border border-[var(--border-primary)]">
+                  <div className="sm:col-span-5 flex justify-center py-1">
+                    <RisingScoreDial score={score} size={130} label="PROTECTION SCORE" />
                   </div>
 
-                  <div className="sm:col-span-7 space-y-2.5">
-                    <span className="font-mono-ledger text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider block">
-                      LOCKED VAULT ITEMS
-                    </span>
+                  <div className="sm:col-span-7 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="font-mono text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider block">
+                        LOCKED VAULT ITEMS
+                      </span>
+                      {stampActive && <StampEffect trigger={true} label="SEALED" />}
+                    </div>
 
                     {[
-                      { name: 'house_contract.pdf', label: 'LOCKED SAFE' },
+                      { name: 'contract_file.pdf', label: 'LOCKED SAFE' },
                       { name: 'family_passport.pdf', label: 'LOCKED SAFE' },
                     ].map((item, idx) => (
-                      <div key={idx} className="flex items-center justify-between p-2 sm:p-2.5 bg-[#14140F] border border-[#282820] text-xs font-mono-ledger">
-                        <span className="text-[#F2EFE6] truncate max-w-[150px] sm:max-w-none">{item.name}</span>
-                        <span className="text-[var(--accent-brass)] text-[10px] font-bold shrink-0 ml-2">
+                      <div key={idx} className="flex items-center justify-between p-2 bg-[var(--bg-card)] border border-[var(--border-primary)] text-xs font-mono rounded">
+                        <span className="text-[var(--text-primary)] truncate max-w-[150px] sm:max-w-none">{item.name}</span>
+                        <span className="text-[var(--accent-gold)] text-[10px] font-medium shrink-0 ml-2">
                           {item.label}
                         </span>
                       </div>
@@ -177,7 +169,7 @@ export default function Landing() {
                   </div>
                 </div>
 
-                {/* Signature Moment #3: Heartbeat Ledger Pulse */}
+                {/* Activity Ledger Stream */}
                 <HeartbeatLedger entries={ledgerEntries} title="LIVE ACTIVITY STREAM" compact={true} />
 
               </div>
@@ -187,36 +179,34 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ─── Three Feature Sections: One Per Signature Moment ─── */}
+      {/* ─── Three Clean Feature Sections ─── */}
       <div className="space-y-0">
         
-        {/* Feature 1: The Vault (The Stamp Moment) */}
-        <section id="vault-feature" className="py-12 sm:py-20 border-b border-[var(--border-primary)] bg-[#181813]">
+        {/* Feature 1: The Vault */}
+        <section id="vault-feature" className="py-12 sm:py-20 border-b border-[var(--border-primary)] bg-[var(--bg-primary)]">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center">
             
             <div className="md:col-span-6 space-y-4 text-left">
-              <span className="font-mono-ledger text-xs text-[var(--accent-brass)] tracking-widest uppercase block">
-                FEATURE 1 — INSTANT VAULT
+              <span className="font-mono text-xs text-[var(--accent-gold)] tracking-widest uppercase block font-semibold">
+                FEATURE 1 — THE VAULT
               </span>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-headline font-bold text-[#F2EFE6]">
-                Instant protection for every document
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-headline font-bold text-[var(--text-primary)]">
+                Every file you upload gets locked instantly.
               </h2>
-              <p className="text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed">
-                Every file you upload is encrypted instantly. Nobody can open it without leaving a clear record.
+              <p className="text-base text-[var(--text-secondary)] font-sans leading-relaxed">
+                Every file you upload gets locked instantly. Nobody opens it without leaving a trace.
               </p>
             </div>
 
             <div className="md:col-span-6">
-              <div className="die-cut-card p-4 sm:p-6 bg-[#1C1C16] relative border border-[var(--border-primary)] text-center space-y-4">
-                <div className="die-cut-border"></div>
-                
-                <span className="font-mono-ledger text-xs text-[var(--text-tertiary)] uppercase tracking-wider block">
-                  LIVE DEMO — THE SEAL
+              <div className="p-6 bg-[var(--bg-card)] rounded-xl border border-[var(--border-primary)] text-center space-y-4">
+                <span className="font-mono text-xs text-[var(--text-tertiary)] uppercase tracking-wider block">
+                  VAULT STATUS
                 </span>
 
-                <div className="py-4 sm:py-6 flex flex-col items-center justify-center space-y-3">
-                  <StampEffect trigger={true} inline={true} label="INSTANTLY LOCKED" />
-                  <p className="font-mono-ledger text-xs text-[var(--text-secondary)]">
+                <div className="py-6 flex flex-col items-center justify-center space-y-3">
+                  <StampEffect trigger={true} label="INSTANTLY LOCKED & PROTECTED" />
+                  <p className="font-mono text-xs text-[var(--text-secondary)] pt-2">
                     Privora seals every item the moment it enters your vault.
                   </p>
                 </div>
@@ -226,52 +216,50 @@ export default function Landing() {
           </div>
         </section>
 
-        {/* Feature 2: The Ledger (The Heartbeat Pulse Moment) */}
-        <section id="ledger-feature" className="py-12 sm:py-20 border-b border-[var(--border-primary)] bg-[#14140F]">
+        {/* Feature 2: The Ledger */}
+        <section id="ledger-feature" className="py-12 sm:py-20 border-b border-[var(--border-primary)] bg-[var(--bg-secondary)]">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center">
             
             <div className="md:col-span-6 md:order-2 space-y-4 text-left">
-              <span className="font-mono-ledger text-xs text-[var(--accent-brass)] tracking-widest uppercase block">
-                FEATURE 2 — ACCESS TRACKER
+              <span className="font-mono text-xs text-[var(--accent-gold)] tracking-widest uppercase block font-semibold">
+                FEATURE 2 — THE LEDGER
               </span>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-headline font-bold text-[#F2EFE6]">
-                Know every time your files are opened
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-headline font-bold text-[var(--text-primary)]">
+                See every single time your files were touched.
               </h2>
-              <p className="text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed">
-                See every single time your files were opened, downloaded, or updated — completely transparent.
+              <p className="text-base text-[var(--text-secondary)] font-sans leading-relaxed">
+                See every single time your files were touched, opened, or shared — nothing happens in the dark.
               </p>
             </div>
 
             <div className="md:col-span-6 md:order-1">
-              <div className="die-cut-card p-1 bg-[#1C1C16] relative border border-[var(--border-primary)]">
-                <div className="die-cut-border"></div>
-                <HeartbeatLedger entries={ledgerEntries} title="LIVE ACCESS HISTORY" />
+              <div className="p-1 bg-[var(--bg-card)] rounded-xl border border-[var(--border-primary)]">
+                <HeartbeatLedger entries={ledgerEntries} title="HEARTBEAT AUDIT LEDGER" />
               </div>
             </div>
 
           </div>
         </section>
 
-        {/* Feature 3: The Score (The Rising Score Moment) */}
-        <section id="score-feature" className="py-12 sm:py-20 border-b border-[var(--border-primary)] bg-[#181813]">
+        {/* Feature 3: The Score */}
+        <section id="score-feature" className="py-12 sm:py-20 border-b border-[var(--border-primary)] bg-[var(--bg-primary)]">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center">
             
             <div className="md:col-span-6 space-y-4 text-left">
-              <span className="font-mono-ledger text-xs text-[var(--accent-brass)] tracking-widest uppercase block">
-                FEATURE 3 — SAFETY RATING
+              <span className="font-mono text-xs text-[var(--accent-gold)] tracking-widest uppercase block font-semibold">
+                FEATURE 3 — THE SCORE
               </span>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-headline font-bold text-[#F2EFE6]">
-                Know your exact security score at a glance
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-headline font-bold text-[var(--text-primary)]">
+                Watch your protection score in real time.
               </h2>
-              <p className="text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed">
-                Watch your protection score in real time. It goes up when you add protection steps, giving you total certainty.
+              <p className="text-base text-[var(--text-secondary)] font-sans leading-relaxed">
+                Watch your protection score in real time. It goes up when you're safer. It never lies to you.
               </p>
             </div>
 
             <div className="md:col-span-6 flex justify-center">
-              <div className="die-cut-card p-6 sm:p-8 bg-[#1C1C16] relative border border-[var(--border-primary)] text-center w-full max-w-xs sm:max-w-none">
-                <div className="die-cut-border"></div>
-                <RisingScoreDial score={score} size={160} label="YOUR SAFETY RATING" />
+              <div className="p-6 sm:p-8 bg-[var(--bg-card)] rounded-xl border border-[var(--border-primary)] text-center w-full max-w-xs sm:max-w-none flex justify-center">
+                <RisingScoreDial score={score} size={150} label="PROTECTION SCORE" />
               </div>
             </div>
 
@@ -280,61 +268,23 @@ export default function Landing() {
 
       </div>
 
-      {/* ─── Under the Hood Appendix Section ─── */}
-      <section id="under-the-hood" className="py-12 sm:py-16 border-b border-[var(--border-primary)] bg-[#0F0F0B]">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-6">
-          
-          <div className="border-b border-[var(--border-primary)] pb-4 text-left">
-            <span className="font-mono-ledger text-xs text-[var(--accent-brass)] tracking-widest uppercase block">
-              HOW PRIVORA PROTECTS YOU
-            </span>
-            <h3 className="text-lg sm:text-xl font-headline font-bold text-[#F2EFE6] mt-1">
-              Bank-grade privacy built for complete peace of mind
-            </h3>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 font-mono-ledger text-xs text-left">
-            <div className="p-4 bg-[#14140F] border border-[#282820] space-y-1">
-              <span className="text-[var(--accent-brass)] font-semibold block">BANK-GRADE ENCRYPTION</span>
-              <span className="text-[#F2EFE6]">Locked on your device before saving</span>
-            </div>
-
-            <div className="p-4 bg-[#14140F] border border-[#282820] space-y-1">
-              <span className="text-[var(--accent-brass)] font-semibold block">SECRET PASSWORD LOCK</span>
-              <span className="text-[#F2EFE6]">Only your password can open files</span>
-            </div>
-
-            <div className="p-4 bg-[#14140F] border border-[#282820] space-y-1">
-              <span className="text-[var(--accent-brass)] font-semibold block">SECURE SIGN-IN</span>
-              <span className="text-[#F2EFE6]">Protected account sessions</span>
-            </div>
-
-            <div className="p-4 bg-[#14140F] border border-[#282820] space-y-1">
-              <span className="text-[var(--accent-brass)] font-semibold block">ZERO LEAK GUARANTEE</span>
-              <span className="text-[#F2EFE6]">No unencrypted copies on server</span>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* ─── CTA Section ─── */}
-      <section className="py-16 sm:py-24 bg-[#14140F] relative overflow-hidden text-center">
+      {/* ─── Quiet Minimal CTA Section ─── */}
+      <section className="py-16 sm:py-24 bg-[var(--bg-primary)] relative overflow-hidden text-center">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 space-y-6 sm:space-y-8 relative z-10">
-          <PrivoraSeal variant="full" size={72} className="mx-auto sm:w-24 sm:h-24" />
+          <PrivoraSeal variant="full" size={64} className="mx-auto" />
           
-          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-headline font-bold text-[#F2EFE6]">
+          <h2 className="text-3xl sm:text-5xl font-headline font-bold text-[var(--text-primary)]">
             Lock it. Watch it. Prove it.
           </h2>
 
-          <p className="text-sm sm:text-base text-[var(--text-secondary)] max-w-xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg text-[var(--text-secondary)] font-sans max-w-xl mx-auto leading-relaxed">
             Privora keeps your files locked away, keeps an eye on every move, and shows you — live — exactly how safe you are.
           </p>
 
           <div className="pt-2">
             <Link
               to="/register"
-              className="btn-primary-brass text-sm sm:text-base font-semibold px-6 sm:px-8 py-3.5 sm:py-4 w-full sm:w-auto"
+              className="btn-primary-gold text-base font-semibold px-8 py-4 w-full sm:w-auto"
             >
               <span>Secure My First File</span>
               <ArrowRight className="w-5 h-5" />
@@ -343,8 +293,8 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ─── Quiet Footer ─── */}
-      <footer className="border-t border-[var(--border-primary)] bg-[#0A0A07] px-4 sm:px-6 py-6 sm:py-8 text-xs font-mono-ledger text-[var(--text-tertiary)]">
+      {/* ─── Quiet Minimal Footer ─── */}
+      <footer className="border-t border-[var(--border-primary)] bg-[var(--bg-sidebar)] px-4 sm:px-6 py-6 text-xs font-mono text-[var(--text-tertiary)]">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
           <span>Privora — Built to Nigerian and international privacy standards</span>
           <span>© {new Date().getFullYear()} Privora. All rights reserved.</span>
