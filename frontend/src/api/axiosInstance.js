@@ -10,15 +10,20 @@ const axiosInstance = axios.create({
   },
 });
 
-// Request interceptor — attach JWT access token
+// Request interceptor — attach JWT access token for protected endpoints
 axiosInstance.interceptors.request.use(
   (config) => {
     try {
-      const storedTokens = localStorage.getItem('tokens');
-      if (storedTokens) {
-        const tokens = JSON.parse(storedTokens);
-        if (tokens?.access) {
-          config.headers.Authorization = `Bearer ${tokens.access}`;
+      const isPublicAuthEndpoint = config.url?.includes('/api/users/login') ||
+                                   config.url?.includes('/api/users/register') ||
+                                   config.url?.includes('/api/users/token/refresh');
+      if (!isPublicAuthEndpoint) {
+        const storedTokens = localStorage.getItem('tokens');
+        if (storedTokens) {
+          const tokens = JSON.parse(storedTokens);
+          if (tokens?.access) {
+            config.headers.Authorization = `Bearer ${tokens.access}`;
+          }
         }
       }
     } catch {

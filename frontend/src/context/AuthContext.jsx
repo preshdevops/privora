@@ -20,6 +20,8 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async (email, password) => {
+    localStorage.removeItem('tokens');
+    localStorage.removeItem('user');
     const res = await axiosInstance.post('/api/users/login/', { email, password });
     const { user: userData, access, refresh } = res.data;
     const tokenData = { access, refresh };
