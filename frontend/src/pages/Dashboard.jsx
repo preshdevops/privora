@@ -67,24 +67,25 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-8 sm:space-y-12">
       {/* Eyebrow Label & Page Header */}
-      <header className="space-y-2 border-b border-[var(--border-primary)] pb-8">
+      <header className="space-y-2 border-b border-[var(--border-primary)] pb-6 sm:pb-8">
         <span className="text-xs font-mono text-[var(--accent-brass)] tracking-widest uppercase block">
           OVERVIEW
         </span>
-        <h1 className="text-3xl sm:text-4xl font-serif text-[var(--text-primary)]">
+        <h1 className="text-2xl sm:text-4xl font-serif text-[var(--text-primary)]">
           Your privacy, at a glance
         </h1>
-        <p className="text-sm text-[var(--text-secondary)] leading-relaxed max-w-xl">
+        <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed max-w-xl">
           Privora protects your personal data under client-isolated encryption. Only your password can unseal your files.
         </p>
       </header>
 
-      {/* Primary Action Button */}
-      <div className="flex items-center justify-between">
-        <div className="text-xs text-[var(--text-secondary)]">
-          System status: <span className="text-[var(--status-success)] font-medium">Active & protected</span>
+      {/* Primary Action Button Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-3.5 sm:p-0 rounded-sm bg-[var(--bg-input)] sm:bg-transparent border sm:border-0 border-[var(--border-primary)]">
+        <div className="text-xs text-[var(--text-secondary)] flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-[var(--status-success)] animate-pulse shrink-0" />
+          <span>System status: <strong className="text-[var(--status-success)] font-medium">Active & protected</strong></span>
         </div>
 
         <SecurityActionBtn
@@ -93,6 +94,7 @@ export default function Dashboard() {
           successLabel="Exported"
           delayMs={600}
           variant="outline"
+          className="w-full sm:w-auto"
         >
           <span>Export activity log</span>
         </SecurityActionBtn>
@@ -100,46 +102,62 @@ export default function Dashboard() {
 
       {/* Sequential Data Journey Ledger */}
       <section className="space-y-3">
-        <h2 className="text-xl font-serif text-[var(--text-primary)]">
+        <h2 className="text-lg sm:text-xl font-serif text-[var(--text-primary)]">
           Protection pipeline
         </h2>
         <DataJourney />
       </section>
 
-      {/* Metrics Summary — Simple Ledger Rule List, Not Cards */}
+      {/* Metrics Summary — 2-Line Stacked Layout on Mobile */}
       <section className="space-y-4">
-        <h2 className="text-xl font-serif text-[var(--text-primary)]">
+        <h2 className="text-lg sm:text-xl font-serif text-[var(--text-primary)]">
           Vault status summary
         </h2>
 
-        <div className="ledger-list">
+        <div className="ledger-list divide-y divide-[var(--border-primary)] border border-[var(--border-primary)] rounded-sm bg-[var(--bg-card)]">
           {/* Entry 1: Protection Index */}
-          <div className="ledger-entry flex items-center justify-between py-4">
-            <div>
+          <div className="ledger-entry p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
+            <div className="flex items-center justify-between sm:block w-full sm:w-auto">
               <span className="text-sm font-medium text-[var(--text-primary)] block">Data protection score</span>
-              <span className="text-xs text-[var(--text-secondary)]">Calculated compliance index</span>
+              <div className="sm:hidden text-right">
+                <span className="font-serif text-xl font-semibold text-[var(--accent-brass)]">
+                  {score ?? 85}
+                </span>
+                <span className="text-[10px] text-[var(--text-tertiary)]"> / 100</span>
+              </div>
             </div>
-            <div className="text-right">
+            <span className="text-xs text-[var(--text-secondary)] hidden sm:block">Calculated compliance index</span>
+
+            <div className="hidden sm:flex items-center gap-1 text-right shrink-0">
               <span className="font-serif text-2xl font-semibold text-[var(--accent-brass)]">
                 {score ?? 85}
               </span>
-              <span className="text-xs text-[var(--text-tertiary)] block">/ 100</span>
+              <span className="text-xs text-[var(--text-tertiary)]">/ 100</span>
             </div>
           </div>
 
           {/* Entry 2: Protected Files */}
-          <div className="ledger-entry flex items-center justify-between py-4">
-            <div>
-              <span className="text-sm font-medium text-[var(--text-primary)] block">Protected files</span>
-              <span className="text-xs text-[var(--text-secondary)]">Encrypted records stored safely</span>
+          <div className="ledger-entry p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
+            <div className="flex items-center justify-between sm:block w-full sm:w-auto">
+              <div>
+                <span className="text-sm font-medium text-[var(--text-primary)] block">Protected files</span>
+                <span className="text-xs text-[var(--text-secondary)] block sm:hidden">Encrypted records stored safely</span>
+              </div>
+              <div className="sm:hidden text-right">
+                <span className="font-serif text-xl font-semibold text-[var(--text-primary)]">
+                  {loading ? "--" : encryptionCount}
+                </span>
+              </div>
             </div>
-            <div className="flex items-center gap-4">
-              <span className="font-serif text-2xl font-semibold text-[var(--text-primary)]">
+            <span className="text-xs text-[var(--text-secondary)] hidden sm:block">Encrypted records stored safely</span>
+
+            <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0 pt-1 sm:pt-0 border-t sm:border-0 border-[var(--border-primary)]/50">
+              <span className="font-serif text-2xl font-semibold text-[var(--text-primary)] hidden sm:inline">
                 {loading ? "--" : encryptionCount}
               </span>
               <button
                 onClick={() => navigate('/my-data')}
-                className="text-xs font-mono text-[var(--accent-brass)] hover:underline"
+                className="text-xs font-mono text-[var(--accent-brass)] hover:underline touch-target"
               >
                 View files →
               </button>
@@ -147,20 +165,31 @@ export default function Dashboard() {
           </div>
 
           {/* Entry 3: Security Alerts */}
-          <div className="ledger-entry flex items-center justify-between py-4">
-            <div>
-              <span className="text-sm font-medium text-[var(--text-primary)] block">Security alerts</span>
-              <span className="text-xs text-[var(--text-secondary)]">
-                {unresolvedAlerts.length > 0 ? "Alerts requiring attention" : "All access metrics nominal"}
-              </span>
+          <div className="ledger-entry p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
+            <div className="flex items-center justify-between sm:block w-full sm:w-auto">
+              <div>
+                <span className="text-sm font-medium text-[var(--text-primary)] block">Security alerts</span>
+                <span className="text-xs text-[var(--text-secondary)] block sm:hidden">
+                  {unresolvedAlerts.length > 0 ? "Alerts requiring attention" : "All metrics nominal"}
+                </span>
+              </div>
+              <div className="sm:hidden text-right">
+                <span className={`font-serif text-xl font-semibold ${unresolvedAlerts.length > 0 ? 'text-[var(--status-danger)]' : 'text-[var(--text-primary)]'}`}>
+                  {loading ? "--" : unresolvedAlerts.length}
+                </span>
+              </div>
             </div>
-            <div className="flex items-center gap-4">
-              <span className={`font-serif text-2xl font-semibold ${unresolvedAlerts.length > 0 ? 'text-[var(--status-danger)]' : 'text-[var(--text-primary)]'}`}>
+            <span className="text-xs text-[var(--text-secondary)] hidden sm:block">
+              {unresolvedAlerts.length > 0 ? "Alerts requiring attention" : "All access metrics nominal"}
+            </span>
+
+            <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0 pt-1 sm:pt-0 border-t sm:border-0 border-[var(--border-primary)]/50">
+              <span className={`font-serif text-2xl font-semibold hidden sm:inline ${unresolvedAlerts.length > 0 ? 'text-[var(--status-danger)]' : 'text-[var(--text-primary)]'}`}>
                 {loading ? "--" : unresolvedAlerts.length}
               </span>
               <button
                 onClick={() => navigate('/access-logs')}
-                className="text-xs font-mono text-[var(--accent-brass)] hover:underline"
+                className="text-xs font-mono text-[var(--accent-brass)] hover:underline touch-target"
               >
                 View logs →
               </button>
@@ -169,15 +198,15 @@ export default function Dashboard() {
         </div>
       </section>
 
-      {/* Recent Activity Trail — Accordion Detail Expansion */}
+      {/* Recent Activity Trail — 2-Line Stacked Layout on Mobile */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-serif text-[var(--text-primary)]">
+          <h2 className="text-lg sm:text-xl font-serif text-[var(--text-primary)]">
             Recent activity
           </h2>
           <button
             onClick={() => navigate('/access-logs')}
-            className="text-xs font-mono text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors"
+            className="text-xs font-mono text-[var(--accent-brass)] sm:text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors touch-target"
           >
             View all logs →
           </button>
@@ -193,34 +222,38 @@ export default function Dashboard() {
             description="Once you upload a file or sign in, activity entries will appear here."
           />
         ) : (
-          <div className="ledger-list">
+          <div className="ledger-list divide-y divide-[var(--border-primary)] border border-[var(--border-primary)] rounded-sm bg-[var(--bg-card)]">
             {recentLogs.map((log, idx) => {
               const isExpanded = expandedLogId === (log.id || idx);
               return (
-                <div key={log.id || idx} className="ledger-entry">
+                <div key={log.id || idx} className="ledger-entry p-3.5 sm:p-4">
                   <div 
                     onClick={() => toggleAccordion(log.id || idx)}
-                    className="flex items-center justify-between cursor-pointer py-1"
+                    className="cursor-pointer space-y-1.5"
                   >
-                    <div className="space-y-0.5">
-                      <span className="text-sm font-medium text-[var(--text-primary)] block">
+                    {/* Line 1: Primary Info (Action + Status Badge) */}
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-sm font-medium text-[var(--text-primary)] truncate">
                         {log.action || log.event || 'System activity'}
                       </span>
-                      <span className="text-xs text-[var(--text-tertiary)] font-mono block">
-                        {log.timestamp ? new Date(log.timestamp).toUTCString() : 'Just now'}
+                      <span className={`px-2 py-0.5 text-[10px] font-mono rounded uppercase shrink-0 border ${
+                        log.status === 'success' || log.status === 'completed'
+                          ? 'bg-[var(--vault-green-bg)] text-[var(--vault-green-bright)] border-[var(--vault-green)]'
+                          : 'bg-red-950/40 text-[var(--status-danger)] border-[var(--status-danger)]/40'
+                      }`}>
+                        {log.status || 'OK'}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-4 text-xs font-mono">
-                      <span className="text-[var(--text-tertiary)] hidden sm:inline">
+                    {/* Line 2: Secondary Metadata (Timestamp + IP + Expand indicator) */}
+                    <div className="flex items-center justify-between text-xs font-mono text-[var(--text-tertiary)] pt-0.5">
+                      <span className="truncate">
+                        {log.timestamp ? new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now'}
+                        <span className="mx-1.5">&middot;</span>
                         {log.ip_address || '127.0.0.1'}
                       </span>
-                      <span className={`px-2 py-0.5 text-[11px] rounded uppercase ${
-                        log.status === 'success' || log.status === 'completed'
-                          ? 'text-[var(--badge-success-text)]'
-                          : 'text-[var(--badge-danger-text)]'
-                      }`}>
-                        {log.status || 'OK'}
+                      <span className="text-[11px] text-[var(--accent-brass)] shrink-0 ml-2">
+                        {isExpanded ? 'Hide info –' : 'Details +'}
                       </span>
                     </div>
                   </div>

@@ -78,15 +78,15 @@ export default function AccessLogs() {
   return (
     <div className="space-y-12">
       {/* Header */}
-      <header className="space-y-2 border-b border-[var(--border-primary)] pb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+      <header className="space-y-2 border-b border-[var(--border-primary)] pb-6 sm:pb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           <span className="text-xs font-mono text-[var(--accent-brass)] tracking-widest uppercase block">
             AUDIT LEDGER
           </span>
-          <h1 className="text-3xl sm:text-4xl font-serif text-[var(--text-primary)] mt-1">
+          <h1 className="text-2xl sm:text-4xl font-serif text-[var(--text-primary)] mt-1">
             Access logs
           </h1>
-          <p className="text-sm text-[var(--text-secondary)] leading-relaxed max-w-xl">
+          <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed max-w-xl">
             A complete record of logins, file actions, and security settings changes on your account.
           </p>
         </div>
@@ -97,27 +97,28 @@ export default function AccessLogs() {
           successLabel="Exported"
           delayMs={500}
           variant="outline"
+          className="w-full sm:w-auto"
         >
           <span>Export CSV</span>
         </SecurityActionBtn>
       </header>
 
       {/* Filter Controls */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 text-xs font-mono">
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search by IP, action, or file name…"
-          className="w-full sm:w-80 px-3.5 py-2 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-[var(--text-primary)] outline-none"
+          className="w-full sm:w-80 px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-[var(--text-primary)] outline-none min-h-[44px]"
         />
 
-        <div className="flex items-center gap-2 self-end sm:self-center">
+        <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 pt-1 sm:pt-0">
           <span className="text-[var(--text-tertiary)]">Status:</span>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-[var(--text-primary)] outline-none cursor-pointer"
+            className="px-3 py-2 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-[var(--text-primary)] outline-none cursor-pointer min-h-[44px]"
           >
             <option>Any status</option>
             <option value="success">Success</option>
@@ -126,7 +127,7 @@ export default function AccessLogs() {
         </div>
       </div>
 
-      {/* Ledger List Primitive with Accordion Expansion */}
+      {/* Ledger List — 2-Line Stacked Layout on Mobile */}
       {loading ? (
         <div className="py-6 text-xs text-[var(--text-tertiary)] text-center font-mono">
           Loading audit entries…
@@ -137,42 +138,44 @@ export default function AccessLogs() {
           description="No security events match your current filter."
         />
       ) : (
-        <div className="ledger-list">
+        <div className="ledger-list divide-y divide-[var(--border-primary)] border border-[var(--border-primary)] rounded-sm bg-[var(--bg-card)]">
           {filteredLogs.map((log, idx) => {
             const isExpanded = expandedLogId === (log.id || idx);
             return (
-              <div key={log.id || idx} className="ledger-entry">
+              <div key={log.id || idx} className="ledger-entry p-3.5 sm:p-4">
                 <div 
                   onClick={() => toggleAccordion(log.id || idx)}
-                  className="flex items-center justify-between cursor-pointer py-1"
+                  className="cursor-pointer space-y-1.5"
                 >
-                  <div className="flex items-center gap-4 min-w-0">
-                    <span className="font-mono text-xs text-[var(--accent-brass)] shrink-0 font-semibold">
-                      #{String((page - 1) * pageSize + idx + 1).padStart(4, '0')}
-                    </span>
-                    <div className="min-w-0">
-                      <span className="text-sm font-medium text-[var(--text-primary)] block truncate">
+                  {/* Line 1: Entry # + Action Title + Status Badge */}
+                  <div className="flex items-center justify-between gap-2 min-w-0">
+                    <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                      <span className="font-mono text-xs text-[var(--accent-brass)] font-semibold shrink-0">
+                        #{String((page - 1) * pageSize + idx + 1).padStart(4, '0')}
+                      </span>
+                      <span className="text-sm font-medium text-[var(--text-primary)] truncate">
                         {log.action || log.event || 'System activity'}
                       </span>
-                      <span className="text-xs text-[var(--text-tertiary)] font-mono block">
-                        {log.timestamp ? new Date(log.timestamp).toUTCString() : 'Just now'}
-                      </span>
                     </div>
-                  </div>
 
-                  <div className="flex items-center gap-4 text-xs font-mono shrink-0">
-                    <span className="text-[var(--text-tertiary)] hidden sm:inline">
-                      {log.ip_address || '127.0.0.1'}
-                    </span>
-                    <span className={`px-2 py-0.5 rounded text-[11px] uppercase ${
+                    <span className={`px-2 py-0.5 text-[10px] font-mono rounded uppercase shrink-0 border ${
                       log.status === 'success' || log.status === 'completed'
-                        ? 'text-[var(--badge-success-text)]'
-                        : 'text-[var(--badge-danger-text)]'
+                        ? 'bg-[var(--vault-green-bg)] text-[var(--vault-green-bright)] border-[var(--vault-green)]'
+                        : 'bg-red-950/40 text-[var(--status-danger)] border-[var(--status-danger)]/40'
                     }`}>
                       {log.status || 'OK'}
                     </span>
-                    <span className="text-[var(--text-tertiary)]">
-                      {isExpanded ? '–' : '+'}
+                  </div>
+
+                  {/* Line 2: Timestamp + IP address + Details trigger */}
+                  <div className="flex items-center justify-between text-xs font-mono text-[var(--text-tertiary)] pt-0.5">
+                    <span className="truncate">
+                      {log.timestamp ? new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : 'Just now'}
+                      <span className="mx-1.5">&middot;</span>
+                      {log.ip_address || '127.0.0.1'}
+                    </span>
+                    <span className="text-[11px] text-[var(--accent-brass)] shrink-0 ml-2">
+                      {isExpanded ? 'Hide info –' : 'Details +'}
                     </span>
                   </div>
                 </div>

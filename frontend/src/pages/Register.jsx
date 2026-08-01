@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import axiosInstance from '../api/axiosInstance';
 import SecurityActionBtn from '../components/SecurityActionBtn';
 import PrivoraSeal from '../components/PrivoraSeal';
+import PasswordInput from '../components/PasswordInput';
 
 export default function Register() {
   const [fullName, setFullName] = useState('');
@@ -81,16 +82,22 @@ export default function Register() {
       </div>
 
       {/* Right Column: Clean Form Container */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12">
-        <div className="w-full max-w-md space-y-8">
-          <header className="space-y-2">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-5 sm:p-12">
+        <div className="w-full max-w-md space-y-6 sm:space-y-8">
+          {/* Mobile Brand Emblem Header */}
+          <div className="lg:hidden flex items-center gap-2.5 pb-2">
+            <PrivoraSeal variant="glyph" size={24} />
+            <span className="font-headline text-xl font-bold text-[var(--text-primary)]">Privora</span>
+          </div>
+
+          <header className="space-y-1.5 sm:space-y-2">
             <span className="text-xs font-mono text-[var(--accent-brass)] tracking-widest uppercase block">
               CREATE ACCOUNT
             </span>
-            <h1 className="text-3xl font-serif text-[var(--text-primary)]">
+            <h1 className="text-2xl sm:text-3xl font-serif text-[var(--text-primary)]">
               Initialize your vault
             </h1>
-            <p className="text-sm text-[var(--text-secondary)]">
+            <p className="text-xs sm:text-sm text-[var(--text-secondary)]">
               Set up your account details and master password key.
             </p>
           </header>
@@ -113,7 +120,7 @@ export default function Register() {
                 placeholder="Precious Olonade"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-sm text-[var(--text-primary)] outline-none"
+                className="w-full px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-base sm:text-sm text-[var(--text-primary)] outline-none min-h-[44px]"
               />
               {errors.full_name && (
                 <span className="text-xs text-[var(--status-danger)] block">
@@ -132,7 +139,7 @@ export default function Register() {
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-sm text-[var(--text-primary)] outline-none"
+                className="w-full px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-base sm:text-sm text-[var(--text-primary)] outline-none min-h-[44px]"
               />
               {errors.email && (
                 <span className="text-xs text-[var(--status-danger)] block">
@@ -142,54 +149,34 @@ export default function Register() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <label className="block text-xs text-[var(--text-secondary)]">
-                  Master password
-                </label>
-                <input
-                  id="register-password"
-                  type="password"
-                  placeholder="••••••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-sm text-[var(--text-primary)] outline-none"
-                />
-                {errors.password && (
-                  <span className="text-xs text-[var(--status-danger)] block">
-                    {errors.password}
-                  </span>
-                )}
-              </div>
+              <PasswordInput
+                id="register-password"
+                label="Master password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                error={errors.password}
+                autoComplete="new-password"
+              />
 
-              <div className="space-y-1.5">
-                <label className="block text-xs text-[var(--text-secondary)]">
-                  Confirm password
-                </label>
-                <input
-                  id="register-password2"
-                  type="password"
-                  placeholder="••••••••••••"
-                  value={password2}
-                  onChange={(e) => setPassword2(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-sm text-[var(--text-primary)] outline-none"
-                />
-                {errors.password2 && (
-                  <span className="text-xs text-[var(--status-danger)] block">
-                    {errors.password2}
-                  </span>
-                )}
-              </div>
+              <PasswordInput
+                id="register-password2"
+                label="Confirm password"
+                value={password2}
+                onChange={(e) => setPassword2(e.target.value)}
+                error={errors.password2}
+                autoComplete="new-password"
+              />
             </div>
 
-            <div className="flex items-center gap-3 pt-2">
+            <div className="flex items-center gap-3 pt-2 touch-target">
               <input
                 id="agree-checkbox"
                 type="checkbox"
                 checked={agree}
                 onChange={(e) => setAgree(e.target.checked)}
-                className="rounded bg-[var(--bg-input)] border-[var(--border-primary)] accent-[var(--accent-brass)] cursor-pointer"
+                className="w-4 h-4 rounded bg-[var(--bg-input)] border-[var(--border-primary)] accent-[var(--accent-brass)] cursor-pointer"
               />
-              <label htmlFor="agree-checkbox" className="text-xs text-[var(--text-secondary)] cursor-pointer">
+              <label htmlFor="agree-checkbox" className="text-xs text-[var(--text-secondary)] cursor-pointer select-none">
                 I agree to the privacy policy and terms of service.
               </label>
             </div>
@@ -206,7 +193,7 @@ export default function Register() {
                 successLabel="VAULT SEALED"
                 delayMs={750}
                 showSealOnSuccess={true}
-                className="w-full justify-center"
+                className="w-full justify-center min-h-[44px]"
               >
                 <span>Create vault account</span>
               </SecurityActionBtn>
@@ -215,7 +202,7 @@ export default function Register() {
 
           <footer className="pt-4 border-t border-[var(--border-primary)] text-center text-xs text-[var(--text-secondary)]">
             Already registered?{" "}
-            <Link to="/login" className="text-[var(--accent-brass)] hover:underline">
+            <Link to="/login" className="text-[var(--accent-brass)] hover:underline font-medium">
               Sign in to vault
             </Link>
           </footer>

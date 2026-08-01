@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import SecurityActionBtn from '../components/SecurityActionBtn';
-import PrivoraSeal from '../components/PrivoraSeal';
+import PasswordInput from '../components/PasswordInput';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -69,16 +69,22 @@ export default function Login() {
       </div>
 
       {/* Right Column: Clean Form Container */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12">
-        <div className="w-full max-w-md space-y-8">
-          <header className="space-y-2">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-5 sm:p-12">
+        <div className="w-full max-w-md space-y-6 sm:space-y-8">
+          {/* Mobile Brand Emblem Header */}
+          <div className="lg:hidden flex items-center gap-2.5 pb-2">
+            <PrivoraSeal variant="glyph" size={24} />
+            <span className="font-headline text-xl font-bold text-[var(--text-primary)]">Privora</span>
+          </div>
+
+          <header className="space-y-1.5 sm:space-y-2">
             <span className="text-xs font-mono text-[var(--accent-brass)] tracking-widest uppercase block">
               SIGN IN
             </span>
-            <h1 className="text-3xl font-serif text-[var(--text-primary)]">
+            <h1 className="text-2xl sm:text-3xl font-serif text-[var(--text-primary)]">
               Access your vault
             </h1>
-            <p className="text-sm text-[var(--text-secondary)]">
+            <p className="text-xs sm:text-sm text-[var(--text-secondary)]">
               Enter your account credentials to unseal your vault.
             </p>
           </header>
@@ -90,7 +96,7 @@ export default function Login() {
             </div>
           )}
 
-          <form onSubmit={(e) => e.preventDefault()} className="space-y-5">
+          <form onSubmit={(e) => e.preventDefault()} className="space-y-4 sm:space-y-5">
             <div className="space-y-1.5">
               <label className="block text-xs text-[var(--text-secondary)]">
                 Email address
@@ -101,7 +107,7 @@ export default function Login() {
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-sm text-[var(--text-primary)] outline-none"
+                className="w-full px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-base sm:text-sm text-[var(--text-primary)] outline-none min-h-[44px]"
               />
               {errors.email && (
                 <span className="text-xs text-[var(--status-danger)] block">
@@ -110,24 +116,13 @@ export default function Login() {
               )}
             </div>
 
-            <div className="space-y-1.5">
-              <label className="block text-xs text-[var(--text-secondary)]">
-                Master password
-              </label>
-              <input
-                id="login-password"
-                type="password"
-                placeholder="••••••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-sm text-[var(--text-primary)] outline-none"
-              />
-              {errors.password && (
-                <span className="text-xs text-[var(--status-danger)] block">
-                  {errors.password}
-                </span>
-              )}
-            </div>
+            <PasswordInput
+              id="login-password"
+              label="Master password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              error={errors.password}
+            />
 
             <div className="pt-2">
               <SecurityActionBtn
@@ -136,7 +131,7 @@ export default function Login() {
                 successLabel="SEALED & GRANTED"
                 delayMs={600}
                 showSealOnSuccess={true}
-                className="w-full justify-center"
+                className="w-full justify-center min-h-[44px]"
               >
                 <span>Sign in to vault</span>
               </SecurityActionBtn>
@@ -145,7 +140,7 @@ export default function Login() {
 
           <footer className="pt-4 border-t border-[var(--border-primary)] text-center text-xs text-[var(--text-secondary)]">
             Don't have a vault account yet?{" "}
-            <Link to="/register" className="text-[var(--accent-brass)] hover:underline">
+            <Link to="/register" className="text-[var(--accent-brass)] hover:underline font-medium">
               Create account
             </Link>
           </footer>

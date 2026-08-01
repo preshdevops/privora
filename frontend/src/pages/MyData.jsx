@@ -180,15 +180,15 @@ export default function MyData() {
       </AnimatePresence>
 
       {/* Eyebrow Label & Page Header */}
-      <header className="space-y-2 border-b border-[var(--border-primary)] pb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+      <header className="space-y-2 border-b border-[var(--border-primary)] pb-6 sm:pb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           <span className="text-xs font-mono text-[var(--accent-brass)] tracking-widest uppercase block">
             FILE LEDGER
           </span>
-          <h1 className="text-3xl sm:text-4xl font-serif text-[var(--text-primary)] mt-1">
+          <h1 className="text-2xl sm:text-4xl font-serif text-[var(--text-primary)] mt-1">
             Protected files
           </h1>
-          <p className="text-sm text-[var(--text-secondary)] leading-relaxed max-w-xl">
+          <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed max-w-xl">
             Sealed file records protected under zero-knowledge key isolation.
           </p>
         </div>
@@ -197,13 +197,14 @@ export default function MyData() {
           onClick={() => setShowModal(true)}
           actionLabel="Opening…"
           delayMs={0}
+          className="w-full sm:w-auto"
         >
           <Plus className="w-4 h-4" />
           <span>Protect file</span>
         </SecurityActionBtn>
       </header>
 
-      {/* Vault Assets — Ledger Rule List Primitive with In-Place Accordion Expansion */}
+      {/* Vault Assets — 2-Line Stacked Layout on Mobile */}
       {loading ? (
         <div className="py-6 text-xs text-[var(--text-tertiary)] text-center font-mono">
           Loading file entries…
@@ -217,6 +218,7 @@ export default function MyData() {
               onClick={() => setShowModal(true)}
               actionLabel="Opening…"
               delayMs={0}
+              className="w-full sm:w-auto"
             >
               <Upload className="w-4 h-4" />
               <span>Protect first file</span>
@@ -224,35 +226,40 @@ export default function MyData() {
           }
         />
       ) : (
-        <div className="ledger-list">
+        <div className="ledger-list divide-y divide-[var(--border-primary)] border border-[var(--border-primary)] rounded-sm bg-[var(--bg-card)]">
           {assets.map((asset, idx) => {
             const isExpanded = expandedFileId === asset.id;
             return (
-              <div key={asset.id} className="ledger-entry">
+              <div key={asset.id} className="ledger-entry p-3.5 sm:p-4">
                 <div 
                   onClick={() => toggleAccordion(asset.id)}
-                  className="flex items-center justify-between cursor-pointer py-1"
+                  className="cursor-pointer space-y-1.5"
                 >
-                  <div className="flex items-center gap-4 min-w-0">
-                    <span className="font-mono text-xs text-[var(--accent-brass)] shrink-0">
-                      #{String(idx + 1).padStart(3, '0')}
-                    </span>
-                    <div className="min-w-0">
-                      <span className="text-sm font-medium text-[var(--text-primary)] block truncate">
+                  {/* Line 1: Index + Primary File Name + Sealed Badge */}
+                  <div className="flex items-center justify-between gap-2 min-w-0">
+                    <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                      <span className="font-mono text-xs text-[var(--accent-brass)] font-semibold shrink-0">
+                        #{String(idx + 1).padStart(3, '0')}
+                      </span>
+                      <span className="text-sm font-medium text-[var(--text-primary)] truncate">
                         {asset.name || 'Untitled file'}
                       </span>
-                      <span className="text-xs text-[var(--text-tertiary)] font-mono block">
-                        {formatFileSize(asset.file_size)} &middot; Added {asset.created_at ? new Date(asset.created_at).toLocaleDateString() : '--'}
-                      </span>
                     </div>
-                  </div>
 
-                  <div className="flex items-center gap-4 shrink-0">
-                    <span className="text-[11px] font-mono text-[var(--badge-success-text)]">
+                    <span className="px-2 py-0.5 text-[10px] font-mono rounded uppercase shrink-0 border bg-[var(--vault-green-bg)] text-[var(--vault-green-bright)] border-[var(--vault-green)]">
                       Sealed
                     </span>
-                    <span className="text-xs text-[var(--text-tertiary)] font-mono">
-                      {isExpanded ? '–' : '+'}
+                  </div>
+
+                  {/* Line 2: File Size + Created Date + Expand indicator */}
+                  <div className="flex items-center justify-between text-xs font-mono text-[var(--text-tertiary)] pt-0.5">
+                    <span className="truncate">
+                      {formatFileSize(asset.file_size)}
+                      <span className="mx-1.5">&middot;</span>
+                      {asset.created_at ? new Date(asset.created_at).toLocaleDateString() : '--'}
+                    </span>
+                    <span className="text-[11px] text-[var(--accent-brass)] shrink-0 ml-2">
+                      {isExpanded ? 'Actions –' : 'Actions +'}
                     </span>
                   </div>
                 </div>
@@ -264,17 +271,17 @@ export default function MyData() {
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
                       exit={{ opacity: 0, height: 0 }}
-                      className="pt-4 pb-2 border-t border-[var(--border-primary)] mt-3 flex items-center justify-between text-xs font-mono"
+                      className="pt-3 pb-1 border-t border-[var(--border-primary)] mt-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono"
                     >
                       <div className="space-y-1 text-[var(--text-tertiary)]">
                         <p>• Encryption engine: Client-derived key</p>
                         <p>• Protection status: Sealed & isolated</p>
                       </div>
 
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2.5 pt-1 sm:pt-0">
                         <button
                           onClick={() => { setDownloadModal(asset); setDownloadPassword(''); }}
-                          className="px-3 py-1.5 border border-[var(--border-primary)] rounded-sm text-[var(--text-primary)] hover:border-[var(--text-primary)] transition-colors cursor-pointer flex items-center gap-1.5"
+                          className="flex-1 sm:flex-initial px-3 py-2 border border-[var(--border-primary)] rounded-sm text-[var(--text-primary)] hover:border-[var(--text-primary)] transition-colors cursor-pointer flex items-center justify-center gap-1.5 touch-target"
                         >
                           <Unlock className="w-3.5 h-3.5" />
                           <span>Unseal & download</span>
@@ -286,7 +293,7 @@ export default function MyData() {
                           successLabel="Purged"
                           delayMs={500}
                           variant="danger"
-                          className="!px-3 !py-1.5"
+                          className="!px-3 !py-2 shrink-0 touch-target"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                           <span>Purge</span>

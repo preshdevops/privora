@@ -107,40 +107,40 @@ export default function Settings() {
   ];
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-8 sm:space-y-12">
       {/* Header */}
-      <header className="space-y-2 border-b border-[var(--border-primary)] pb-8">
+      <header className="space-y-2 border-b border-[var(--border-primary)] pb-6 sm:pb-8">
         <span className="text-xs font-mono text-[var(--accent-brass)] tracking-widest uppercase block">
           SETTINGS
         </span>
-        <h1 className="text-3xl sm:text-4xl font-serif text-[var(--text-primary)] mt-1">
+        <h1 className="text-2xl sm:text-4xl font-serif text-[var(--text-primary)] mt-1">
           Privacy & account preferences
         </h1>
-        <p className="text-sm text-[var(--text-secondary)] leading-relaxed max-w-xl">
+        <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed max-w-xl">
           Control your privacy toggles, session rules, and log retention schedule.
         </p>
       </header>
 
       {/* Account Info Summary */}
       <section className="space-y-3 pb-6 border-b border-[var(--border-primary)] text-sm">
-        <h2 className="text-xl font-serif text-[var(--text-primary)]">
+        <h2 className="text-lg sm:text-xl font-serif text-[var(--text-primary)]">
           Member account
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-[var(--text-secondary)]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-[var(--text-secondary)] bg-[var(--bg-card)] p-4 rounded-sm border border-[var(--border-primary)]">
           <div>
-            <span className="text-[var(--text-tertiary)] block">Full name</span>
-            <span className="text-[var(--text-primary)] font-medium">{user?.full_name || 'N/A'}</span>
+            <span className="text-[var(--text-tertiary)] block font-mono text-[10px] uppercase">Full name</span>
+            <span className="text-[var(--text-primary)] font-medium text-sm sm:text-base">{user?.full_name || 'N/A'}</span>
           </div>
           <div>
-            <span className="text-[var(--text-tertiary)] block">Email address</span>
-            <span className="text-[var(--text-primary)] font-medium">{user?.email || 'N/A'}</span>
+            <span className="text-[var(--text-tertiary)] block font-mono text-[10px] uppercase">Email address</span>
+            <span className="text-[var(--text-primary)] font-medium text-sm sm:text-base truncate block">{user?.email || 'N/A'}</span>
           </div>
         </div>
       </section>
 
       {/* Privacy Toggles — Ledger Rule List */}
       <section className="space-y-4">
-        <h2 className="text-xl font-serif text-[var(--text-primary)]">
+        <h2 className="text-lg sm:text-xl font-serif text-[var(--text-primary)]">
           Privacy controls
         </h2>
 
@@ -149,12 +149,12 @@ export default function Settings() {
             Loading settings…
           </div>
         ) : (
-          <div className="ledger-list">
+          <div className="ledger-list divide-y divide-[var(--border-primary)] border border-[var(--border-primary)] rounded-sm bg-[var(--bg-card)]">
             {privacyToggles.map((item) => {
               const active = settings[item.key];
               return (
-                <div key={item.key} className="ledger-entry flex items-center justify-between py-4">
-                  <div className="space-y-0.5">
+                <div key={item.key} className="ledger-entry flex items-center justify-between p-3.5 sm:p-4 gap-3">
+                  <div className="space-y-0.5 min-w-0 flex-1 pr-2">
                     <span className="text-sm font-medium text-[var(--text-primary)] block">
                       {item.label}
                     </span>
@@ -169,6 +169,7 @@ export default function Settings() {
                     role="switch"
                     aria-checked={active}
                     tabIndex={0}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleToggle(item.key); }}
                   >
                     <div className="toggle-thumb" />
                   </div>
@@ -180,13 +181,13 @@ export default function Settings() {
       </section>
 
       {/* Session Rules & Data Retention */}
-      <section className="space-y-6 pt-4">
-        <h2 className="text-xl font-serif text-[var(--text-primary)]">
+      <section className="space-y-6 pt-2">
+        <h2 className="text-lg sm:text-xl font-serif text-[var(--text-primary)]">
           Session & log retention
         </h2>
 
-        <div className="ledger-list text-sm">
-          <div className="ledger-entry flex flex-col sm:flex-row sm:items-center justify-between gap-2 py-4">
+        <div className="ledger-list divide-y divide-[var(--border-primary)] border border-[var(--border-primary)] rounded-sm bg-[var(--bg-card)] text-sm">
+          <div className="ledger-entry flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 sm:p-4">
             <div>
               <span className="font-medium text-[var(--text-primary)] block">Session timeout</span>
               <span className="text-xs text-[var(--text-secondary)]">Automatic sign-out after inactivity</span>
@@ -194,7 +195,7 @@ export default function Settings() {
             <select
               value={sessionTimeout}
               onChange={(e) => setSessionTimeout(e.target.value)}
-              className="px-3 py-2 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-xs text-[var(--text-primary)] outline-none"
+              className="px-3 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-xs text-[var(--text-primary)] outline-none min-h-[44px] sm:min-h-0 cursor-pointer"
             >
               <option value="15">15 minutes</option>
               <option value="30">30 minutes</option>
@@ -203,7 +204,7 @@ export default function Settings() {
             </select>
           </div>
 
-          <div className="ledger-entry flex flex-col sm:flex-row sm:items-center justify-between gap-2 py-4">
+          <div className="ledger-entry flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 sm:p-4">
             <div>
               <span className="font-medium text-[var(--text-primary)] block">Log retention</span>
               <span className="text-xs text-[var(--text-secondary)] font-sans">Automatic purge schedule for audit entries</span>
@@ -211,7 +212,7 @@ export default function Settings() {
             <select
               value={dataRetention}
               onChange={(e) => setDataRetention(e.target.value)}
-              className="px-3 py-2 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-xs text-[var(--text-primary)] outline-none"
+              className="px-3 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-xs text-[var(--text-primary)] outline-none min-h-[44px] sm:min-h-0 cursor-pointer"
             >
               <option value="30">30 days</option>
               <option value="90">90 days</option>
@@ -221,12 +222,13 @@ export default function Settings() {
           </div>
         </div>
 
-        <div className="pt-4 flex justify-end">
+        <div className="pt-2 flex justify-end">
           <SecurityActionBtn
             onClick={handleSaveAccount}
             actionLabel="Saving…"
             successLabel="Saved"
             delayMs={650}
+            className="w-full sm:w-auto"
           >
             <span>Save preferences</span>
           </SecurityActionBtn>
