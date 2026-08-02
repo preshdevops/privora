@@ -297,7 +297,10 @@ export default function Landing() {
       <footer className="border-t border-[var(--border-primary)] bg-[var(--bg-sidebar)] px-4 sm:px-6 py-6 text-xs font-mono text-[var(--text-tertiary)]">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
           <span>Privora — Built to Nigerian and international privacy standards</span>
-          <span>© {new Date().getFullYear()} Privora. All rights reserved.</span>
+          <div className="flex items-center gap-4">
+            <Link to="/privacy-policy" className="hover:text-[var(--text-primary)] transition-colors underline">Privacy Policy</Link>
+            <span>© {new Date().getFullYear()} Privora. All rights reserved.</span>
+          </div>
         </div>
       </footer>
 

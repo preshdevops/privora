@@ -107,3 +107,62 @@ class LogoutView(APIView):
         except Exception as e:
             log_action(user=request.user, action='logout', request=request, status='failed', metadata={'error': str(e)})
             return Response({'error': 'Invalid token.'}, status=400)
+
+
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        old_password = request.data.get('old_password')
+        new_password = request.data.get('new_password')
+
+        if not old_password or not new_password:
+            return Response({'error': 'Both old and new passwords are required.'}, status=400)
+
+        if not request.user.check_password(old_password):
+            return Response({'error': 'Current password is incorrect.'}, status=400)
+
+        request.user.set_password(new_password)
+        request.user.save()
+        log_action(user=request.user, action='change_password', request=request, status='success')
+        return Response({'message': 'Password updated successfully.'})
+
+
+class ExportUserDataView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        from encryption.models import EncryptedAsset
+        from encryption.serializers import EncryptedAssetSerializer
+        from audit.models import AuditLog
+        from audit.serializers import AuditLogSerializer
+
+        assets = EncryptedAsset.objects.filter(owner=user)
+        logs = AuditLog.objects.filter(user=user)
+
+        export_payload = {
+            'user': UserSerializer(user).data,
+            'assets': EncryptedAssetSerializer(assets, many=True).data,
+            'audit_logs': AuditLogSerializer(logs, many=True).data,
+            'exported_at': timezone.now().isoformat(),
+        }
+        log_action(user=user, action='export_user_data', request=request, status='success')
+        return Response(export_payload)
+
+
+class DeleteAccountView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        password = request.data.get('password')
+        if not password:
+            return Response({'error': 'Password is required to confirm account deletion.'}, status=400)
+
+        if not request.user.check_password(password):
+            return Response({'error': 'Password is incorrect.'}, status=400)
+
+        user = request.user
+        log_action(user=None, action='delete_account', request=request, status='success', metadata={'email': user.email})
+        user.delete()
+        return Response({'message': 'Account and all associated vault data deleted permanently.'})

@@ -1,135 +1,123 @@
-import { useState, useEffect } from 'react';
-import { useTheme } from '../context/ThemeContext';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../api/axiosInstance';
 import SecurityActionBtn from '../components/SecurityActionBtn';
+import PasswordInput from '../components/PasswordInput';
+import { ShieldCheck, Download, Trash2, FileText, AlertTriangle, X } from 'lucide-react';
 
 export default function Settings() {
-  const { theme, toggleTheme } = useTheme();
-  const { user } = useAuth();
-  const [loading, setLoading] = useState(true);
-  const [score, setScore] = useState(null);
-  const [settings, setSettings] = useState({
-    tracking_protection: true,
-    data_sharing: false,
-    ad_blocking: true,
-    cookie_control: true,
-    location_masking: false,
-    fingerprint_defense: true,
-  });
-  const [sessionTimeout, setSessionTimeout] = useState('30');
-  const [dataRetention, setDataRetention] = useState('90');
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const [settingsRes, scoreRes, userRes] = await Promise.allSettled([
-          axiosInstance.get('/api/privacy/settings/'),
-          axiosInstance.get('/api/privacy/score/'),
-          axiosInstance.get('/api/users/me/'),
-        ]);
+  // Password Change state
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordSuccess, setPasswordSuccess] = useState('');
 
-        if (settingsRes.status === 'fulfilled') {
-          const d = settingsRes.value.data;
-          setSettings((prev) => ({ ...prev, ...d }));
-        }
-        if (scoreRes.status === 'fulfilled') {
-          setScore(scoreRes.value.data.score);
-        }
-        if (userRes.status === 'fulfilled') {
-          const u = userRes.value.data;
-          if (u.session_timeout) setSessionTimeout(String(u.session_timeout));
-          if (u.data_retention) setDataRetention(String(u.data_retention));
-        }
-      } catch {
-        // use defaults
-      }
-      setLoading(false);
-    };
-    fetchData();
-  }, []);
+  // Delete Account Modal state
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletePassword, setDeletePassword] = useState('');
+  const [deleteError, setDeleteError] = useState('');
 
-  const handleToggle = async (key) => {
-    const newVal = !settings[key];
-    setSettings((prev) => ({ ...prev, [key]: newVal }));
+  // Handle Change Password
+  const handleChangePassword = async () => {
+    setPasswordError('');
+    setPasswordSuccess('');
+
+    if (!oldPassword) {
+      setPasswordError('Current password is required');
+      throw new Error('Current password is required');
+    }
+    if (!newPassword) {
+      setPasswordError('New password is required');
+      throw new Error('New password is required');
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError('New passwords do not match');
+      throw new Error('New passwords do not match');
+    }
+
     try {
-      await axiosInstance.patch('/api/privacy/settings/', { [key]: newVal });
-      const scoreRes = await axiosInstance.get('/api/privacy/score/');
-      setScore(scoreRes.data.score);
-    } catch {
-      setSettings((prev) => ({ ...prev, [key]: !newVal }));
+      await axiosInstance.post('/api/users/change-password/', {
+        old_password: oldPassword,
+        new_password: newPassword,
+      });
+      setPasswordSuccess('Password changed successfully');
+      setOldPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (err) {
+      const msg = err.response?.data?.error || 'Failed to update password. Please check current password.';
+      setPasswordError(msg);
+      throw err;
     }
   };
 
-  const handleSaveAccount = async () => {
+  // Handle Export Vault Data
+  const handleExportData = async () => {
     try {
-      await axiosInstance.patch('/api/users/settings/', {
-        session_timeout: parseInt(sessionTimeout, 10),
-        data_retention: parseInt(dataRetention, 10),
-      });
+      const res = await axiosInstance.get('/api/users/export-data/');
+      const dataStr = JSON.stringify(res.data, null, 2);
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `privora_vault_export_${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
     } catch (err) {
       throw err;
     }
   };
 
-  const privacyToggles = [
-    {
-      key: 'tracking_protection',
-      label: 'Block Online Tracking',
-      desc: 'Stop third-party websites and advertisers from tracking you.',
-    },
-    {
-      key: 'data_sharing',
-      label: 'Anonymous Reports',
-      desc: 'Share anonymous data to help improve app security.',
-    },
-    {
-      key: 'ad_blocking',
-      label: 'Block Ads & Scripts',
-      desc: 'Block popups, unwanted ads, and suspicious code.',
-    },
-    {
-      key: 'cookie_control',
-      label: 'Cookie Protection',
-      desc: 'Block non-essential cookies and clear tracking data when closing.',
-    },
-    {
-      key: 'location_masking',
-      label: 'Hide Location & IP',
-      desc: 'Keep your IP address and physical location private.',
-    },
-    {
-      key: 'fingerprint_defense',
-      label: 'Device Shield',
-      desc: 'Stop websites from identifying your specific phone or computer.',
-    },
-  ];
+  // Handle Permanent Delete Account
+  const handleDeleteAccount = async () => {
+    setDeleteError('');
+    if (!deletePassword) {
+      setDeleteError('Password is required to confirm deletion');
+      throw new Error('Password required');
+    }
+
+    try {
+      await axiosInstance.post('/api/users/delete-account/', {
+        password: deletePassword,
+      });
+      logout();
+      navigate('/login');
+    } catch (err) {
+      const msg = err.response?.data?.error || 'Incorrect password. Account deletion aborted.';
+      setDeleteError(msg);
+      throw err;
+    }
+  };
 
   return (
-    <div className="space-y-8 sm:space-y-12">
+    <div className="space-y-8 sm:space-y-12 text-left">
       {/* Header */}
       <header className="space-y-2 border-b border-[var(--border-primary)] pb-6 sm:pb-8">
         <span className="text-xs font-mono text-[var(--accent-gold)] tracking-widest uppercase block">
-          SETTINGS & PREFERENCES
+          ACCOUNT & SECURITY CONTROLS
         </span>
         <h1 className="text-2xl sm:text-4xl font-display font-bold text-[var(--text-primary)] mt-1">
-          Settings & Privacy
+          Settings & Account
         </h1>
         <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-sans leading-relaxed max-w-xl">
-          Manage your security options, sign-out timers, and account privacy settings.
+          Manage your account credentials, data portability export, and permanent vault deletion options.
         </p>
       </header>
 
-      {/* Account Info Summary */}
-      <section className="space-y-3 pb-6 border-b border-[var(--border-primary)] text-sm">
+      {/* Section 1: Account Info Profile */}
+      <section className="space-y-3 pb-6 border-b border-[var(--border-primary)]">
         <h2 className="text-lg sm:text-xl font-display font-bold text-[var(--text-primary)]">
-          Your Account
+          Account Details
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-[var(--text-secondary)] bg-[var(--bg-card)] p-4 rounded-xl border border-[var(--border-primary)]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-[var(--text-secondary)] bg-[var(--bg-card)] p-4 rounded-xl border border-[var(--border-primary)] font-sans">
           <div>
             <span className="text-[var(--text-tertiary)] block font-mono text-[10px] uppercase">Full name</span>
-            <span className="text-[var(--text-primary)] font-medium text-sm sm:text-base font-sans">{user?.full_name || 'N/A'}</span>
+            <span className="text-[var(--text-primary)] font-medium text-sm sm:text-base font-sans">{user?.full_name || 'Privora Member'}</span>
           </div>
           <div>
             <span className="text-[var(--text-tertiary)] block font-mono text-[10px] uppercase">Email address</span>
@@ -138,102 +126,204 @@ export default function Settings() {
         </div>
       </section>
 
-      {/* Privacy Toggles — Ledger Rule List */}
-      <section className="space-y-4">
-        <h2 className="text-lg sm:text-xl font-display font-bold text-[var(--text-primary)]">
-          Privacy Controls
-        </h2>
+      {/* Section 2: Change Secret Password */}
+      <section className="space-y-4 pb-6 border-b border-[var(--border-primary)]">
+        <div>
+          <h2 className="text-lg sm:text-xl font-display font-bold text-[var(--text-primary)]">
+            Change Secret Password
+          </h2>
+          <p className="text-xs text-[var(--text-secondary)] font-sans mt-0.5">
+            Update your master account password. Keep your new password secret.
+          </p>
+        </div>
 
-        {loading ? (
-          <div className="py-6 text-xs font-mono text-[var(--text-tertiary)]">
-            Loading settings…
-          </div>
-        ) : (
-          <div className="ledger-list divide-y divide-[var(--border-primary)] border border-[var(--border-primary)] rounded-xl overflow-hidden bg-[var(--bg-card)]">
-            {privacyToggles.map((item) => {
-              const active = settings[item.key];
-              return (
-                <div key={item.key} className="ledger-entry flex items-center justify-between p-3.5 sm:p-4 gap-3">
-                  <div className="space-y-0.5 min-w-0 flex-1 pr-2">
-                    <span className="text-sm font-medium text-[var(--text-primary)] font-sans block">
-                      {item.label}
-                    </span>
-                    <span className="text-xs text-[var(--text-secondary)] font-sans block">
-                      {item.desc}
-                    </span>
-                  </div>
-
-                  <div
-                    onClick={() => handleToggle(item.key)}
-                    className={`toggle-track shrink-0 ${active ? 'active' : 'inactive'}`}
-                    role="switch"
-                    aria-checked={active}
-                    tabIndex={0}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleToggle(item.key); }}
-                  >
-                    <div className="toggle-thumb" />
-                  </div>
-                </div>
-              );
-            })}
+        {passwordError && (
+          <div className="p-3 rounded bg-[var(--badge-danger-bg)] border border-[var(--status-danger)]/40 text-[var(--badge-danger-text)] text-xs font-mono">
+            {passwordError}
           </div>
         )}
-      </section>
 
-      {/* Session Rules & Data Retention */}
-      <section className="space-y-6 pt-2">
-        <h2 className="text-lg sm:text-xl font-serif text-[var(--text-primary)]">
-          Sign-out & History Timers
-        </h2>
-
-        <div className="ledger-list divide-y divide-[var(--border-primary)] border border-[var(--border-primary)] rounded-sm bg-[var(--bg-card)] text-sm">
-          <div className="ledger-entry flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 sm:p-4">
-            <div>
-              <span className="font-medium text-[var(--text-primary)] block">Auto Sign-Out</span>
-              <span className="text-xs text-[var(--text-secondary)]">Sign out automatically if you leave your screen</span>
-            </div>
-            <select
-              value={sessionTimeout}
-              onChange={(e) => setSessionTimeout(e.target.value)}
-              className="px-3 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-xs text-[var(--text-primary)] outline-none min-h-[44px] sm:min-h-0 cursor-pointer"
-            >
-              <option value="15">15 minutes</option>
-              <option value="30">30 minutes</option>
-              <option value="60">1 hour</option>
-              <option value="120">2 hours</option>
-            </select>
+        {passwordSuccess && (
+          <div className="p-3 rounded bg-[var(--accent-gold-bg)] border border-[var(--accent-gold)] text-[var(--accent-gold)] text-xs font-mono">
+            {passwordSuccess}
           </div>
+        )}
 
-          <div className="ledger-entry flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 sm:p-4">
-            <div>
-              <span className="font-medium text-[var(--text-primary)] block">Keep Activity History For</span>
-              <span className="text-xs text-[var(--text-secondary)] font-sans">Choose how long to save your login and file access records</span>
-            </div>
-            <select
-              value={dataRetention}
-              onChange={(e) => setDataRetention(e.target.value)}
-              className="px-3 py-2.5 rounded-sm bg-[var(--bg-input)] border border-[var(--border-primary)] text-xs text-[var(--text-primary)] outline-none min-h-[44px] sm:min-h-0 cursor-pointer"
+        <div className="bg-[var(--bg-card)] p-4 sm:p-6 rounded-xl border border-[var(--border-primary)] space-y-4 max-w-md">
+          <PasswordInput
+            id="settings-old-password"
+            label="Current Password"
+            value={oldPassword}
+            onChange={(e) => setOldPassword(e.target.value)}
+          />
+
+          <PasswordInput
+            id="settings-new-password"
+            label="New Secret Password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+
+          <PasswordInput
+            id="settings-confirm-password"
+            label="Confirm New Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+
+          <div className="pt-2">
+            <SecurityActionBtn
+              onClick={handleChangePassword}
+              actionLabel="Updating password…"
+              successLabel="Password Updated"
+              delayMs={650}
+              className="w-full sm:w-auto"
             >
-              <option value="30">30 days</option>
-              <option value="90">90 days</option>
-              <option value="180">180 days</option>
-              <option value="365">365 days</option>
-            </select>
+              <span>Update Password</span>
+            </SecurityActionBtn>
           </div>
         </div>
+      </section>
 
-        <div className="pt-2 flex justify-end">
-          <SecurityActionBtn
-            onClick={handleSaveAccount}
-            actionLabel="Saving…"
-            successLabel="Saved"
-            delayMs={650}
-            className="w-full sm:w-auto"
+      {/* Section 3: Data Portability & Legal Policies */}
+      <section className="space-y-4 pb-6 border-b border-[var(--border-primary)]">
+        <div>
+          <h2 className="text-lg sm:text-xl font-display font-bold text-[var(--text-primary)]">
+            Data Rights & Privacy Compliance
+          </h2>
+          <p className="text-xs text-[var(--text-secondary)] font-sans mt-0.5">
+            Export a full JSON copy of your vault items and access logs for data portability compliance.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Data Export Box */}
+          <div className="p-5 bg-[var(--bg-card)] rounded-xl border border-[var(--border-primary)] space-y-3 flex flex-col justify-between">
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-2 text-[var(--accent-gold)] font-medium text-sm">
+                <Download className="w-4 h-4" />
+                <span>Export Vault Data</span>
+              </div>
+              <p className="text-xs text-[var(--text-secondary)] font-sans leading-relaxed">
+                Download a complete archive containing your profile metadata, encrypted assets, and activity history.
+              </p>
+            </div>
+            <SecurityActionBtn
+              onClick={handleExportData}
+              actionLabel="Generating export…"
+              successLabel="Export Downloaded"
+              variant="outline"
+              delayMs={600}
+              className="text-xs w-full justify-center"
+            >
+              <span>Download Archive (.json)</span>
+            </SecurityActionBtn>
+          </div>
+
+          {/* Privacy Policy Link Box */}
+          <div className="p-5 bg-[var(--bg-card)] rounded-xl border border-[var(--border-primary)] space-y-3 flex flex-col justify-between">
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-2 text-[var(--text-primary)] font-medium text-sm">
+                <FileText className="w-4 h-4 text-[var(--accent-gold)]" />
+                <span>Privacy Standards Policy</span>
+              </div>
+              <p className="text-xs text-[var(--text-secondary)] font-sans leading-relaxed">
+                Read our zero-knowledge encryption guarantees, NDPR compliance standards, and user rights documentation.
+              </p>
+            </div>
+            <Link
+              to="/privacy-policy"
+              className="btn-secondary-vault text-xs justify-center w-full py-2.5"
+            >
+              <span>Read Privacy Policy →</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Section 4: Danger Zone — Permanent Account Deletion */}
+      <section className="space-y-4 pt-2">
+        <div>
+          <h2 className="text-lg sm:text-xl font-display font-bold text-[var(--status-danger)] flex items-center gap-2">
+            <AlertTriangle className="w-5 h-5 shrink-0" />
+            <span>Danger Zone</span>
+          </h2>
+          <p className="text-xs text-[var(--text-secondary)] font-sans mt-0.5">
+            Permanently delete your account and all associated encrypted vault data.
+          </p>
+        </div>
+
+        <div className="p-5 bg-[rgba(196,87,63,0.08)] rounded-xl border border-[var(--status-danger)]/30 space-y-3">
+          <div className="space-y-1 text-xs text-[var(--text-secondary)] font-sans">
+            <p className="font-semibold text-[var(--status-danger)]">Warning: Account deletion is permanent and irreversible.</p>
+            <p>Executing account deletion will permanently purge all your encrypted files, audit logs, and authentication records from Privora servers.</p>
+          </div>
+          <button
+            onClick={() => setShowDeleteModal(true)}
+            className="px-4 py-2.5 rounded text-xs font-mono font-bold bg-[var(--status-danger)] text-white hover:bg-[var(--status-danger)]/90 transition-colors flex items-center gap-2"
           >
-            <span>Save preferences</span>
-          </SecurityActionBtn>
+            <Trash2 className="w-4 h-4" />
+            <span>Delete Vault Account</span>
+          </button>
         </div>
       </section>
+
+      {/* Permanent Account Deletion Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs">
+          <div className="w-full max-w-md bg-[var(--bg-card)] border border-[var(--status-danger)] rounded-xl p-6 space-y-5 relative shadow-2xl">
+            <button
+              onClick={() => setShowDeleteModal(false)}
+              className="absolute top-4 right-4 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="space-y-2 text-left">
+              <span className="text-xs font-mono text-[var(--status-danger)] tracking-widest uppercase block font-semibold">
+                CONFIRM ACCOUNT DELETION
+              </span>
+              <h3 className="text-xl font-display font-bold text-[var(--text-primary)]">
+                Are you absolutely sure?
+              </h3>
+              <p className="text-xs text-[var(--text-secondary)] font-sans leading-relaxed">
+                This action cannot be undone. Enter your secret password below to verify your identity and permanently delete your account and files.
+              </p>
+            </div>
+
+            {deleteError && (
+              <div className="p-3 rounded bg-[var(--badge-danger-bg)] border border-[var(--status-danger)]/40 text-[var(--badge-danger-text)] text-xs font-mono">
+                {deleteError}
+              </div>
+            )}
+
+            <PasswordInput
+              id="delete-account-password"
+              label="Enter Password to Confirm"
+              value={deletePassword}
+              onChange={(e) => setDeletePassword(e.target.value)}
+            />
+
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="px-4 py-2 rounded text-xs font-mono text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+              >
+                Cancel
+              </button>
+              <SecurityActionBtn
+                onClick={handleDeleteAccount}
+                actionLabel="Deleting account…"
+                successLabel="Account Deleted"
+                delayMs={800}
+                className="!bg-[var(--status-danger)] !text-white hover:!bg-[var(--status-danger)]/90"
+              >
+                <span>Permanently Delete</span>
+              </SecurityActionBtn>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

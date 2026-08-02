@@ -192,7 +192,10 @@ export default function DashboardLayout({ children }) {
         {/* Quiet Footer */}
         <footer className="w-full max-w-[760px] mx-auto px-4 sm:px-6 py-6 border-t border-[var(--border-primary)] text-xs text-[var(--text-tertiary)] font-mono flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
           <span>Privora — Built to Nigerian and international privacy standards</span>
-          <span>© {new Date().getFullYear()}</span>
+          <div className="flex items-center gap-3">
+            <Link to="/privacy-policy" className="hover:text-[var(--text-primary)] transition-colors underline">Privacy Policy</Link>
+            <span>© {new Date().getFullYear()}</span>
+          </div>
         </footer>
       </div>
 
