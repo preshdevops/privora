@@ -243,7 +243,15 @@ export default function Dashboard() {
                     {/* Line 2: Secondary Metadata (Timestamp + IP + Expand indicator) */}
                     <div className="flex items-center justify-between text-xs font-mono text-[var(--text-tertiary)] pt-0.5">
                       <span className="truncate">
-                        {log.timestamp ? new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now'}
+                        {(() => {
+                          if (!log.timestamp) return 'Just now';
+                          try {
+                            const d = new Date(log.timestamp);
+                            return isNaN(d.getTime()) ? 'Just now' : d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                          } catch {
+                            return 'Just now';
+                          }
+                        })()}
                         <span className="mx-1.5">&middot;</span>
                         {log.ip_address || '127.0.0.1'}
                       </span>

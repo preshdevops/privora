@@ -10,7 +10,8 @@ export default function RisingScoreDial({
   label = 'PROTECTION SCORE',
   className = '',
 }) {
-  const clampedScore = Math.max(0, Math.min(100, score));
+  const validScore = typeof score === 'number' && !isNaN(score) ? score : 94;
+  const clampedScore = Math.max(0, Math.min(100, validScore));
   const radius = 40;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (clampedScore / 100) * circumference;
