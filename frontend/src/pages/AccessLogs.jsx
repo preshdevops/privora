@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Laptop, Smartphone, Tablet, ShieldAlert, Key, Lock, Settings as SettingsIcon, Activity } from 'lucide-react';
 import axiosInstance from '../api/axiosInstance';
 import SecurityActionBtn from '../components/SecurityActionBtn';
 import EmptyState from '../components/EmptyState';
@@ -11,6 +12,7 @@ export default function AccessLogs() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('Any status');
+  const [categoryFilter, setCategoryFilter] = useState('All Categories');
   const [expandedLogId, setExpandedLogId] = useState(null);
 
   const pageSize = 50;
@@ -40,12 +42,15 @@ export default function AccessLogs() {
   }, [page]);
 
   const handleExportCSV = async () => {
-    const headers = ["Timestamp", "Action", "Data Item", "IP Address", "Status"];
+    const headers = ["Timestamp", "Action", "Category", "Data Item", "IP Address", "Browser", "OS", "Status"];
     const rows = filteredLogs.map(l => [
       l.timestamp ? new Date(l.timestamp).toISOString() : '',
       `"${l.action || l.event || ''}"`,
+      `"${l.metadata?.category || 'General'}"`,
       `"${l.data_item || ''}"`,
       `"${l.ip_address || ''}"`,
+      `"${l.metadata?.browser || ''}"`,
+      `"${l.metadata?.os || ''}"`,
       `"${l.status || ''}"`
     ]);
 
@@ -61,18 +66,36 @@ export default function AccessLogs() {
 
   const filteredLogs = logs.filter((log) => {
     const q = search.toLowerCase();
+    const meta = log.metadata || {};
     const matchesSearch = !q || [
-      log.action, log.event, log.ip_address, log.location, log.status, log.data_item
+      log.action, log.event, log.ip_address, log.location, log.status, log.data_item,
+      meta.browser, meta.os, meta.device, meta.category
     ].some((field) => (field || '').toLowerCase().includes(q));
 
     const matchesStatus = statusFilter === 'Any status' || (log.status || '').toLowerCase() === statusFilter.toLowerCase();
-    return matchesSearch && matchesStatus;
+    const matchesCategory = categoryFilter === 'All Categories' || (meta.category || '').toLowerCase() === categoryFilter.toLowerCase();
+    return matchesSearch && matchesStatus && matchesCategory;
   });
 
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
 
   const toggleAccordion = (id) => {
     setExpandedLogId(prev => prev === id ? null : id);
+  };
+
+  const getDeviceIcon = (deviceStr) => {
+    const d = (deviceStr || '').toLowerCase();
+    if (d.includes('mobile') || d.includes('phone')) return <Smartphone className="w-3.5 h-3.5" />;
+    if (d.includes('tablet') || d.includes('ipad')) return <Tablet className="w-3.5 h-3.5" />;
+    return <Laptop className="w-3.5 h-3.5" />;
+  };
+
+  const getCategoryIcon = (catStr) => {
+    const c = (catStr || '').toLowerCase();
+    if (c.includes('auth')) return <Key className="w-3.5 h-3.5 text-amber-400" />;
+    if (c.includes('vault') || c.includes('access')) return <Lock className="w-3.5 h-3.5 text-emerald-400" />;
+    if (c.includes('setting') || c.includes('security')) return <SettingsIcon className="w-3.5 h-3.5 text-blue-400" />;
+    return <Activity className="w-3.5 h-3.5 text-[var(--accent-gold)]" />;
   };
 
   return (
@@ -87,7 +110,7 @@ export default function AccessLogs() {
             Access Logs Ledger
           </h1>
           <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-sans leading-relaxed max-w-xl">
-            A clear security ledger of every login, file view, and key verification on your account.
+            A clear security ledger of every login, file view, and key verification on your account with browser, OS, and client metadata.
           </p>
         </div>
 
@@ -109,12 +132,23 @@ export default function AccessLogs() {
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search activity logs…"
+          placeholder="Search activity, browser, IP, action…"
           className="w-full sm:w-80 px-3.5 py-2.5 rounded-lg bg-[var(--bg-input)] border border-[var(--border-primary)] text-[var(--text-primary)] outline-none min-h-[44px]"
         />
 
-        <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0 pt-1 sm:pt-0">
-          <span className="text-[var(--text-tertiary)]">Status:</span>
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 shrink-0">
+          <select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            className="px-3 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border-primary)] text-[var(--text-primary)] outline-none cursor-pointer min-h-[44px]"
+          >
+            <option>All Categories</option>
+            <option value="Authentication">Authentication</option>
+            <option value="Vault Access">Vault Access</option>
+            <option value="Security Settings">Security Settings</option>
+            <option value="System Event">System Event</option>
+          </select>
+
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
@@ -127,10 +161,10 @@ export default function AccessLogs() {
         </div>
       </div>
 
-      {/* Ledger List with Alternating Warm Zebra Striping */}
+      {/* Ledger List */}
       {loading ? (
         <div className="py-6 text-xs text-[var(--text-tertiary)] text-center font-mono">
-          Loading audit entries…
+          Loading detailed audit entries…
         </div>
       ) : filteredLogs.length === 0 ? (
         <EmptyState
@@ -142,6 +176,13 @@ export default function AccessLogs() {
           {filteredLogs.map((log, idx) => {
             const isExpanded = expandedLogId === (log.id || idx);
             const isEven = idx % 2 === 0;
+            const meta = log.metadata || {};
+            const categoryName = meta.category || 'System Event';
+            const browserName = meta.browser || 'Web Browser';
+            const osName = meta.os || 'OS System';
+            const deviceName = meta.device || 'Desktop';
+            const severity = meta.severity || (log.status === 'failed' ? 'high' : 'info');
+
             return (
               <div 
                 key={log.id || idx} 
@@ -149,9 +190,9 @@ export default function AccessLogs() {
               >
                 <div 
                   onClick={() => toggleAccordion(log.id || idx)}
-                  className="cursor-pointer space-y-1.5"
+                  className="cursor-pointer space-y-2"
                 >
-                  {/* Line 1: Entry # + Action Title + Status Badge */}
+                  {/* Line 1: Entry # + Action + Category & Status Badges */}
                   <div className="flex items-center justify-between gap-2 min-w-0">
                     <div className="flex items-center gap-2.5 min-w-0 flex-1">
                       <span className="font-mono text-xs text-[var(--accent-gold)] font-semibold shrink-0">
@@ -160,27 +201,45 @@ export default function AccessLogs() {
                       <span className="text-sm font-medium text-[var(--text-primary)] font-sans truncate">
                         {log.action || log.event || 'System activity'}
                       </span>
+
+                      <span className="hidden md:inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded border border-[var(--border-primary)] bg-[var(--bg-input)] text-[var(--text-secondary)]">
+                        {getCategoryIcon(categoryName)}
+                        {categoryName}
+                      </span>
                     </div>
 
-                    <span className={`px-2.5 py-0.5 text-[10px] font-mono rounded uppercase shrink-0 border ${
-                      log.status === 'success' || log.status === 'completed'
-                        ? 'bg-[var(--accent-gold-bg)] text-[var(--accent-gold)] border-[var(--accent-gold)]'
-                        : 'bg-[rgba(196,87,63,0.15)] text-[var(--status-danger)] border-[var(--status-danger)]'
-                    }`}>
-                      {log.status === 'success' || log.status === 'completed' ? 'OK' : 'High Alert'}
-                    </span>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className={`px-2 py-0.5 text-[10px] font-mono rounded uppercase border ${
+                        severity === 'high' || log.status === 'failed'
+                          ? 'bg-red-500/10 text-red-400 border-red-500/30'
+                          : severity === 'medium'
+                          ? 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+                          : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                      }`}>
+                        {log.status === 'success' || log.status === 'completed' ? 'Success' : 'Failed'}
+                      </span>
+                    </div>
                   </div>
 
-                  {/* Line 2: Timestamp + IP address + Details trigger */}
-                  <div className="flex items-center justify-between text-xs font-mono text-[var(--text-tertiary)] pt-0.5">
-                    <span className="truncate">
-                      {log.timestamp ? new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : 'Just now'}
-                      <span className="mx-1.5">&middot;</span>
-                      {log.ip_address || '127.0.0.1'}
-                    </span>
-                    <span className="text-[11px] text-[var(--accent-gold)] shrink-0 ml-2">
-                      {isExpanded ? 'Hide info –' : 'Details +'}
-                    </span>
+                  {/* Line 2: Client Metadata (Browser, OS, IP, Date) */}
+                  <div className="flex flex-wrap items-center justify-between text-xs font-mono text-[var(--text-tertiary)] pt-0.5 gap-2">
+                    <div className="flex items-center gap-2 truncate">
+                      <span className="flex items-center gap-1 text-[var(--text-secondary)]">
+                        {getDeviceIcon(deviceName)}
+                        {browserName} on {osName}
+                      </span>
+                      <span>&middot;</span>
+                      <span>{log.ip_address || '127.0.0.1'}</span>
+                    </div>
+
+                    <div className="flex items-center gap-3 shrink-0">
+                      <span>
+                        {log.timestamp ? new Date(log.timestamp).toLocaleString([], { dateStyle: 'short', timeStyle: 'medium' }) : 'Just now'}
+                      </span>
+                      <span className="text-[11px] text-[var(--accent-gold)]">
+                        {isExpanded ? 'Hide details –' : 'Inspect details +'}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
@@ -191,11 +250,25 @@ export default function AccessLogs() {
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
                       exit={{ opacity: 0, height: 0 }}
-                      className="pt-3 pb-1 text-xs font-mono text-[var(--text-tertiary)] space-y-1 border-t border-[var(--border-primary)] mt-3"
+                      className="pt-3 pb-1 text-xs font-mono text-[var(--text-secondary)] space-y-1.5 border-t border-[var(--border-primary)] mt-3 bg-[var(--bg-input)]/50 p-3 rounded-lg"
                     >
-                      <p>• Data item: {log.data_item || log.location || 'N/A'}</p>
-                      <p>• IP address: {log.ip_address || '127.0.0.1'}</p>
-                      <p>• Verification: Sealed & Authenticated</p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <div>
+                          <p><strong className="text-[var(--text-primary)]">Target Item:</strong> {log.data_item || 'N/A'}</p>
+                          <p><strong className="text-[var(--text-primary)]">Event Category:</strong> {categoryName}</p>
+                          <p><strong className="text-[var(--text-primary)]">IP Location:</strong> {log.ip_address || '127.0.0.1'} (Authenticated Request)</p>
+                        </div>
+                        <div>
+                          <p><strong className="text-[var(--text-primary)]">Client Device:</strong> {deviceName} ({osName})</p>
+                          <p><strong className="text-[var(--text-primary)]">User Agent:</strong> {browserName}</p>
+                          <p><strong className="text-[var(--text-primary)]">HTTP Method:</strong> {meta.method || 'POST'}</p>
+                        </div>
+                      </div>
+                      {meta.user_agent && (
+                        <p className="text-[10px] text-[var(--text-tertiary)] pt-1 truncate border-t border-[var(--border-primary)]/50 mt-1">
+                          UA String: {meta.user_agent}
+                        </p>
+                      )}
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -231,3 +304,4 @@ export default function AccessLogs() {
     </div>
   );
 }
+

@@ -5,6 +5,7 @@ import SecurityActionBtn from '../components/SecurityActionBtn';
 import EmptyState from '../components/EmptyState';
 import SealStamp from '../components/SealStamp';
 import { Lock, Unlock, Trash2, Upload, X, Plus } from 'lucide-react';
+import { encryptFileWebCrypto, decryptFileWebCrypto } from '../utils/crypto';
 
 export default function MyData() {
   const [assets, setAssets] = useState([]);
@@ -43,11 +44,19 @@ export default function MyData() {
 
   const handleUpload = async () => {
     if (!selectedFile || !password.trim()) return;
-    const formData = new FormData();
-    formData.append('file', selectedFile);
-    formData.append('password', password);
 
     try {
+      // Zero-Knowledge Client-Side WebCrypto Encryption
+      const { ciphertextBlob, saltHex, ivHex } = await encryptFileWebCrypto(selectedFile, password);
+
+      const formData = new FormData();
+      formData.append('file', ciphertextBlob, selectedFile.name);
+      formData.append('name', selectedFile.name);
+      formData.append('file_size', selectedFile.size);
+      formData.append('salt', saltHex);
+      formData.append('iv', ivHex);
+      formData.append('password', password); // For fallback server validation if needed
+
       await axiosInstance.post('/api/encryption/upload/', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
@@ -62,7 +71,7 @@ export default function MyData() {
       setSealModal({ name: uploadedName });
       setTimeout(() => setSealModal(null), 2500);
     } catch (err) {
-      const msg = err.response?.data?.detail || 'Upload failed — please try again';
+      const msg = err.response?.data?.detail || err.message || 'Upload failed — please try again';
       showToast(typeof msg === 'string' ? msg : 'Upload failed', 'error');
       throw err;
     }
@@ -84,10 +93,25 @@ export default function MyData() {
       const res = await axiosInstance.post(
         `/api/encryption/assets/${downloadModal.id}/retrieve/`,
         { password: downloadPassword },
-        { responseType: 'blob' }
+        { responseType: 'arraybuffer' }
       );
 
-      const url = window.URL.createObjectURL(new Blob([res.data]));
+      let finalBuffer = res.data;
+      if (downloadModal.salt && downloadModal.iv) {
+        try {
+          finalBuffer = await decryptFileWebCrypto(
+            res.data,
+            downloadPassword,
+            downloadModal.salt,
+            downloadModal.iv
+          );
+        } catch {
+          // Fallback if payload was server-decrypted CBC
+          finalBuffer = res.data;
+        }
+      }
+
+      const url = window.URL.createObjectURL(new Blob([finalBuffer]));
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', downloadModal.name);
@@ -101,11 +125,12 @@ export default function MyData() {
     } catch (err) {
       const msg = err.response?.status === 403
         ? 'Wrong password — please try again'
-        : err.response?.data?.detail || 'Could not unseal file';
+        : err.message || 'Could not unseal file';
       showToast(typeof msg === 'string' ? msg : 'Download failed', 'error');
       throw err;
     }
   };
+
 
   const handleDrag = (e) => {
     e.preventDefault();

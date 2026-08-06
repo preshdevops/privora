@@ -33,8 +33,9 @@ def calculate_score(user):
         score += 20
 
     # Has at least one encrypted asset
-    if EncryptedAsset.objects.filter(owner=user).exists():
+    if EncryptedAsset.objects.filter(user=user).exists():
         score += 10
+
 
     # No unresolved alerts
     unresolved_alerts = AuditAlert.objects.filter(user=user, resolved=False)

@@ -6,10 +6,12 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
+from django.utils import timezone
 from .models import EncryptedAsset
 from .serializers import EncryptedAssetSerializer
 from .crypto import encrypt_file, decrypt_file, DecryptionError
-from audit.utils import log_action
+from audit.utils import log_action, get_client_ip
+from users.notifications import send_file_upload_notification
 
 
 class EncryptedAssetListView(APIView):
@@ -27,31 +29,41 @@ class EncryptedAssetUploadView(APIView):
     def post(self, request):
         uploaded_file = request.FILES.get('file')
         password = request.data.get('password')
+        client_salt = request.data.get('salt')
+        client_iv = request.data.get('iv')
 
         if not uploaded_file:
             return Response({'detail': 'No file provided.'}, status=400)
-        if not password:
-            return Response({'detail': 'No password provided.'}, status=400)
 
-        plaintext_bytes = uploaded_file.read()
-        file_size = len(plaintext_bytes)
+        # Check if file was pre-encrypted on client-side via WebCrypto
+        if client_salt and client_iv:
+            ciphertext = uploaded_file.read()
+            salt_hex = client_salt
+            iv_hex = client_iv
+            file_name = request.data.get('name') or uploaded_file.name
+            try:
+                file_size = int(request.data.get('file_size') or len(ciphertext))
+            except (ValueError, TypeError):
+                file_size = len(ciphertext)
+        else:
+            if not password:
+                return Response({'detail': 'No password provided.'}, status=400)
+            plaintext_bytes = uploaded_file.read()
+            file_size = len(plaintext_bytes)
+            ciphertext, salt_hex, iv_hex = encrypt_file(plaintext_bytes, password)
+            file_name = uploaded_file.name
 
-        ciphertext, salt_hex, iv_hex = encrypt_file(plaintext_bytes, password)
-
-        # Create the asset row first to get the UUID
         asset = EncryptedAsset(
             user=request.user,
-            name=uploaded_file.name,
+            name=file_name,
             file_size=file_size,
             salt=salt_hex,
             iv=iv_hex,
         )
 
-        # Build storage path relative to MEDIA_ROOT
         relative_path = os.path.join('encrypted', str(request.user.pk), f'{asset.pk}.enc')
         asset.storage_path = relative_path
 
-        # Write ciphertext to disk
         full_path = os.path.join(settings.MEDIA_ROOT, relative_path)
         os.makedirs(os.path.dirname(full_path), exist_ok=True)
         with open(full_path, 'wb') as f:
@@ -59,16 +71,22 @@ class EncryptedAssetUploadView(APIView):
 
         asset.save()
 
+        ip = get_client_ip(request)
+        timestamp = timezone.now()
+        send_file_upload_notification(request.user, file_name, file_size, ip, timestamp)
+
         log_action(
             user=request.user,
             action='file_encrypted',
             request=request,
-            data_item=uploaded_file.name,
+            data_item=file_name,
             status='success',
+            metadata={'file_size': file_size, 'zero_knowledge': bool(client_salt and client_iv)}
         )
 
         serializer = EncryptedAssetSerializer(asset)
         return Response(serializer.data, status=201)
+
 
 
 class EncryptedAssetDeleteView(APIView):

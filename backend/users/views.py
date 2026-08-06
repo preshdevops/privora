@@ -12,7 +12,7 @@ from .models import User, UserSettings
 from .serializers import RegisterSerializer, UserSerializer, UserSettingsSerializer
 from audit.utils import log_action, get_client_ip
 from audit.models import AuditAlert
-from .notifications import send_login_notification
+from .notifications import send_login_notification, send_welcome_notification
 
 
 class RegisterView(APIView):
@@ -24,6 +24,12 @@ class RegisterView(APIView):
         if serializer.is_valid():
             user = serializer.save()
             refresh = RefreshToken.for_user(user)
+
+            ip = get_client_ip(request)
+            timestamp = timezone.now()
+            send_welcome_notification(user, ip, timestamp)
+            log_action(user=user, action='user_registered', request=request, status='success')
+
             return Response({
                 'user':    UserSerializer(user).data,
                 'access':  str(refresh.access_token),

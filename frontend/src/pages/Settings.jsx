@@ -4,7 +4,9 @@ import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../api/axiosInstance';
 import SecurityActionBtn from '../components/SecurityActionBtn';
 import PasswordInput from '../components/PasswordInput';
+import BreachRadar from '../components/BreachRadar';
 import { ShieldCheck, Download, Trash2, FileText, AlertTriangle, X } from 'lucide-react';
+
 
 export default function Settings() {
   const { user, logout } = useAuth();
@@ -125,6 +127,12 @@ export default function Settings() {
           </div>
         </div>
       </section>
+
+      {/* Section: Threat Intelligence & Dark Web Scanner */}
+      <section className="pb-6 border-b border-[var(--border-primary)]">
+        <BreachRadar />
+      </section>
+
 
       {/* Section 2: Change Secret Password */}
       <section className="space-y-4 pb-6 border-b border-[var(--border-primary)]">

@@ -8,6 +8,8 @@ import SecurityActionBtn from '../components/SecurityActionBtn';
 import EmptyState from '../components/EmptyState';
 import RisingScoreDial from '../components/RisingScoreDial';
 
+import BreachRadar from '../components/BreachRadar';
+
 export default function Dashboard() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -16,6 +18,7 @@ export default function Dashboard() {
   const [recentLogs, setRecentLogs] = useState([]);
   const [alerts, setAlerts] = useState([]);
   const [expandedLogId, setExpandedLogId] = useState(null);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -185,7 +188,13 @@ export default function Dashboard() {
         </div>
       </section>
 
+      {/* Breach Radar Threat Scanner */}
+      <section>
+        <BreachRadar />
+      </section>
+
       {/* Sequential Data Journey Ledger */}
+
       <section className="space-y-3">
         <h2 className="text-lg sm:text-xl font-display font-bold text-[var(--text-primary)]">
           How your files stay safe

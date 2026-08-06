@@ -28,7 +28,8 @@ class AuditUtilsTestCase(TestCase):
         self.assertEqual(log.action, "key_rotation")
         self.assertEqual(log.data_item, "api_key_1")
         self.assertEqual(log.status, "success")
-        self.assertEqual(log.metadata, {"source": "test"})
+        self.assertEqual(log.metadata.get('source'), "test")
+
 
 
 class AuditAPITestCase(APITestCase):
